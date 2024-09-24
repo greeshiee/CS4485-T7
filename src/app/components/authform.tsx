@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ToggleSwitch from './toggle'; // Adjust the path based on your folder structure
+import ToggleSwitch from './toggle';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);

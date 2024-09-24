@@ -1,8 +1,14 @@
+'use client';
+
 import React from 'react'
+import AuthForm from '../components/authform'
+
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <AuthForm/>
+    </div>
   )
 }
 

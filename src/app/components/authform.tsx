@@ -62,14 +62,7 @@ const AuthForm = () => {
           </div>
         </form>
 
-        <div className="mt-4 text-center">
-          <button
-            onClick={toggleForm}
-            className="text-blue-500 hover:underline"
-          >
-            {isLogin ? 'Create an account' : 'Already have an account?'}
-          </button>
-        </div>
+
       </div>
     </div>
   );

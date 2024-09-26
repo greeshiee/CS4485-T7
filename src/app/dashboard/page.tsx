@@ -1,19 +1,17 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 
 const Dashboard = () => {
   const [name, setName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token'); // get token from localstorage
 
     if (!token) {
-      router.push('/auth'); // redirect to login if no token
+      window.location.href = '/auth'; // redirect to login if no token
       return;
     }
 
@@ -40,7 +38,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [router]);
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;

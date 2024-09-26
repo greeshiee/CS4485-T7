@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import ToggleSwitch from './toggle';
 import { API_URL } from '@/globals';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -13,23 +16,29 @@ const AuthForm = () => {
     if (isLogin) {
       console.log('Login form submitted');
       
-      let endpoint_url = `${API_URL}/auth/login`;
+      let endpoint_url = `${API_URL}/token`;
+
+      // Use URLSearchParams to format the data as x-www-form-urlencoded
+      const formBody = new URLSearchParams();
+      formBody.append('username', e.target[0].value);  // assuming email is username in OAuth2PasswordRequestForm
+      formBody.append('password', e.target[1].value);
+
       const response = await fetch(endpoint_url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({
-          email: e.target[0].value,
-          password: e.target[1].value,
-        }),
+        body: formBody.toString(),  // x-www-form-urlencoded body
       });
 
-      if(response.ok){
-        const {token} = await response.json();
+      if (response.ok) {
+        const { access_token } = await response.json();
+        console.log("token:", access_token);
         // save in local storage
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', access_token);
         window.location.href = '/dashboard';
+      } else {
+        toast.error("Login failed. Please check your credentials.");
       }
     }
   }
@@ -87,6 +96,8 @@ const AuthForm = () => {
             </button>
           </div>
         </form>
+
+        <ToastContainer />
 
 
       </div>

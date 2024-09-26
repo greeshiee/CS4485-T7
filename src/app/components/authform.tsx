@@ -1,12 +1,38 @@
 import React, { useState } from 'react';
 import ToggleSwitch from './toggle';
-
+import { API_URL } from '@/globals';
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
-  };
+  }; 
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    if (isLogin) {
+      console.log('Login form submitted');
+      
+      let endpoint_url = `${API_URL}/auth/login`;
+      const response = await fetch(endpoint_url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: e.target[0].value,
+          password: e.target[1].value,
+        }),
+      });
+
+      if(response.ok){
+        const {token} = await response.json();
+        // save in local storage
+        localStorage.setItem('token', token);
+        window.location.href = '/dashboard';
+      }
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -14,7 +40,7 @@ const AuthForm = () => {
         
         <ToggleSwitch isLogin={isLogin} toggleForm={toggleForm} />
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-2 text-sm font-medium text-gray-600">
               Email
@@ -39,7 +65,7 @@ const AuthForm = () => {
 
           {!isLogin && (
             <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-gray-600">
+              <label className="block mb-1 text-sm font-medium text-gray-600">
                 Confirm Password
               </label>
               <input

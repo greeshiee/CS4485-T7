@@ -1,49 +1,30 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-const Dashboard = () => {
-  const [name, setName] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default function Dashboard() {
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token'); // get token from localstorage
+  if (!isAuthenticated) {
+    return (
+      <div>
+        <button onClick={() => loginWithRedirect()}>Login</button>
+      </div>
+    );
+  }
 
-    if (!token) {
-      window.location.href = '/auth'; // redirect to login if no token
-      return;
-    }
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/user', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setName(data.name); 
-        } else {
-          setError('Failed to fetch data');
+  return (
+    <div>
+      <h2>Welcome, {user?.name}</h2>
+      <button
+        onClick={() =>
+          logout({
+            logoutParams: { returnTo: window.location.origin },
+          })
         }
-      } catch (error) {
-        setError('Error fetching data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
-
-  return <h1>Welcome, {name}</h1>;
-};
-
-export default Dashboard;
+      >
+        Logout
+      </button>
+    </div>
+  );
+}

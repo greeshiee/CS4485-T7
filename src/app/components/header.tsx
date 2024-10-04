@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Navbar = () => {
     const links = [
@@ -7,6 +8,8 @@ const Navbar = () => {
         { to: '/#page2', label: '[page2]' },
         { to: '/#page3', label: '[page3]' },
     ];
+
+    const {loginWithRedirect, logout, isAuthenticated} = useAuth0();
 
     const [isToggled, setIsToggled] = useState(false);
 
@@ -65,9 +68,25 @@ const Navbar = () => {
                             </div>
 
                             <div className="mt-12 lg:mt-0">
-                                <Link href="/auth" className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max">
-                                    <span className="relative text-sm font-semibold text-white"> Get Started</span>
-                                </Link>
+                            {!isAuthenticated ? (
+                                <button
+                                onClick={() => loginWithRedirect()}
+                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                                >
+                                <span className="relative text-sm font-semibold text-white">Get Started</span>
+                                </button>
+                            ) : (
+                                <button
+                                onClick={() =>
+                                    logout({
+                                    logoutParams: { returnTo: window.location.origin },
+                                    })
+                                }
+                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                                >
+                                <span className="relative text-sm font-semibold text-white">Logout</span>
+                                </button>
+                            )}
                             </div>
                         </div>
                     </div>

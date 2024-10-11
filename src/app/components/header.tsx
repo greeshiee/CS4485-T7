@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth0 } from '@auth0/auth0-react';
+import Hamburger from 'hamburger-react';
+
 
 const Navbar = () => {
     const links = [
-        { to: '/#page1', label: '[page1]' },
-        { to: '/#page2', label: '[page2]' },
-        { to: '/#page3', label: '[page3]' },
+        { to: '/#page1', label: 'About Us' },
+        { to: '/#page2', label: 'SRS Documents' },
+        { to: '/#page3', label: 'Integration Guides' },
+    ];
+
+    const hamburgerLinks = [
+        { to: '/#usecase1', label: 'T1 : Exploratory Data Analysis' },
+        { to: '/#usecase2', label: 'T2 : Data Ingestion' },
+        { to: '/#usecase3', label: 'T3 : Dashboarding' },
+        { to: '/#usecase4', label: 'T4 : Data Pipelining' },
+        { to: '/#usecase5', label: 'T5 : KPI Fomulas' },
+        { to: '/#usecase6', label: 'T6 : Data Generation' },
+        { to: '/#usecase7', label: 'T7 : Security Management' },
+        { to: '/#usecase8', label: 'T8 : Fault Management' },
+        { to: '/#usecase9', label: 'T9 : Performance Metrics' },
     ];
 
     const {loginWithRedirect, logout, isAuthenticated} = useAuth0();
@@ -39,13 +53,32 @@ const Navbar = () => {
                 <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 md:gap-0 md:py-4">
                         <div className="relative z-20 flex w-full justify-between md:px-0 lg:w-max">
+                            <div >
+                                {isAuthenticated && (
+                                <Hamburger  toggled={isToggled}  toggle = {setIsToggled}    direction="right"   />
+                                )}
+                                    {isToggled && isAuthenticated &&(
+                                        <div className="absolute left-0 top-full mt-2 w-61 bg-gray-100 dark:bg-gray-800 p-4 shadow-lg rounded-lg">
+                                            <ul className="flex flex-col space-y-2">
+                                                {hamburgerLinks.map((link) => (
+                                                    <li key={link.label}>
+                                                        <Link href={link.to}>
+                                                            <span className="block text-gray-900 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition">
+                                                                {link.label}
+                                                            </span>
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                            </div>
                             <a href="/#home" aria-label="logo" className="flex items-center space-x-2">
                                 <div aria-hidden="true" className="flex space-x-1">
                                     {'[Logo]'}
                                 </div>
-                                <span className="text-2xl font-bold text-gray-900 dark:text-white">[Project Name]</span>
+                                <span className="text-2xl font-bold text-gray-900 dark:text-white">[CS4485-5G Analytics]</span>
                             </a>
-
                             <div className="relative flex max-h-10 items-center lg:hidden">
                                 <button aria-label="hamburger" id="hamburger" className="relative -mr-6 p-6" onClick={toggleNavlinks}>
                                     <div aria-hidden="true" className="m-auto h-0.5 w-5 rounded bg-sky-900 transition duration-300 dark:bg-gray-300"></div>
@@ -71,9 +104,9 @@ const Navbar = () => {
                             {!isAuthenticated ? (
                                 <button
                                 onClick={() => loginWithRedirect()}
-                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary dark:before:bg-blue-950 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
                                 >
-                                <span className="relative text-sm font-semibold text-white">Get Started</span>
+                                <span className="relative text-sm font-semibold text-white ">Get Started</span>
                                 </button>
                             ) : (
                                 <button
@@ -82,7 +115,7 @@ const Navbar = () => {
                                     logoutParams: { returnTo: window.location.origin },
                                     })
                                 }
-                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                                className="relative flex h-9 w-full items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary dark:before:bg-blue-950 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
                                 >
                                 <span className="relative text-sm font-semibold text-white">Logout</span>
                                 </button>

@@ -14,5 +14,5 @@ export default function Callback() {
     }
   }, [isAuthenticated, router]);
 
-  return <div>Loading...</div>;  // You can customize the loading message or spinner
+  return <div>Loading...</div>;
 }

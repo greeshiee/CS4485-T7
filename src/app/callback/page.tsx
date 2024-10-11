@@ -14,5 +14,17 @@ export default function Callback() {
     }
   }, [isAuthenticated, router]);
 
-  return <div>Loading...</div>;  // You can customize the loading message or spinner
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-center p-6 bg-white rounded shadow-md">
+        <h1 className="text-2xl font-bold mb-4 text-black dark:text-black ">Check Your Email!</h1>
+        <p className="text-lg text-gray-700">
+          Please check your email for a verification link.
+        </p>
+        <p className="mt-4 text-sm text-gray-500">
+          If you don't see it, be sure to check your spam or junk folder.
+        </p>
+      </div>
+    </div>
+  );  // You can customize the loading message or spinner
 }

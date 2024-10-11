@@ -19,8 +19,8 @@ export default function Dashboard() {
       <Navbar/>
 
       <div className="relative mt-8 px-6 lg:px-8">
-        <div className="relative pt-24 ml-auto">
-          <div className="lg:w-2/3">
+        <div className="flex justify-center pt-24">
+          <div className="lg:w-2/3 text-center">
             <h1 className="text-gray-900 dark:text-white font-bold text-2xl md:text-3xl xl:text-4xl">
               Hi, {user?.name}!
             </h1>

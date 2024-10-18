@@ -3,14 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1C1C1C;
+  --foreground: #F5F5F5; 
+  --important-blue: #1E90FF; 
+  --important-green: #00C853; 
+  --subtle-accent: #333333;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #F5F5F5;
   }
 }
 
@@ -19,6 +22,21 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.important {
+  color: var(--important-blue); 
+}
+
+.important-green {
+  color: var(--important-green);
+}
+
+
+.subtle {
+  color: var(--subtle-accent);
+}
+
+
 
 @layer utilities {
   .text-balance {

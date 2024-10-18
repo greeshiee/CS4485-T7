@@ -53,6 +53,12 @@ const config: Config = {
         fuchsia: colors.fuchsia,
         pink: colors.pink,
         rose: colors.rose,
+        charcoal: '#1C1C1C',
+        electricblue: '#94C5CC',
+        vibrantgreen: '#00C853',
+        subtlegray: '#333333',
+        lightgray: '#F5F5F5',
+
       },
     },
   },

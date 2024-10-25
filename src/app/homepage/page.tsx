@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Navbar from '../components/header';
 import { useAuth0 } from '@auth0/auth0-react';
 import ParticlesBackground from '../components/threeBackground';
+import LoginPage from '../components/loginpage';
 
 const HomePage = () => {
   const { loginWithRedirect } = useAuth0();

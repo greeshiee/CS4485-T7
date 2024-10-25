@@ -58,6 +58,8 @@ const config: Config = {
         vibrantgreen: '#00C853',
         subtlegray: '#333333',
         lightgray: '#F5F5F5',
+        darkerblue: '#8497B0',
+        
 
       },
     },

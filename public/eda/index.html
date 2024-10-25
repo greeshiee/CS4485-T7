@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+    <style>
+      #main {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+      }
+
+      .cell {
+        display: block;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+    </style>
+
+    <main>
+      <h1>Exploritory Data Analysis</h1>
+      <div id="main">
+        <section>
+          <h2>Code</h2>
+          <div class="container">
+            <textarea class="cell" rows="5" cols="80"></textarea>
+            <button class="run">run</button>
+            <button class="add-cell">add cell</button>
+            <button class="remove-cell">remove cell</button>
+          </div>
+
+          <div>
+            <h2>Output</h2>
+            <textarea class="output" rows="5" cols="80" readonly></textarea>
+          </div>
+        </section>
+
+        <section>
+          <h2>Files</h2>
+          <div class="file-list"></div>
+          <form class="upload-file" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="*/*" required>
+            <button type="submit">Upload</button>
+          </form>
+        </section>
+        <ul id="file-list"></ul>
+
+      </div>
+    </main>
+    <script src="index.js"></script>
+  </body>
+</html>

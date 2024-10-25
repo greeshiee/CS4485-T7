@@ -12,7 +12,7 @@ const Navbar = () => {
     ];
 
     const hamburgerLinks = [
-        { to: '/#usecase1', label: 'T1 : Exploratory Data Analysis' },
+        { to: '/usecase1', label: 'T1 : Exploratory Data Analysis' },
         { to: '/#usecase2', label: 'T2 : Data Ingestion' },
         { to: '/#usecase3', label: 'T3 : Dashboarding' },
         { to: '/#usecase4', label: 'T4 : Data Pipelining' },
@@ -73,13 +73,13 @@ const Navbar = () => {
                                         </div>
                                     )}
                             </div>
-                            <a href="/homepage" aria-label="logo" className="flex items-center space-x-2">
+                            <a href="/homepage" aria-label="logo" className="flex items-center space-x-2 text-2xl">
                                 <div aria-hidden="true" className="flex space-x-1">
-                                    {<div className="w-16 h-16 flex justify-center items-center overflow-hidden rounded-full">
-                                        <img src="/assets/image.png" alt="Logo" className="object-cover h-full" />
+                                    {<div className="h-[1.5em] w-[1.5em] flex justify-center items-center overflow-hidden rounded-full">
+                                        <img src="/assets/logo.png" alt="Logo" className="object-cover h-full w-full" />
                                     </div>}
                                 </div>
-                                <span className="text-2xl font-bold text-electricblue dark:text-white">NodeWave</span>
+                                <span className="text-2xl font-medium text-electricblue dark:text-white">NodeWave</span>
                             </a>
                             <div className="relative flex max-h-10 items-center lg:hidden">
                             <button aria-label="hamburger" id="hamburger" className="relative -mr-6 p-6" onClick={toggleNavlinks}>

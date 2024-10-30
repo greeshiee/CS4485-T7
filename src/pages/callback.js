@@ -1,6 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import Loading from '../components/loading';
 
 export default function Callback() {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -24,5 +25,5 @@ export default function Callback() {
     handleAuthentication();
   }, [user, getAccessTokenSilently, navigate]);
 
-  return <div>Loading...</div>;
+  return <Loading />;
 }

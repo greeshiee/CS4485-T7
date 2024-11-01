@@ -140,7 +140,7 @@ export default function DataGeneration() {
   }, [mode, interval, filename]);
 
   return (
-    <div className="bg-background h-full text-foreground container mx-auto p-6">
+    <div className="bg-background h-full text-foreground container mx-auto p-6 overflow-y-auto">
       <h1 className="text-2xl font-bold mb-4">
         Upload JSON or Type Schema and Generate CSV
       </h1>
@@ -221,7 +221,6 @@ export default function DataGeneration() {
       </button>
 
       <p className="mt-4 text-red-500">{message}</p>
-      {/* section to display the generated csv */}
 
       {csvContent.length > 0 && (
         <div className="mt-6">
@@ -262,3 +261,4 @@ export default function DataGeneration() {
     </div>
   );
 }
+

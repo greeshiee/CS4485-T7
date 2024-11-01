@@ -91,10 +91,10 @@ export default function Dashboard() {
             </nav>
           </aside>
         </div>
-        <div className="bg-background flex-1 overflow-hidden">
+        <div className="bg-background h-[calc(100vh-4.5rem)] flex-1 overflow-hidden">
           {activeComponent || <Usecase1 />} {/* Render the active component */}
         </div>
-        <div className="bg-blue-300 w-[20%] overflow-hidden" />
+        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" />
       </div>
     </div>
   );

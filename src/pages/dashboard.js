@@ -91,8 +91,8 @@ export default function Dashboard() {
             </nav>
           </aside>
         </div>
-        <div className="bg-white flex-1 overflow-hidden">
-          {activeComponent || <div>Select an option from the sidebar</div>} {/* Render the active component */}
+        <div className="bg-background flex-1 overflow-hidden">
+          {activeComponent || <Usecase1 />} {/* Render the active component */}
         </div>
         <div className="bg-blue-300 w-[20%] overflow-hidden" />
       </div>

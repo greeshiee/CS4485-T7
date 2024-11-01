@@ -4,8 +4,6 @@ import React from 'react';
 import Navbar from '../components/header';
 import ParticlesBackground from '../components/threeBackground';
 import { useAuth0 } from '@auth0/auth0-react';
-import EmailVerification from '../components/emailverification';
-import Loading from '../components/loading';
 
 const HomePage = () => {
   const { loginWithRedirect } = useAuth0();

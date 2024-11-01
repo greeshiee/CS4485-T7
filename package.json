@@ -11,6 +11,7 @@
     "auth0": "^4.10.0",
     "axios": "^1.7.7",
     "hamburger-react": "^2.5.1",
+    "lucide-react": "^0.454.0",
     "papaparse": "^5.4.1",
     "particles.js": "^2.0.0",
     "react": "^18.3.1",

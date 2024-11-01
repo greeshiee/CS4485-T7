@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import Hamburger from 'hamburger-react';
-
+// import Hamburger from 'hamburger-react';
 
 const Navbar = () => {
     const links = [
@@ -66,9 +65,10 @@ const Navbar = () => {
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 md:gap-0 md:py-4">
                         <div className="relative z-20 flex w-full justify-between md:px-0 lg:w-max">
                             <div >
-                                {isAuthenticated && (
+                                {/*
+                                isAuthenticated && (
                                 <Hamburger  toggled={isToggled}  toggle = {setIsToggled}    direction="right"   />
-                                )}
+                                )
                                     {isToggled && isAuthenticated &&(
                                         <div className="absolute left-0 top-full mt-2 w-61 bg-gray-100 dark:bg-gray-800 p-4 shadow-lg rounded-lg">
                                             <ul className="flex flex-col space-y-2">
@@ -84,6 +84,7 @@ const Navbar = () => {
                                             </ul>
                                         </div>
                                     )}
+                                */}
                             </div>
                             <a href="/splash" aria-label="logo" className="flex items-center space-x-2 text-2xl">
                                 <div aria-hidden="true" className="flex space-x-1">

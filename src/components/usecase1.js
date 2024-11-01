@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../components/header';
 
 const UseCase1 = () => {
     const [codeBlocks, setCodeBlocks] = useState(['']);
@@ -37,9 +36,8 @@ const UseCase1 = () => {
     };
 
     return (
-        <>
-        <Navbar />
-        <h1 className="text-foreground dark:text-white font-bold text-2xl md:text-3xl xl:text-4xl pt-24 ml-4">
+        <div className='bg-background'>
+        <h1 className="text-foreground bg-background font-bold text-2xl md:text-3xl xl:text-4xl pt-24 ml-4">
                 Exploratory Data Analysis
         </h1>
         <main className="min-h-screen bg-background flex flex-col h-screen">
@@ -85,7 +83,7 @@ const UseCase1 = () => {
                 </section>
             </div>
         </main>
-        </>
+        </div>
     );
 };
 

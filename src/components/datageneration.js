@@ -140,7 +140,7 @@ export default function DataGeneration() {
   }, [mode, interval, filename]);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="bg-background h-full text-foreground container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">
         Upload JSON or Type Schema and Generate CSV
       </h1>
@@ -158,7 +158,7 @@ export default function DataGeneration() {
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value)}
-          className="border rounded-lg p-2"
+          className="border text-background rounded-lg p-2"
         >
           <option value="batch">Batch</option>
           <option value="stream">Stream</option>
@@ -172,7 +172,7 @@ export default function DataGeneration() {
         <textarea
           value={typedSchema}
           onChange={(e) => setTypedSchema(e.target.value)}
-          className="w-full h-40 border rounded-lg p-2"
+          className="w-full h-40 border text-background rounded-lg p-2"
           placeholder="Enter your JSON schema here"
         />
       </div>
@@ -183,7 +183,7 @@ export default function DataGeneration() {
           type="number"
           value={numRecords}
           onChange={(e) => setNumRecords(e.target.value)}
-          className="border rounded-lg p-2"
+          className="border text-background rounded-lg p-2"
         />
       </div>
 
@@ -206,7 +206,7 @@ export default function DataGeneration() {
             type="text"
             value={customFilename}
             onChange={(e) => setCustomFilename(e.target.value)}
-            className="border rounded-lg p-2"
+            className="border text-background rounded-lg p-2"
             placeholder="Enter a custom filename"
           />
           <div className="ml-2">.csv</div>

@@ -4,11 +4,9 @@ import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Splash from "./pages/splash";
-import Usecase1 from "./pages/usecase1";
 import AuthWrapper from "./components/authwrapper";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
-import DataGeneration from "./pages/datageneration";
 
 function App() {
   return (
@@ -28,8 +26,6 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/splash" element={<Splash />} />
-              <Route path="/usecase1" element={<Usecase1 />} />
-              <Route path="/data-generation" element={<DataGeneration />} />
               <Route path="/" element={<Splash />} /> {/* Default route */}
             </Routes>
           </Suspense>

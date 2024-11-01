@@ -10,18 +10,6 @@ const Navbar = () => {
         { to: '/#page3', label: 'Integration Guides' },
     ];
 
-    const hamburgerLinks = [
-        { to: '/usecase1', label: 'T1 : Exploratory Data Analysis' },
-        { to: '/#usecase2', label: 'T2 : Data Ingestion' },
-        { to: '/#usecase3', label: 'T3 : Dashboarding' },
-        { to: '/#usecase4', label: 'T4 : Data Pipelining' },
-        { to: '/#usecase5', label: 'T5 : KPI Fomulas' },
-        { to: '/#usecase6', label: 'T6 : Data Generation' },
-        { to: '/#usecase7', label: 'T7 : Security Management' },
-        { to: '/#usecase8', label: 'T8 : Fault Management' },
-        { to: '/#usecase9', label: 'T9 : Performance Metrics' },
-    ];
-
     const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
 
     const [isToggled, setIsToggled] = useState(false);
@@ -140,6 +128,9 @@ const Navbar = () => {
                         </div>
                     </div>
                 </div>
+            <div className="h-[0.05rem] bg-white dark:bg-gray-800"></div>
+            
+
             </nav>
         </header>
     );

@@ -13,11 +13,11 @@ export function SidebarItem({ to, label, onClick }) {
   const { expanded } = useContext(SidebarContext);
 
   return (
-    <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-gray-50 text-gray-600">
+    <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-gray-500 text-gray-600">
       <NavLink
         to={to}
         className={({ isActive }) =>
-          `w-full flex items-center ${isActive ? "text-blue-500 font-semibold" : ""}`
+          `w-full flex items-center ${isActive ? "text-electricblue font-semibold" : ""}`
         }
         onClick={onClick} // Call the onClick function when the item is clicked
       >
@@ -99,3 +99,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

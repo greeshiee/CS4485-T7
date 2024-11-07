@@ -6,6 +6,8 @@ import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
+import FaultMainPage from '../components/faultmanagement/faultmainpage';
+import FaultSide from '../components/faultmanagement/faultside';
 
 const SidebarContext = createContext();
 
@@ -46,7 +48,7 @@ export default function Dashboard() {
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Security Management' },
-    { label: 'Fault Management' },
+    { label: 'Fault Management', component: <FaultMainPage/>},
     { label: 'Performance Metrics' },
   ];
 
@@ -94,9 +96,11 @@ export default function Dashboard() {
         <div className="bg-background h-[calc(100vh-4.5rem)] flex-1 overflow-hidden">
           {activeComponent || <Usecase1 />} {/* Render the active component */}
         </div>
-        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" />
+        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" >
+          <FaultSide/>
       </div>
     </div>
+  </div>
   );
 }
 

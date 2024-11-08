@@ -4,7 +4,6 @@ import UploadCSV from './UploadCSV';
 import ManageDatabases from './ManageDatabases';
 import PhoneSpecs from './PhoneSpecs';
 import AllPhones from './AllPhones';
-// import GeneralAPI from './GeneralAPI';
 
 const DataIngestion = () => {
     const [activeTab, setActiveTab] = useState('UploadCSV');
@@ -19,8 +18,6 @@ const DataIngestion = () => {
                 return <PhoneSpecs />;
             case 'AllPhones':
                 return <AllPhones />;
-            // case 'GeneralAPI':
-            //     return <GeneralAPI />;
             default:
                 return <UploadCSV />;
         }
@@ -28,13 +25,36 @@ const DataIngestion = () => {
 
     return (
         <div className="data-ingestion-container">
-            <nav className="data-ingestion-tabs">
-                <button onClick={() => setActiveTab('UploadCSV')}>Upload CSV</button>
-                <button onClick={() => setActiveTab('ManageDatabases')}>Manage Databases</button>
-                <button onClick={() => setActiveTab('PhoneSpecs')}>Phone Specs</button>
-                <button onClick={() => setActiveTab('AllPhones')}>All Phones</button>
+            {/* Tab Bar */}
+            <nav className="tab-bar flex border-b-2 border-gray-200 mb-4">
+                <button
+                    className={`tab-item px-4 py-2 ${activeTab === 'UploadCSV' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('UploadCSV')}
+                >
+                    Upload CSV
+                </button>
+                <button
+                    className={`tab-item px-4 py-2 ${activeTab === 'ManageDatabases' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('ManageDatabases')}
+                >
+                    Manage Databases
+                </button>
+                <button
+                    className={`tab-item px-4 py-2 ${activeTab === 'PhoneSpecs' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('PhoneSpecs')}
+                >
+                    Phone Specs
+                </button>
+                <button
+                    className={`tab-item px-4 py-2 ${activeTab === 'AllPhones' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('AllPhones')}
+                >
+                    All Phones
+                </button>
             </nav>
-            <div className="data-ingestion-content">
+
+            {/* Tab Content */}
+            <div className="tab-content p-4 bg-gray-50 border border-gray-200 rounded-md shadow-sm">
                 {renderTabContent()}
             </div>
         </div>

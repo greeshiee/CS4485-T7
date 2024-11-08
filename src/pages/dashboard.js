@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
-import DataIngestion from '../components/data_ingestion/DataIngestion';
+import DataIngestion from '../components/data_ingestion/dataingestion';
 
 
 const SidebarContext = createContext();

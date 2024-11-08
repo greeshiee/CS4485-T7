@@ -28,25 +28,25 @@ const DataIngestion = () => {
             {/* Tab Bar */}
             <nav className="tab-bar flex border-b-2 border-gray-200 mb-4">
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'UploadCSV' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    className={`tab-item px-4 py-2 ${activeTab === 'UploadCSV' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
                     onClick={() => setActiveTab('UploadCSV')}
                 >
                     Upload CSV
                 </button>
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'ManageDatabases' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    className={`tab-item px-4 py-2 ${activeTab === 'ManageDatabases' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
                     onClick={() => setActiveTab('ManageDatabases')}
                 >
                     Manage Databases
                 </button>
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'PhoneSpecs' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    className={`tab-item px-4 py-2 ${activeTab === 'PhoneSpecs' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
                     onClick={() => setActiveTab('PhoneSpecs')}
                 >
                     Phone Specs
                 </button>
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'AllPhones' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-600'}`}
+                    className={`tab-item px-4 py-2 ${activeTab === 'AllPhones' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
                     onClick={() => setActiveTab('AllPhones')}
                 >
                     All Phones

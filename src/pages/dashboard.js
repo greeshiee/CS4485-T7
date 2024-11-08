@@ -1,4 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
+import "./dashboard-styles.css";
 import React, { useContext, createContext, useState } from 'react';
 import Navbar from '../components/header';
 import Unauthenticated from '../components/unauthenticated';
@@ -94,7 +95,9 @@ export default function Dashboard() {
           </aside>
         </div>
         <div className="bg-background h-[calc(100vh-4.5rem)] flex-1 overflow-hidden">
-          {activeComponent || <Usecase1 />} {/* Render the active component */}
+          <div className="scrollable-content">
+            {activeComponent || <Usecase1 />} {/* Render the active component */}
+          </div>
         </div>
         <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" >
           <FaultSide/>

@@ -1,17 +1,17 @@
 // src/components/DataIngestion/DataIngestion.jsx
 import React, { useState } from 'react';
-import UploadCSV from './UploadCSV';
+import CSVUploader from './CSVUploader';
 import ManageDatabases from './ManageDatabases';
 import PhoneSpecs from './PhoneSpecs';
 import AllPhones from './AllPhones';
 
 const DataIngestion = () => {
-    const [activeTab, setActiveTab] = useState('UploadCSV');
+    const [activeTab, setActiveTab] = useState('CSVUploader');
 
     const renderTabContent = () => {
         switch (activeTab) {
-            case 'UploadCSV':
-                return <UploadCSV />;
+            case 'CSVUploader':
+                return <CSVUploader />;
             case 'ManageDatabases':
                 return <ManageDatabases />;
             case 'PhoneSpecs':
@@ -19,7 +19,7 @@ const DataIngestion = () => {
             case 'AllPhones':
                 return <AllPhones />;
             default:
-                return <UploadCSV />;
+                return <CSVUploader />;
         }
     };
 
@@ -28,8 +28,8 @@ const DataIngestion = () => {
             {/* Tab Bar */}
             <nav className="tab-bar flex border-b-2 border-gray-200 mb-4">
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'UploadCSV' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
-                    onClick={() => setActiveTab('UploadCSV')}
+                    className={`tab-item px-4 py-2 ${activeTab === 'CSVUploader' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('CSVUploader')}
                 >
                     Upload CSV
                 </button>

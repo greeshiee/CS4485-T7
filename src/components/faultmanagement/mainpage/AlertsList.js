@@ -1,7 +1,6 @@
 // AlertsList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Button, Container } from 'react-bootstrap';
 
 function AlertsList() {
   const [alerts, setAlerts] = useState([]);
@@ -25,20 +24,23 @@ function AlertsList() {
   };
 
   return (
-    <Container className="mt-4">
-      <h2 className="mb-4">Active Alerts</h2>
+    <div className="container mx-auto mt-4">
+      <h2 className="text-2xl font-bold mb-4">Active Alerts</h2>
       {alerts.map((alert, index) => (
-        <Card key={index} className="mb-3">
-          <Card.Body>
-            <Card.Title>{alert.alert_title}</Card.Title>
-            <Card.Text>{alert.alert_message}</Card.Text>
-            <Button variant="danger" onClick={() => handleRemoveAlert(index)}>
+        <div key={index} className="bg-white shadow-md rounded px-8 py-6 mb-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">{alert.alert_title}</h3>
+            <button
+              className="text-red-500 hover:text-red-700 focus:outline-none"
+              onClick={() => handleRemoveAlert(index)}
+            >
               Remove
-            </Button>
-          </Card.Body>
-        </Card>
+            </button>
+          </div>
+          <p className="mt-2">{alert.alert_message}</p>
+        </div>
       ))}
-    </Container>
+    </div>
   );
 }
 

@@ -1,8 +1,6 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import "./dashboard-styles.css";
 import React, { useContext, createContext, useState } from 'react';
 import Navbar from '../components/header';
-import Unauthenticated from '../components/unauthenticated';
 import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
@@ -36,7 +34,6 @@ export function SidebarItem({ to, label, onClick }) {
 }
 
 export default function Dashboard() {
-  const { isAuthenticated } = useAuth0();
   const [expanded, setExpanded] = useState(true);
   const [activeComponent, setActiveComponent] = useState(null); // State for active component
 

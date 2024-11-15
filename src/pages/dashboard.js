@@ -8,9 +8,9 @@ import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
 
-import FaultMainPage from '../components/faultmanagement/faultmainpage';
+import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
-import DataIngestion from '../components/data_ingestion/dataingestion';
+import DataIngestion from '../components/data_ingestion/DataIngestion';
 
 const SidebarContext = createContext();
 

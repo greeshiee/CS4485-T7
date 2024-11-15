@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import './faultmanagement-styles.css'; // Import your custom CSS file
-import AlertConfig from './mainpage/AlertConfig';
-import AlertsList from './mainpage/AlertsList';
+import AlertConfig from './AlertConfig';
+import AlertsList from './AlertsList';
 import { Container } from 'react-bootstrap'; // Import Bootstrap Container
 import axios from 'axios';
 

@@ -1,107 +1,96 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const FaultSide = () => {
-  const [alerts, setAlerts] = useState([]);
-  const [skip, setSkip] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);  // To handle if there are more alerts to load
-  const [noAlerts, setNoAlerts] = useState(false); // To handle case with no alerts
+const FaultSide = ({ alertTitle }) => {
+    const [triggeredAlerts, setTriggeredAlerts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [databases, setDatabases] = useState([]);  // State for databases
+    const [dbLoading, setDbLoading] = useState(true); // State to track loading databases
 
-  // Function to fetch alerts with pagination
-  const fetchAlerts = useCallback(async () => {
-    if (loading || !hasMore) return; // Avoid fetching if already loading or no more alerts to load
-    
-    setLoading(true);
-    setNoAlerts(false); // Reset no alerts flag before fetching
-    try {
-      const response = await fetch(`/check_device_alerts?skip=${skip}&limit=3`);  // Fetch from /check_device_alerts
-      const data = await response.json();
-  
-      if (data.triggered_alerts.length === 0 && skip === 0) {
-        setNoAlerts(true);  // No alerts triggered
-      } else {
-        setAlerts((prevAlerts) => [...prevAlerts, ...data.triggered_alerts]);
-  
-        // Check if there are more alerts to load
-        if (data.triggered_alerts.length < 3) {
-          setHasMore(false);  // No more alerts to load
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching alerts:", error);
-    } finally {
-      setLoading(false);
+    // Fetch triggered alerts from the backend
+    useEffect(() => {
+        const fetchTriggeredAlerts = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/triggered_alerts/${alertTitle}`);
+                setTriggeredAlerts(response.data.triggered_alerts);
+                setLoading(false);
+            } catch (err) {
+                setLoading(false);
+                // Check if the error is related to the response or the network
+                if (err.response) {
+                    setError(`Error: ${err.response.status} - ${err.response.data.detail || "Unable to fetch triggered alerts"}`);
+                } else if (err.request) {
+                    setError("Network error: No response from the server");
+                } else {
+                    setError(`Error: ${err.message}`);
+                }
+            }
+        };
+
+        fetchTriggeredAlerts();
+    }, [alertTitle]);
+
+    // Fetch the list of databases
+    useEffect(() => {
+        const fetchDatabases = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/list_databases');
+                setDatabases(response.data.databases);
+                setDbLoading(false);
+            } catch (err) {
+                setDbLoading(false);
+                setError("Error fetching databases");
+            }
+        };
+
+        fetchDatabases();
+    }, []);
+
+    if (loading) {
+        return <div>Loading triggered alerts...</div>;
     }
-  }, [skip, loading, hasMore]);
-  
 
-  // Fetch alerts when component mounts or when skip changes
-  useEffect(() => {
-    fetchAlerts();
-  }, [fetchAlerts]);
-
-  // Function to handle scroll event and load more alerts
-  const handleScroll = useCallback(() => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.scrollHeight
-    ) {
-      setSkip((prevSkip) => prevSkip + 3); // Increase skip by 3 to fetch the next set of alerts
+    if (error) {
+        return <div>{error}</div>;
     }
-  }, []);
 
-  // Set up the scroll event listener
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [handleScroll]);
+    return (
+        <div>
+            <h3>Triggered Alerts for {alertTitle}</h3>
+            {triggeredAlerts.length === 0 ? (
+                <p>No triggered alerts found.</p>
+            ) : (
+                <ul>
+                    {triggeredAlerts.map((alert, index) => (
+                        <li key={index}>
+                            <strong>Device ID:</strong> {alert.device_id} <br />
+                            <strong>Alert Title:</strong> {alert.alert_title} <br />
+                            <strong>Message:</strong> {alert.alert_message} <br />
+                            <strong>Triggered Value:</strong> {alert.triggered_value} <br />
+                            <strong>Field Name:</strong> {alert.field_name} <br />
+                            <strong>Timestamp:</strong> {alert.timestamp}
+                        </li>
+                    ))}
+                </ul>
+            )}
 
-  // Load more button click handler
-  const handleLoadMore = () => {
-    if (hasMore && !loading) {
-      setSkip((prevSkip) => prevSkip + 3);
-    }
-  };
-
-  return (
-    <div className="faultside-container">
-      <h2>Fault Alerts</h2>
-
-      {/* No alerts available message */}
-      {noAlerts && <p>No alerts available.</p>}
-
-      <div className="alerts-list">
-        {/* Render alerts */}
-        {alerts.length > 0 ? (
-          alerts.map((alert, index) => (
-            <div key={index} className="alert-item">
-              <h3>{alert.alert_title}</h3>
-              <p>{alert.alert_message}</p>
-              <small>Field: {alert.field_name}</small>
-              <br />
-              <small>
-                Range: {alert.lower_bound} - {alert.higher_bound}
-              </small>
-            </div>
-          ))
-        ) : (
-          !noAlerts && <p>Loading...</p>  // Show loading text while fetching if no alerts are found
-        )}
-      </div>
-
-      {/* Show Load More button if there are more alerts to load */}
-      {hasMore && !loading && (
-        <div className="load-more">
-          <button onClick={handleLoadMore}>Load More</button>
+            <h3>Alert Databases</h3>
+            {dbLoading ? (
+                <div>Loading databases...</div>
+            ) : (
+                <ul>
+                    {databases.length === 0 ? (
+                        <p>No alert databases found.</p>
+                    ) : (
+                        databases.map((db, index) => (
+                            <li key={index}>{db}</li>
+                        ))
+                    )}
+                </ul>
+            )}
         </div>
-      )}
-
-      {/* Show no more alerts message */}
-      {!hasMore && !loading && <p>No more alerts to load.</p>}
-    </div>
-  );
+    );
 };
 
 export default FaultSide;

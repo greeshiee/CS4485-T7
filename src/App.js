@@ -7,12 +7,13 @@ import Splash from "./pages/splash";
 import AuthWrapper from "./components/authwrapper";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
+import SupabaseWrapper from "./components/supabasewrapper";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
-        <AuthWrapper>
+        <SupabaseWrapper>
           <Suspense
             fallback={
               <div className="h-screen flex justify-center items-center">
@@ -22,14 +23,14 @@ function App() {
           >
             <Routes>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/callback" element={<Callback />} exact />
+              <Route path="/callback" element={<Callback />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/splash" element={<Splash />} />
               <Route path="/" element={<Splash />} /> {/* Default route */}
             </Routes>
           </Suspense>
-        </AuthWrapper>
+        </SupabaseWrapper>
       </div>
     </Router>
   );

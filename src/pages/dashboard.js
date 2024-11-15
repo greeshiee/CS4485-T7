@@ -60,9 +60,9 @@ export default function Dashboard() {
     setActiveComponent(component); // Set the active component
   };
 
-  if (!isAuthenticated) {
-    return <Unauthenticated />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Unauthenticated />;
+  // }
 
   return (
     <div className="flex flex-col min-h-screen">

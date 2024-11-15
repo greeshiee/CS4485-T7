@@ -51,7 +51,6 @@ export default function Dashboard() {
     { label: 'Data Pipelining' },
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
-    { label: 'Security Management' },
     { label: 'Fault Management', component: <FaultMainPage/>},
     { label: 'Performance Metrics' },
   ];

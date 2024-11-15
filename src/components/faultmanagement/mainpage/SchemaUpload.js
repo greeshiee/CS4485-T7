@@ -21,31 +21,37 @@ function SchemaUpload() {
   };
 
   return (
-    <div className="container mx-auto mt-4">
-      <h2 className="text-center mb-4">Upload Schema Data</h2>
+    <div className="container mx-auto mt-4 px-4">
+      <h2 className="text-center text-2xl font-bold mb-4">Upload Schema Data</h2>
       <div className="flex justify-center">
-        <div className="w-1/2">
-          {successMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{successMessage}</span>
-          </div>}
-          {errorMessage && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{errorMessage}</span>
-          </div>}
+        <div className="w-full md:w-2/3">
+          {successMessage && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <span className="block sm:inline">{successMessage}</span>
+            </div>
+          )}
+          {errorMessage && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+              <span className="block sm:inline">{errorMessage}</span>
+            </div>
+          )}
           <form>
             <div className="mb-4">
-              <label htmlFor="schemaTextarea" className="block text-gray-700 text-sm font-bold mb-2">Schema JSON</label>
+              <label htmlFor="schemaTextarea" className="block text-sm font-medium text-gray-700 mb-2">
+                Schema JSON
+              </label>
               <textarea
                 id="schemaTextarea"
                 rows={10}
                 value={schema}
                 onChange={(e) => setSchema(e.target.value)}
                 placeholder="Enter schema data as JSON..."
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </div>
             <button
               type="button"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-3 transition-colors"
               onClick={handleSchemaUpload}
             >
               Upload Schema

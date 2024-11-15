@@ -31,47 +31,50 @@ function AlertConfig() {
   };
 
   return (
-    <div className="container text-center" style={{ maxWidth: '400px', padding: '20px', margin: 'auto' }}>
-      <h2 className="mb-4">Add an Alert</h2>
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="Alert Title"
-        value={alertTitle}
-        onChange={(e) => setAlertTitle(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="Alert Message"
-        value={alertMessage}
-        onChange={(e) => setAlertMessage(e.target.value)}
-      />
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="Field Name"
-        value={fieldName}
-        onChange={(e) => setFieldName(e.target.value)}
-      />
-      <input
-        type="number"
-        className="form-control mb-3"
-        placeholder="Lower Bound"
-        value={lowerBound}
-        onChange={(e) => setLowerBound(e.target.value)}
-      />
-      <input
-        type="number"
-        className="form-control mb-4"
-        placeholder="Higher Bound"
-        value={higherBound}
-        onChange={(e) => setHigherBound(e.target.value)}
-      />
-      <button className="btn btn-primary w-100" onClick={handleAddAlert}>
-        Add Alert
-      </button>
-    </div>
+  <div className="max-w-[400px] mx-auto p-5 text-center">
+    <h2 className="mb-4 text-3xl font-bold">Add an Alert</h2>
+    <input
+      type="text"
+      className="w-full px-3 py-2 mb-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Alert Title"
+      value={alertTitle}
+      onChange={(e) => setAlertTitle(e.target.value)}
+    />
+    <input
+      type="text"
+      className="w-full px-3 py-2 mb-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Alert Message"
+      value={alertMessage}
+      onChange={(e) => setAlertMessage(e.target.value)}
+    />
+    <input
+      type="text"
+      className="w-full px-3 py-2 mb-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Field Name"
+      value={fieldName}
+      onChange={(e) => setFieldName(e.target.value)}
+    />
+    <input
+      type="number"
+      className="w-full px-3 py-2 mb-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Lower Bound"
+      value={lowerBound}
+      onChange={(e) => setLowerBound(e.target.value)}
+    />
+    <input
+      type="number"
+      className="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Higher Bound"
+      value={higherBound}
+      onChange={(e) => setHigherBound(e.target.value)}
+    />
+    <button 
+      className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+      onClick={handleAddAlert}
+    >
+      Add Alert
+    </button>
+  </div>
   );
 }
 

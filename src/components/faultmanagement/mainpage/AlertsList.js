@@ -24,20 +24,18 @@ function AlertsList() {
   };
 
   return (
-    <div className="container mx-auto mt-4">
+    <div className="container mx-auto mt-4 px-4">
       <h2 className="text-2xl font-bold mb-4">Active Alerts</h2>
       {alerts.map((alert, index) => (
-        <div key={index} className="bg-white shadow-md rounded px-8 py-6 mb-3">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">{alert.alert_title}</h3>
-            <button
-              className="text-red-500 hover:text-red-700 focus:outline-none"
-              onClick={() => handleRemoveAlert(index)}
-            >
-              Remove
-            </button>
-          </div>
-          <p className="mt-2">{alert.alert_message}</p>
+        <div key={index} className="bg-white shadow-md rounded-lg p-4 mb-3">
+          <h3 className="text-xl text-background font-semibold mb-2">{alert.alert_title}</h3>
+          <p className="mb-4 text-background">{alert.alert_message}</p>
+          <button 
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors"
+            onClick={() => handleRemoveAlert(index)}
+          >
+            Remove
+          </button>
         </div>
       ))}
     </div>

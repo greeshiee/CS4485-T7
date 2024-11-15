@@ -12,7 +12,6 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-background text-foreground">
-        <AuthWrapper>
           <Suspense
             fallback={
               <div className="h-screen flex justify-center items-center">
@@ -29,7 +28,6 @@ function App() {
               <Route path="/" element={<Splash />} /> {/* Default route */}
             </Routes>
           </Suspense>
-        </AuthWrapper>
       </div>
     </Router>
   );

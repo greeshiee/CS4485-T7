@@ -11,6 +11,7 @@ import DataGeneration from '../components/datageneration';
 import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
+import AuthWrapper from '../components/authwrapper';
 
 const SidebarContext = createContext();
 
@@ -64,7 +65,7 @@ export default function Dashboard() {
   //   return <Unauthenticated />;
   // }
 
-  return (
+  let content = (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="flex flex-1 h-[calc(100vh-4.5rem)] mt-[4.5rem] overflow-hidden">
@@ -107,5 +108,12 @@ export default function Dashboard() {
     </div>
   </div>
   );
+
+
+  return (
+    <AuthWrapper>
+      {content}
+    </AuthWrapper>
+  )
 }
 

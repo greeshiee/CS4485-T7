@@ -1,6 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import "./dashboard-styles.css";
-import "./dashboard-styles.css";
 import React, { useContext, createContext, useState } from 'react';
 import Navbar from '../components/header';
 import Unauthenticated from '../components/unauthenticated';
@@ -9,6 +8,9 @@ import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
 
+import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
+import FaultSide from '../components/faultmanagement/faultside';
+import DataIngestion from '../components/data_ingestion/DataIngestion';
 
 const SidebarContext = createContext();
 
@@ -106,4 +108,3 @@ export default function Dashboard() {
   </div>
   );
 }
-

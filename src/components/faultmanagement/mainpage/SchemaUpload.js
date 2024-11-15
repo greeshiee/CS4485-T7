@@ -37,7 +37,7 @@ function SchemaUpload() {
           )}
           <form>
             <div className="mb-4">
-              <label htmlFor="schemaTextarea" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="schemaTextarea" className="block text-sm font-medium text-foreground mb-2">
                 Schema JSON
               </label>
               <textarea
@@ -46,7 +46,7 @@ function SchemaUpload() {
                 value={schema}
                 onChange={(e) => setSchema(e.target.value)}
                 placeholder="Enter schema data as JSON..."
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="mt-1 block w-full rounded-md text-background border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
             </div>
             <button

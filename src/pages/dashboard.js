@@ -9,7 +9,9 @@ import DataGeneration from '../components/datageneration';
 import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
+import Performance from '../components/performanceManagement/Performance';
 import AuthWrapper from '../components/authwrapper';
+
 
 const SidebarContext = createContext();
 
@@ -49,7 +51,7 @@ export default function Dashboard() {
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Fault Management', component: <FaultMainPage/>},
-    { label: 'Performance Metrics' },
+    { label: 'Performance Management', component: <Performance/>},
   ];
 
   // Function to handle the click event on sidebar items

@@ -7,10 +7,11 @@ import Splash from "./pages/splash";
 import AuthWrapper from "./components/authwrapper";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
+import UC3 from "./Usecase3/frontend/UC3";
 
 function App() {
   return (
-    <Router>
+
       <div className="min-h-screen flex flex-col bg-background text-foreground">
         <AuthWrapper>
           <Suspense
@@ -27,11 +28,12 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/splash" element={<Splash />} />
               <Route path="/" element={<Splash />} /> {/* Default route */}
+              <Route path="/UC3/*" element={<UC3 />} />
             </Routes>
           </Suspense>
         </AuthWrapper>
       </div>
-    </Router>
+
   );
 }
 

@@ -4,6 +4,15 @@ import { useLocation } from 'react-router-dom';
 import Unauthenticated from '../components/unauthenticated';
 import EmailVerification from './emailverification';
 
+// Single Auth0 configuration
+const auth0Config = {
+  domain: process.env.REACT_APP_AUTH0_DOMAIN,
+  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
+  authorizationParams: {
+    redirect_uri: window.location.origin + "/callback",
+  }
+};
+
 export default function AuthWrapper({ children }) {
   const [isClient, setIsClient] = useState(false);
   const { isAuthenticated, isLoading } = useAuth0();
@@ -17,19 +26,12 @@ export default function AuthWrapper({ children }) {
   const error = urlParams.get('error');
   const errorDescription = urlParams.get('error_description');
 
-  if (error){
+  if (error) {
     const message = errorDescription;
     console.log(message);
-    if(message.toLowerCase().includes('verify')){
-      return(
-        <Auth0Provider
-        domain="dev-ek2dti7hmslc8nga.us.auth0.com"
-        clientId="HYU43NklXA0xib7V5EsPlE3dT73RLQ3i"
-        authorizationParams={{
-          redirect_uri: "http://localhost:3000/callback",  // Safe to use window here
-          audience: 'cs4485',
-        }}
-        >
+    if(message.toLowerCase().includes('verify')) {
+      return (
+        <Auth0Provider {...auth0Config}>
           <EmailVerification/>
         </Auth0Provider>
       );
@@ -37,28 +39,14 @@ export default function AuthWrapper({ children }) {
   }
   else if (location.pathname === '/' || location.pathname.toLowerCase() === '/splash' || location.pathname.toLowerCase() === '/callback') {
     return (
-      <Auth0Provider
-        domain="dev-ek2dti7hmslc8nga.us.auth0.com"
-        clientId="HYU43NklXA0xib7V5EsPlE3dT73RLQ3i"
-        authorizationParams={{
-          redirect_uri: "http://localhost:3000/callback",  // Safe to use window here
-          audience: 'cs4485',
-        }}
-      >
+      <Auth0Provider {...auth0Config}>
         {children}
       </Auth0Provider>
     );
   }
-  else{
+  else {
     return (
-      <Auth0Provider
-        domain="dev-ek2dti7hmslc8nga.us.auth0.com"
-        clientId="HYU43NklXA0xib7V5EsPlE3dT73RLQ3i"
-        authorizationParams={{
-          redirect_uri: "http://localhost:3000/callback",  // Safe to use window here
-          audience: 'cs4485',
-        }}
-      >
+      <Auth0Provider {...auth0Config}>
         {isClient && (isAuthenticated || isLoading) ? (
           <>{children}</>
         ) : (

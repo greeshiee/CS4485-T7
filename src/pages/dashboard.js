@@ -7,10 +7,11 @@ import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
+import UC3 from '../Usecase3/frontend/UC3';
 
 import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
-import DataIngestion from '../components/data_ingestion/dataingestion';
+import DataIngestion from '../components/data_ingestion/DataIngestion';
 
 const SidebarContext = createContext();
 
@@ -20,11 +21,11 @@ export function SidebarItem({ to, label, onClick }) {
   return (
     <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-gray-500 text-gray-600">
       <NavLink
-        to={to}
+        to={to || '#'}
         className={({ isActive }) =>
           `w-full flex items-center ${isActive ? "text-electricblue font-semibold" : ""}`
         }
-        onClick={onClick} // Call the onClick function when the item is clicked
+        onClick={to ? undefined : onClick}
       >
         <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
           {label}
@@ -46,7 +47,7 @@ export default function Dashboard() {
   const sidebarItems = [
     { label: 'Exploratory Data Analysis', component: <Usecase1 /> },
     { label: 'Data Ingestion', component: <DataIngestion />},
-    { label: 'Dashboarding' },
+    { label: 'Dashboarding', component: <UC3/>},
     { label: 'Data Pipelining' },
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },

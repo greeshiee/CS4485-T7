@@ -1,59 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function AlertConfig({ refreshAlerts }) {
+function AlertConfig({ selectedDatabase, refreshAlerts }) {
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [fieldName, setFieldName] = useState('');
   const [lowerBound, setLowerBound] = useState('');
   const [higherBound, setHigherBound] = useState('');
-  const [columns, setColumns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [columns, setDeviceColumns] = useState([]); // To store columns of the 'devices' table
 
   useEffect(() => {
-    // Fetch column names from the backend
+    // Fetch columns from the selected database
     const fetchColumns = async () => {
+      if (!selectedDatabase) return; // Only fetch if a database is selected
+
       try {
-        const response = await axios.get('http://localhost:8000/columns');
-        setColumns(response.data.columns);  // Populate the dropdown with column names
+        const response = await axios.get(`http://localhost:8000/columns_from_devices_table?database=${selectedDatabase}`);
+        setDeviceColumns(response.data.columns); // Update deviceColumns with the fetched column names
       } catch (error) {
-        console.error('Error fetching columns:', error);
-        setErrorMessage('Error fetching column names. Please try again.');
+        console.error('Error fetching device columns:', error);
       }
     };
 
     fetchColumns();
-  }, []);
+  }, [selectedDatabase]); // This effect runs whenever the selectedDatabase changes
 
   const handleAddAlert = async () => {
     if (isNaN(lowerBound) || isNaN(higherBound)) {
       setErrorMessage('Lower and higher bounds must be valid numbers.');
       return;
     }
-
+    if (parseFloat(lowerBound) >= parseFloat(higherBound)) {
+      setErrorMessage('Lower bound must be less than higher bound.');
+      return;
+    }
+  
+    if (!alertTitle || !alertMessage || !fieldName) {
+      setErrorMessage('Please fill all fields.');
+      return;
+    }
+  
     try {
       setLoading(true);
-      setErrorMessage('');  // Reset error message before request
-
-      await axios.post('http://localhost:8000/add_alert', {
+      setErrorMessage('');
+      setSuccessMessage('');
+  
+      // Update: Send 'database' in query string
+      await axios.post(`http://localhost:8000/add_alert?database=${selectedDatabase}`, {
         alert_title: alertTitle,
         alert_message: alertMessage,
         field_name: fieldName,
         lower_bound: parseFloat(lowerBound),
         higher_bound: parseFloat(higherBound),
       });
-
+  
       setSuccessMessage('Alert added successfully!');
       setAlertTitle('');
       setAlertMessage('');
       setFieldName('');
       setLowerBound('');
       setHigherBound('');
-
-      // Call the refresh function to update the alerts list
-      refreshAlerts();
+  
+      refreshAlerts(); // Refresh alerts in parent component
     } catch (error) {
       console.error('Error adding alert:', error);
       setErrorMessage('Error adding alert. Please try again.');
@@ -61,6 +72,7 @@ function AlertConfig({ refreshAlerts }) {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="container text-center" style={{ maxWidth: '400px', padding: '20px', margin: 'auto' }}>
@@ -70,6 +82,7 @@ function AlertConfig({ refreshAlerts }) {
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
+      {/* Alert Creation Form */}
       <input
         type="text"
         className="form-control mb-3"
@@ -84,19 +97,22 @@ function AlertConfig({ refreshAlerts }) {
         value={alertMessage}
         onChange={(e) => setAlertMessage(e.target.value)}
       />
-      
-      {/* Dropdown for column selection */}
+
       <select
         className="form-control mb-3"
         value={fieldName}
         onChange={(e) => setFieldName(e.target.value)}
       >
         <option value="">Select Field</option>
-        {columns.map((column, index) => (
-          <option key={index} value={column}>{column}</option>
-        ))}
+        {columns.length > 0 ? (
+          columns.map((column, index) => (
+            <option key={index} value={column}>{column}</option>
+          ))
+        ) : (
+          <option value="">No columns available</option>
+        )}
       </select>
-      
+
       <input
         type="number"
         className="form-control mb-3"

@@ -14,7 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 
-const Landing = () => {
+const Landing = ({ onNavigate }) => {
   const navigate = useNavigate();
   const [dashboardName, setDashboardName] = useState('');
   const [open, setOpen] = useState(false);
@@ -56,7 +56,7 @@ const Landing = () => {
         
         setDashboardName('');
         handleClose();
-        navigate(`/UC3/${newDashboard.dashboard_id}`);
+        onNavigate('singleDashboard', { dashboardId: newDashboard.dashboard_id });
       } catch (error) {
         console.error('Error creating dashboard:', error);
         alert('Failed to create dashboard. Please try again.');
@@ -349,6 +349,7 @@ const Landing = () => {
                 key={dashboard.id} 
                 dashboard={dashboard} 
                 deleteDashboard={selectedTab === '2' ? deleteDashboard : null} 
+                onNavigate={onNavigate} 
               />
             ))}
           </Box>

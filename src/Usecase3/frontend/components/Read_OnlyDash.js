@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Tile from './Tile';
@@ -8,9 +8,8 @@ import 'react-resizable/css/styles.css';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-function Read_OnlyDash() {
-  const { dashboardId } = useParams();
-  const navigate = useNavigate();
+function Read_OnlyDash({ dashboardId, onNavigate }) {
+  //const { dashboardId } = useParams();
   const [currentLayout, setCurrentLayout] = useState([]);
   const [containerWidth, setContainerWidth] = useState(1200);
   const [dashboard, setDashboard] = useState(null);
@@ -72,6 +71,10 @@ function Read_OnlyDash() {
     overflow: 'visible',
   };
 
+  const returnToDashboard = () => {
+    onNavigate('landing');
+  };
+
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       <Box className="dashboard-header" sx={{ mb: 3, borderRadius: '10px' }}>
@@ -83,7 +86,7 @@ function Read_OnlyDash() {
           variant="contained" 
           className="custom-button"
           sx={{ backgroundColor: '#ffffff', color: '#1a237e' }}
-          onClick={() => navigate('/dashboard')}
+          onClick={returnToDashboard}
         >
           Return to Dashboard
         </Button>

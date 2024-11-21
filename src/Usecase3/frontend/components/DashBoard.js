@@ -2,20 +2,17 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from "react-router-dom";
 import DashboardIcon from '@mui/icons-material/Dashboard'; // Import dashboard icon
 
-function DashBoard({ dashboard, deleteDashboard }) {
-  const navigate = useNavigate();
-
+function DashBoard({ dashboard, deleteDashboard, onNavigate }) {
   const viewDashboard = (e) => {
     e.stopPropagation();
-    navigate(`/UC3/read_only/${dashboard.dashboard_id}`); 
+    onNavigate('readOnlyDash', { dashboardId: dashboard.dashboard_id });
   };
 
   const editDashboard = (e) => {
     e.stopPropagation();
-    navigate(`/UC3/${dashboard.dashboard_id}`); 
+    onNavigate('singleDashboard', { dashboardId: dashboard.dashboard_id });
   };
 
   const handleDelete = (e) => {

@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Graph from './Graph';
 import DataTable from './DataTable';
 import { useEffect } from 'react';
@@ -10,9 +10,8 @@ import React, { useState } from "react";
 import { DateRangePicker } from '@mui/lab';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
-function AddTilePage() {
-  const { dashboardId } = useParams();
-  const navigate = useNavigate();
+function AddTilePage({ dashboardId, onNavigate }) {
+  //const { dashboardId } = useParams();
   const [fileUploaded, setFileUploaded] = useState(false);
   const [file, setFile] = useState('');
   const [savedFiles, setSavedFiles] = useState([]);
@@ -226,7 +225,7 @@ function AddTilePage() {
     }
 
     //navigate to the dashboard
-    navigate(`/UC3/${dashboardId}`);
+    onNavigate('singleDashboard', { dashboardId: dashboardId });
 
   };
 
@@ -262,7 +261,7 @@ function AddTilePage() {
             </Typography>
             <Button 
               variant="outlined"
-              onClick={() => navigate(`/UC3/${dashboardId}`)}
+              onClick={() => onNavigate('singleDashboard', { dashboardId: dashboardId })}
               sx={{
                 textTransform: 'none',
                 borderColor: '#e0e0e0',

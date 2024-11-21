@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Box, Typography, Button, TextField } from '@mui/material';
 import React, { useState, useEffect } from "react";
 import Modal from '@mui/material/Modal';
@@ -9,9 +9,8 @@ import 'react-resizable/css/styles.css';
 import axios from 'axios';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-function SingleDashboard() {
-  const { dashboardId } = useParams();
-  const navigate = useNavigate();
+function SingleDashboard({dashboardId, onNavigate }) {
+  //const { dashboardId } = useParams();
 
   const [tiles, setTiles] = useState([]);
   const [tileContent, setTileContent] = useState('');
@@ -73,7 +72,7 @@ function SingleDashboard() {
         <Typography variant="h5">Dashboard not found</Typography>
         <Button 
           variant="contained" 
-          onClick={() => navigate('/UC3')}
+          onClick={() => onNavigate('landing')}
           sx={{ mt: 2 }}
         >
           Return to Dashboard List
@@ -86,11 +85,11 @@ function SingleDashboard() {
   const handleClose = () => setOpen(false);
 
   const addTile = () => {
-    navigate(`/UC3/add-tile/${parseInt(dashboard.dashboard_id)}`);
+    onNavigate('addTile', { dashboardId: dashboard.dashboard_id });
   };
 
   const returnDashboard = () => {
-    navigate('/dashboard'); 
+    onNavigate('landing');
   };
 
   const deleteTile = async (tile) => {

@@ -9,6 +9,7 @@ root.render(
   <Auth0Provider
     domain="dev-ek2dti7hmslc8nga.us.auth0.com"
     clientId="HYU43NklXA0xib7V5EsPlE3dT73RLQ3i"
+    cacheLocation="localstorage"
     authorizationParams={{
       redirect_uri: 'http://localhost:3000/callback',
       audience: 'cs4485',

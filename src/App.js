@@ -4,7 +4,6 @@ import Dashboard from "./pages/dashboard";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Splash from "./pages/splash";
-import AuthWrapper from "./components/authwrapper";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
 import UC3 from "./Usecase3/frontend/UC3";
@@ -13,7 +12,6 @@ function App() {
   return (
 
       <div className="min-h-screen flex flex-col bg-background text-foreground">
-        <AuthWrapper>
           <Suspense
             fallback={
               <div className="h-screen flex justify-center items-center">
@@ -31,7 +29,6 @@ function App() {
               <Route path="/UC3/*" element={<UC3 />} />
             </Routes>
           </Suspense>
-        </AuthWrapper>
       </div>
 
   );

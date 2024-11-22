@@ -1,17 +1,18 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import "./dashboard-styles.css";
 import React, { useContext, createContext, useState } from 'react';
 import Navbar from '../components/header';
-import Unauthenticated from '../components/unauthenticated';
 import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
 import UC3 from '../Usecase3/frontend/UC3';
 
-import FaultMainPage from '../components/faultmanagement/faultmainpage';
+import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
+import Performance from '../components/performanceManagement/Performance';
+import AuthWrapper from '../components/authwrapper';
+
 
 const SidebarContext = createContext();
 
@@ -36,7 +37,6 @@ export function SidebarItem({ to, label, onClick }) {
 }
 
 export default function Dashboard() {
-  const { isAuthenticated } = useAuth0();
   const [expanded, setExpanded] = useState(true);
   const [activeComponent, setActiveComponent] = useState(null); // State for active component
 
@@ -51,9 +51,8 @@ export default function Dashboard() {
     { label: 'Data Pipelining' },
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
-    { label: 'Security Management' },
     { label: 'Fault Management', component: <FaultMainPage/>},
-    { label: 'Performance Metrics' },
+    { label: 'Performance Management', component: <Performance/>},
   ];
 
   // Function to handle the click event on sidebar items
@@ -61,11 +60,11 @@ export default function Dashboard() {
     setActiveComponent(component); // Set the active component
   };
 
-  if (!isAuthenticated) {
-    return <Unauthenticated />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Unauthenticated />;
+  // }
 
-  return (
+  let content = (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="flex flex-1 h-[calc(100vh-4.5rem)] mt-[4.5rem] overflow-hidden">
@@ -108,5 +107,12 @@ export default function Dashboard() {
     </div>
   </div>
   );
+
+
+  return (
+    <AuthWrapper>
+      {content}
+    </AuthWrapper>
+  )
 }
 

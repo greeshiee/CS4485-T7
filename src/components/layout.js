@@ -7,9 +7,7 @@ import AuthWrapper from './authwrapper'; // Adjust the import based on where you
 const Layout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <AuthWrapper>
-        {children}
-      </AuthWrapper>
+      {children}
     </div>
   );
 };

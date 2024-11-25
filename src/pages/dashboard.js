@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
-import UC3 from '../Usecase3/frontend/UC3';
+import UC3 from '../components/Usecase3/frontend/UC3';
 
 import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';

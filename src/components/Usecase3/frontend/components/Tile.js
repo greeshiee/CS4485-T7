@@ -177,8 +177,8 @@ function Tile({ tile, deleteTile, dashboardId, width, height }) {
   };
 
   // Calculate graph dimensions, accounting for padding and controls
-  const graphWidth = width ? width : 400; // 20px padding on each side
-  const graphHeight = height ? height : 300; // Space for controls and padding
+  const graphWidth = width ? width - 20 : 400;  // Subtract padding
+  const graphHeight = height ? height - 60 : 300;  // Subtract space for controls
   return (
     <Box
       sx={{
@@ -262,7 +262,14 @@ function Tile({ tile, deleteTile, dashboardId, width, height }) {
       )}
 
       {/* Graph Content */}
-      <Box sx={{ height: '100%', width: '100%' }}>
+      <Box sx={{ 
+        height: '100%', 
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative'
+      }}>
         <Graph
           headers={tile.ax}
           data={tile.rows}

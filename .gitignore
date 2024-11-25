@@ -22,9 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/src/Usecase3/backend
-
 
 .env
-src/Usecase3/backend/backend.py
-src/Usecase3/requirements.txt
+/src/components/Usecase3/backend/.venv
+/src/components/Usecase3/backend/__pycache__
+/src/components/Usecase3/backend/DataViz/__pycache__

@@ -445,7 +445,7 @@ function App() {
 
                     {tableNames.length > 0 && (
                         <div className="current-table">
-                            <h3>Current Loaded Tables:</h3>
+                            <h3>History</h3>
                             <ul>
                                 {tableNames.map((name, index) => (
                                     <li key={index}>

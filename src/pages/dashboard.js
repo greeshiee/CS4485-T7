@@ -10,6 +10,7 @@ import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
 import AuthWrapper from '../components/authwrapper';
+import KPIFormula from '../components/kpi_formula';
 
 const SidebarContext = createContext();
 
@@ -46,7 +47,7 @@ export default function Dashboard() {
     { label: 'Data Ingestion', component: <DataIngestion />},
     { label: 'Dashboarding' },
     { label: 'Data Pipelining' },
-    { label: 'KPI Formulas' },
+    { label: 'KPI Formulas', component: <KPIFormula /> },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Fault Management', component: <FaultMainPage/>},
     { label: 'Performance Metrics' },

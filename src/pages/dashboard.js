@@ -10,7 +10,7 @@ import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
 import AuthWrapper from '../components/authwrapper';
-import KPIFormula from '../components/kpi_formula';
+import KPIFormula from '../components/kpi_formula/central';
 
 const SidebarContext = createContext();
 

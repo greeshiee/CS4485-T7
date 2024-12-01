@@ -110,6 +110,38 @@ export default function DataGeneration() {
   };
 
   //To downlaod all the CSV content
+  const sendToEda = () => {
+    if (csvContent.length === 0) {
+      setMessage("No CSV content available for download.");
+      return;
+    }
+
+    const csv = Papa.unparse(csvContent); // Convert JSON array back to CSV
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Append the Blob as a file to FormData
+    formData.append('file', blob, (customFilename || "all_content") + '.csv'); // 'file' is the key, blobData is the content, fileName is the name
+
+    // Send the FormData (which includes the Blob as a file) using fetch
+    fetch('http://localhost:8001/upload', {
+      method: 'POST',
+      body: formData, // Send the FormData as the body of the request
+    })
+      .then(response => response.json()) // Parse the JSON response
+      .then(data => {
+        console.log('Success:', data);
+        setMessage('file now available in EDA');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setMessage('could not send file');
+      });
+  };
+
+  //To downlaod all the CSV content
   const downloadAllCSV = () => {
     if (csvContent.length === 0) {
       setMessage("No CSV content available for download.");
@@ -231,6 +263,13 @@ export default function DataGeneration() {
               className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 mb-4"
             >
               Download All CSV Content
+            </button>
+
+            <button
+              onClick={sendToEda}
+              className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 mb-4"
+            >
+              Send to Eda
             </button>
           </div>
 

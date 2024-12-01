@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 const UseCase1 = () => {
     const [codeBlocks, setCodeBlocks] = useState(['']);
     const [output, setOutput] = useState('');
-
+  
     const runButtonClick = (i) => {
-        fetch('http://localhost:8000/run', {
+        fetch('http://localhost:8001/run', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

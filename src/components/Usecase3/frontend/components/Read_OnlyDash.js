@@ -6,9 +6,9 @@ import Tile from './Tile';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-const ResponsiveGridLayout = WidthProvider(Responsive);
+const GridLayout = WidthProvider(Responsive);
 
-function Read_OnlyDash({ dashboardId, onNavigate }) {
+function Read_OnlyDash({ dashboardId, onNavigate, userEmail }) {
   //const { dashboardId } = useParams();
   const [currentLayout, setCurrentLayout] = useState([]);
   const [containerWidth, setContainerWidth] = useState(1200);
@@ -19,7 +19,10 @@ function Read_OnlyDash({ dashboardId, onNavigate }) {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/dashboards?dashboard_id=${dashboardId}`);
+        const url = `http://127.0.0.1:8000/dashboards?dashboard_id=${dashboardId}`;
+        const response = await fetch(
+          userEmail ? `${url}&user_email=${userEmail}` : `${url}`
+        );
         if (!response.ok) throw new Error('Failed to fetch dashboard');
         const data = await response.json();
         setDashboard(data);
@@ -45,11 +48,15 @@ function Read_OnlyDash({ dashboardId, onNavigate }) {
         minW: 2,
         minH: 2,
       }));
-      console.log('Generated layout from graph coordinates:', generatedLayout);
       setCurrentLayout(generatedLayout);
       setTiles(dashboard.graphs);
+
+      // Add this: Trigger a window resize event after layout changes
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
     }
-  }, [dashboard]);
+  }, [dashboard, containerWidth]);
 
   // Loading state
   if (!dashboard) {
@@ -72,42 +79,91 @@ function Read_OnlyDash({ dashboardId, onNavigate }) {
   };
 
   const returnToDashboard = () => {
-    onNavigate('landing');
+    if (onNavigate) {
+      onNavigate('landing');
+    } else {
+      window.location.href = 'http://localhost:3000/public-dashboards';
+    }
   };
 
   return (
     <Box sx={{ padding: 3, backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      <Box className="dashboard-header" sx={{ mb: 3, borderRadius: '10px' }}>
-        <Typography variant="h4" gutterBottom>
+      <Box className="dashboard-header" sx={{ 
+        mb: 3, 
+        borderRadius: '10px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '20px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            margin: 0,
+            fontWeight: 700,
+            color: '#1a237e',
+            fontSize: '2.2rem',
+            position: 'relative',
+            display: 'inline-block',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+            background: 'linear-gradient(180deg, transparent 65%, rgba(26,35,126,0.15) 65%)',
+            padding: '0 10px',
+            borderRadius: '4px',
+            transform: 'skew(-3deg)',
+            '&:hover': {
+              background: 'linear-gradient(180deg, transparent 65%, rgba(26,35,126,0.25) 65%)',
+              transition: 'all 0.3s ease'
+            }
+          }}
+        >
           {dashboard.dashboard_title}
         </Typography>
         
         <Button 
           variant="contained" 
           className="custom-button"
-          sx={{ backgroundColor: '#ffffff', color: '#1a237e' }}
+          sx={{ 
+            backgroundColor: '#1a237e',
+            color: '#ffffff',
+            '&:hover': {
+              backgroundColor: '#000051',
+            },
+            padding: '10px 20px',
+            borderRadius: '8px',
+            textTransform: 'none',
+            fontWeight: 500,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}
           onClick={returnToDashboard}
         >
           Return to Dashboard
         </Button>
       </Box>
 
-      <ResponsiveGridLayout
+      <GridLayout
         className="layout"
-        layouts={{ lg: currentLayout }}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+        layout={currentLayout}
+        breakpoints={{ lg: 0 }}
+        cols={{ lg: 12 }}
         rowHeight={100}
+        onWidthChange={(width, margin, cols) => {
+          setContainerWidth(width);
+        }}
+        compactType={null}
+        preventCollision={false}
+        isResizable={false}
+        isDraggable={false}
         margin={[20, 20]}
         containerPadding={[20, 20]}
-        isDraggable={false}
-        isResizable={false}
-        onWidthChange={(width) => setContainerWidth(width)}
         useCSSTransforms={true}
+        draggableCancel=".cancelSelectorName"
       >
         {tiles.map((tile) => {
           const layoutItem = currentLayout.find(item => item.i === tile.graph_id.toString());
-          const gridItemWidth = layoutItem ? (layoutItem.w / 12) * containerWidth : undefined;
+          const gridItemWidth = layoutItem ? (layoutItem.w / 12) * containerWidth - 40 : undefined;
+          const gridItemHeight = layoutItem ? layoutItem.h * 100 - 40 : undefined;
           
           return (
             <Box 
@@ -115,20 +171,27 @@ function Read_OnlyDash({ dashboardId, onNavigate }) {
               sx={{
                 ...tileStyle,
                 position: 'relative',
-                overflow: 'visible'
+                overflow: 'hidden',
+                padding: '10px',
+              }}
+              data-grid={{
+                i: String(tile.graph_id),
+                x: tile.xy_coords[0],
+                y: tile.xy_coords[1],
+                w: tile.plotsize[0],
+                h: tile.plotsize[1],
               }}
             >
               <Tile
                 tile={tile}
                 dashboardId={dashboard.dashboard_id}
-                width={gridItemWidth-45}
-                height={layoutItem ? layoutItem.h * 100: undefined}
-                layoutItem={layoutItem}
+                width={gridItemWidth}
+                height={gridItemHeight}
               />
             </Box>
           );
         })}
-      </ResponsiveGridLayout>
+      </GridLayout>
     </Box>
   );
 }

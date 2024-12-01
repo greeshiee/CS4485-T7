@@ -1,8 +1,11 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import { useEffect } from 'react';
+import './Graph.css';
 
 const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
     // Helper function to convert date strings to consistent format
+
     const parseDate = (dateStr) => {
         if (!dateStr) return null;
         
@@ -118,9 +121,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
     
 
     const plotData = y.map((col, index) => {
-        console.log("col", col);
         const averagedData = getAveragesByGroup(filteredData, x, col);
-        console.log("averagedData", averagedData);
         return {
             x: averagedData.map(d => d.x),
             y: averagedData.map(d => d.y),
@@ -171,35 +172,62 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
         }];
     };
 
+    // Remove fixed width/height from layout
+    const layout = {
+        autosize: true,
+        margin: {
+            l: 50,
+            r: 50,
+            t: 50,
+            b: 50
+        },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+    };
+
     return (
-        console.log("chartType", chartType),
-       <div style={{ width: width, height: height, margin: [0, 0], padding: 0 }}> 
-            {console.log(width)}
-            {console.log(filteredData)}
+       <div style={{ width: '100%', height: '100%' }}>
             {chartType === 'Bar' && (
-                console.log("plotData", plotData),
                 <Plot
                     data={plotData}
                     layout={{ 
-                        title: `${headers[x]} ${y && y[0] ? 'vs ' + headers[y[0].value] : ''} Chart`, 
+                        title: {
+                            text: `${headers[x]} ${y && y[0] ? 'vs ' + headers[y[0]] : ''} Chart`,
+                            font: { size: 20, color: '#333' }
+                        },
                         barmode: 'stack',
-                        width: width, 
-                        height: height,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
+                        showlegend: true,
+                        legend: { 
+                            orientation: 'h',
+                            y: -0.2,
+                            font: { size: 12 }
+                            
+                        },
+                        autosize: true
                     }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: false
+                    }}
+                    style={{ width: '100%', height: '100%' }}
                 />
             )}
             {chartType === 'Line' && (
                 <Plot
                     data={plotData.map(trace => ({ ...trace, type: 'scatter', mode: 'lines+markers'}))}
                     layout={{ 
-                        title: `${headers[x]} ${y && y[0] ? 'vs ' + headers[y[0].value] : ''} Chart`,
-                        width: width, 
-                        height: height,
+                        title: `${headers[x]} ${y && y[0] ? 'vs ' + headers[y[0]] : ''} Chart`,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
+                        autosize: true
                     }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: false
+                    }}
+                    style={{ width: '100%', height: '100%' }}
                 />
             )}
             {chartType === 'Pie' && (
@@ -210,8 +238,6 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                             text: `Distribution of ${headers[x]}`,
                             font: { size: 20, color: '#333' }
                         },
-                        width: width, 
-                        height: height,
                         paper_bgcolor: 'transparent',
                         plot_bgcolor: 'transparent',
                         showlegend: true,
@@ -220,13 +246,18 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                             y: -0.2,
                             font: { size: 12 }
                         },
-                        margin: { t: 50, b: 50, l: 50, r: 50 },
                         annotations: [{
                             text: 'Total',
                             showarrow: false,
                             font: { size: 20 }
-                        }]
+                        }],
+                        autosize: true
                     }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: 'hover'
+                    }}
+                    style={{ width: '100%', height: '100%' }}
                 />
             )}
         </div>

@@ -6,11 +6,10 @@ import Signup from "./pages/signup";
 import Splash from "./pages/splash";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
-import UC3 from "./Usecase3/frontend/UC3";
+import PublicDashboards from './components/Usecase3/frontend/components/PublicDashboards';
 
 function App() {
   return (
-
       <div className="min-h-screen flex flex-col bg-background text-foreground">
           <Suspense
             fallback={
@@ -26,11 +25,10 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/splash" element={<Splash />} />
               <Route path="/" element={<Splash />} /> {/* Default route */}
-              <Route path="/UC3/*" element={<UC3 />} />
+              <Route path="/public-dashboards" element={<PublicDashboards />} />
             </Routes>
           </Suspense>
       </div>
-
   );
 }
 

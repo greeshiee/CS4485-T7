@@ -1,0 +1,9 @@
+fastapi
+pandas
+faker
+matplotlib
+seaborn
+numpy
+python-multipart
+IPython
+uvicorn

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Typography } from '@mui/material';
 import DashBoard from './DashBoard';
-
+import apiClient from '../../../../services/api';
 function PublicDashboards({ onNavigate = () => {} }) {
   const [publicDashboards, setPublicDashboards] = useState([]);
 
   useEffect(() => {
     const fetchPublicDashboards = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/public-dashboards');
+        const response = await apiClient.get('/dashboarding/public-dashboards');
         setPublicDashboards(response.data.dashboard_metadatas);
       } catch (error) {
         console.error('Error fetching public dashboards:', error);

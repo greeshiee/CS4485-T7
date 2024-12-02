@@ -7,3 +7,5 @@ numpy
 python-multipart
 IPython
 uvicorn
+requests
+pyjwt

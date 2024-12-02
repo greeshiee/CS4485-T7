@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DestinationSelector from './DestinationSelector';
-
+import apiClient from '../../services/api';
 const CSVUploader = () => {
   const [file, setFile] = useState(null);
   const [data, setData] = useState([]);
@@ -16,33 +16,26 @@ const CSVUploader = () => {
 
   const fetchDatabases = async () => {
     try {
-      const response = await fetch('http://localhost:8000/databases');
-      if (response.ok) {
-        const databases = await response.json();
-        const options = databases.map(db => ({ label: db.name, value: db.id }));
-        setDatabaseOptions(options);
-      } else {
-        console.error('Failed to fetch databases');
-      }
+      const response = await apiClient.get('/databases'); // Base URL + endpoint
+      const databases = response.data; // Axios parses JSON automatically
+      const options = databases.map(db => ({ label: db.name, value: db.id }));
+      setDatabaseOptions(options);
     } catch (error) {
       console.error('Error fetching databases:', error);
     }
   };
-
+  
   const fetchTables = async (databaseId) => {
     try {
-      const response = await fetch(`http://localhost:8000/tables/${databaseId}`);
-      if (response.ok) {
-        const tables = await response.json();
-        const options = tables.map(table => ({ label: table, value: table }));
-        setTableOptions(options);
-      } else {
-        console.error('Failed to fetch tables');
-      }
+      const response = await apiClient.get(`/tables/${databaseId}`); // Base URL + endpoint
+      const tables = response.data; // Axios parses JSON automatically
+      const options = tables.map(table => ({ label: table, value: table }));
+      setTableOptions(options);
     } catch (error) {
       console.error('Error fetching tables:', error);
     }
   };
+  
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -66,39 +59,44 @@ const CSVUploader = () => {
       alert('Please select a file, database, and table before uploading.');
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('file', file);
     formData.append('database_name', selectedDatabase.label);
     formData.append('table_name', selectedTable.label);
-
+  
     try {
-      const response = await fetch('http://localhost:8000/upload-csv', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',  // Include credentials if your backend requires it
+      const response = await apiClient.post('/upload-csv', formData, {
+        withCredentials: true, // Include credentials if your backend requires it
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setUploadResult(result);
-        setData([]); // Clear previous data
-        alert('File uploaded successfully!');
-        // Refresh databases and tables
-        fetchDatabases();
-        if (selectedDatabase && selectedDatabase.value) {
-          fetchTables(selectedDatabase.value);
-        }
-      } else {
-        console.error('Error response:', result);
-        alert(`Error uploading file: ${result.detail || 'Unknown error'}`);
+  
+      const result = response.data;
+  
+      setUploadResult(result);
+      setData([]); // Clear previous data
+      alert('File uploaded successfully!');
+      // Refresh databases and tables
+      fetchDatabases();
+      if (selectedDatabase && selectedDatabase.value) {
+        fetchTables(selectedDatabase.value);
       }
     } catch (error) {
-      console.error('Fetch error:', error);
-      alert('File uploaded successfully!'); //FIX FIX FIX LOL
+      if (error.response) {
+        // Server responded with a status code outside the 2xx range
+        console.error('Error response:', error.response.data);
+        alert(`Error uploading file: ${error.response.data.detail || 'Unknown error'}`);
+      } else if (error.request) {
+        // Request was made but no response was received
+        console.error('Error request:', error.request);
+        alert('No response received from the server.');
+      } else {
+        // Something else happened
+        console.error('Error:', error.message);
+        alert('An error occurred during the upload.');
+      }
     }
   };
+  
 
   return (
     <div className="p-5">

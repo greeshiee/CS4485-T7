@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { DateRangePicker } from '@mui/lab';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
+import apiClient from '../../../../services/api';
 function AddTilePage({ dashboardId, onNavigate, userEmail }) {
   //const { dashboardId } = useParams();
   const [fileUploaded, setFileUploaded] = useState(false);
@@ -53,7 +54,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
       setSelectedTableId(tableId);
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/tables?table_id=${tableId}`);
+        const response = await apiClient.get(`/dashboarding/tables?table_id=${tableId}`);
         setData(response.data.rows);
         setHeaders(response.data.column_names);
         determineColumnTypes(response.data.rows);
@@ -73,7 +74,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
 
   const fetchSavedFiles = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/tables/map');
+      const response = await apiClient.get('/dashboarding/tables/map');
       if (response.status === 200) {
         setTableMap({
           ids: response.data.table_ids,
@@ -92,7 +93,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
     formData.append('file', file);
     formData.append('table_name', file.name.split('.')[0]);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/tables', formData, {
+      const response = await apiClient.post('/dashboarding/tables', formData, {
         headers: { 
           'Content-Type': 'multipart/form-data'
         },
@@ -189,7 +190,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
     
     
     try {
-        const response = await axios.post('http://localhost:8000/graphs', null, {
+        const response = await apiClient.post('/dashboarding/graphs', null, {
             params: params  // Send as query parameters instead of body
         });
         
@@ -204,7 +205,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
         
         // call the put request
         try {
-            const dashboardResponse = await axios.put(`http://localhost:8000/dashboards?dashboard_id=${parseInt(dashboardId)}&requester_email=${userEmail}`, dashboardParams);
+            const dashboardResponse = await apiClient.put(`/dashboarding/dashboards?dashboard_id=${parseInt(dashboardId)}&requester_email=${userEmail}`, dashboardParams);
         } catch (error) {
             console.error('Dashboard update failed:', {
               sentParams: dashboardParams,

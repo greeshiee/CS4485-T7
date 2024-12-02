@@ -5,6 +5,7 @@ import AlertConfig from './AlertConfig';
 import AlertsList from './AlertsList';
 import { Container, Form, Spinner, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import apiClient from '../../../services/api';
 
 function FaultMainPage() {
   const [alerts, setAlerts] = useState([]);
@@ -20,7 +21,7 @@ function FaultMainPage() {
       setLoadingDatabases(true);
       setErrorMessage('');
       try {
-        const response = await axios.get('http://localhost:8000/list_databases');
+        const response = await apiClient.get('/fault_management/list_databases');
         setDatabases(response.data.databases);
       } catch (error) {
         console.error('Error fetching databases:', error);
@@ -40,7 +41,7 @@ function FaultMainPage() {
         setLoadingAlerts(true);
         setErrorMessage('');
         try {
-          const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
+          const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
           setAlerts(response.data.alerts);
         } catch (error) {
           console.error('Error fetching alerts:', error);
@@ -62,7 +63,7 @@ function FaultMainPage() {
       setLoadingAlerts(true);
       setErrorMessage('');
       try {
-        const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
+        const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
         setAlerts(response.data.alerts);
       } catch (error) {
         console.error('Error refreshing alerts:', error);
@@ -77,7 +78,7 @@ function FaultMainPage() {
   // Remove an alert
   const removeAlert = async (alertId) => {
     try {
-      await axios.post(`http://localhost:8000/remove_alert?database=${selectedDatabase}`, {
+      await apiClient.post(`/fault_management/remove_alert?database=${selectedDatabase}`, {
         alert_id: alertId,
       });      refreshAlerts(); // Refresh alerts after removal
     } catch (error) {

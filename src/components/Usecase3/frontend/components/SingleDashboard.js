@@ -7,6 +7,7 @@ import { WidthProvider, Responsive } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import axios from 'axios';
+import apiClient from '../../../../services/api';
 const GridLayout = WidthProvider(Responsive);
 
 function SingleDashboard({dashboardId, onNavigate, userEmail }) {
@@ -28,15 +29,20 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
   }, [dashboardId]);
 
   const fetchDashboard = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/dashboards?dashboard_id=${dashboardId}&user_email=${userEmail}`);
-      if (!response.ok) throw new Error('Failed to fetch dashboard');
-      const data = await response.json();
-      setDashboard(data);
-    } catch (error) {
-      console.error('Error fetching dashboard:', error);
-    }
-  };
+  try {
+    const response = await apiClient.get('/dashboarding/dashboards', {
+      params: {
+        dashboard_id: dashboardId,
+        user_email: userEmail,
+      },
+    });
+    const data = response.data;
+    setDashboard(data);
+  } catch (error) {
+    console.error('Error fetching dashboard:', error);
+  }
+};
+
 
   useEffect(() => {
     if (dashboard?.graphs) {
@@ -104,7 +110,7 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
         xy_coords: [[tile.xy_coords[0], tile.xy_coords[1]]]     
       };
 
-      await axios.delete('http://127.0.0.1:8000/dashboards', { data: requestBody });
+      await apiClient.delete('/dashboarding/dashboards', { data: requestBody });
       fetchDashboard();
     } catch (error) {
       console.error('Error deleting dashboard:', error);
@@ -115,25 +121,19 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
 
   const onLayoutChange = async (layout) => {
     setCurrentLayout(layout);
-    
+  
     try {
-      const response = await fetch(`http://localhost:8000/dashboards/layout`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          dashboard_id: dashboard.dashboard_id,
-          graph_ids: layout.map(tile => tile.i),
-          xy_coords: layout.map(tile => [tile.x, tile.y]),
-          width_height: layout.map(tile => [tile.w, tile.h])
-        })
+      await apiClient.put('/dashboarding/dashboards/layout', {
+        dashboard_id: dashboard.dashboard_id,
+        graph_ids: layout.map((tile) => tile.i),
+        xy_coords: layout.map((tile) => [tile.x, tile.y]),
+        width_height: layout.map((tile) => [tile.w, tile.h]),
       });
-      if (!response.ok) throw new Error('Failed to update layout');
     } catch (error) {
       console.error('Failed to update layout:', error);
     }
   };
+  
 
   const tileStyle = {
     backgroundColor: '#ffffff',

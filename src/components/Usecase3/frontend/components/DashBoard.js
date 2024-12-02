@@ -20,6 +20,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import Read_OnlyDash from './Read_OnlyDash';  // adjust the import path as needed
 import ReactDOM from 'react-dom';
 import BadgeIcon from '@mui/icons-material/Badge';
+import apiClient from '../../../../services/api';
 
 // Add this helper function at the top of the file, before the DashBoard component
 const isValidEmail = (email) => {
@@ -86,8 +87,8 @@ function DashBoard({ dashboard, deleteDashboard, onNavigate, permissionType, use
         requester_email: userEmail
       };
 
-      const response = await axios.put(
-        'http://localhost:8000/dashboards/permissions',
+      const response = await apiClient.put(
+        '/dashboarding/dashboards/permissions',
         requestBody  // Send the properly structured request body
       );
       
@@ -105,8 +106,8 @@ function DashBoard({ dashboard, deleteDashboard, onNavigate, permissionType, use
 
   const fetchPermissions = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/dashboards/${dashboard.dashboard_id}/permissions?requester_email=${userEmail}`
+      const response = await apiClient.get(
+        `/dashboarding/dashboards/${dashboard.dashboard_id}/permissions?requester_email=${userEmail}`
       );
       setCurrentPermissions(response.data);
     } catch (error) {
@@ -117,7 +118,7 @@ function DashBoard({ dashboard, deleteDashboard, onNavigate, permissionType, use
 
   const handleDeletePermission = async (emailToDelete) => {
     try {
-      await axios.delete('http://localhost:8000/dashboards/permissions', {
+      await apiClient.delete('/dashboarding/dashboards/permissions', {
         data: {
           dashboard_id: dashboard.dashboard_id,
           user_email: emailToDelete,
@@ -140,8 +141,8 @@ function DashBoard({ dashboard, deleteDashboard, onNavigate, permissionType, use
 
   const handleAccessLevelUpdate = async (newLevel) => {
     try {
-      const response = await axios.put(
-        'http://localhost:8000/dashboards/access-level',
+      const response = await apiClient.put(
+        '/dashboarding/dashboards/access-level',
         {
           dashboard_id: dashboard.dashboard_id,
           access_level: newLevel,

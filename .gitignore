@@ -27,3 +27,7 @@ yarn-error.log*
 /src/components/Usecase3/backend/.venv
 /src/components/Usecase3/backend/__pycache__
 /src/components/Usecase3/backend/DataViz/__pycache__
+
+venv/
+__pycache__/
+/api/notebook

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Papa from "papaparse";
+import apiClient from "../services/api";
 
 export default function DataGeneration() {
   const [file, setFile] = useState(null);
@@ -45,8 +46,8 @@ export default function DataGeneration() {
     formData.append("custom_filename", customFilename || "output");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/generate-csv",
+      const response = await apiClient.post(
+        "/data_generation/generate-csv",
         formData,
         {
           headers: {
@@ -71,8 +72,8 @@ export default function DataGeneration() {
     }
 
     try {
-      const response = await axios.get(
-        `http://localhost:8000/download_csv/?filename=${filename}`,
+      const response = await apiClient.get(
+        `/data_generation/download_csv/?filename=${filename}`,
         {
           responseType: "blob",
         }
@@ -126,13 +127,10 @@ export default function DataGeneration() {
     formData.append('file', blob, (customFilename || "all_content") + '.csv'); // 'file' is the key, blobData is the content, fileName is the name
 
     // Send the FormData (which includes the Blob as a file) using fetch
-    fetch('http://localhost:8001/upload', {
-      method: 'POST',
-      body: formData, // Send the FormData as the body of the request
-    })
-      .then(response => response.json()) // Parse the JSON response
-      .then(data => {
-        console.log('Success:', data);
+    // Using Promises
+      apiClient.post('/data_generation/upload', formData)
+      .then(response => {
+        console.log('Success:', response.data);
         setMessage('file now available in EDA');
       })
       .catch(error => {

@@ -9,3 +9,4 @@ IPython
 uvicorn
 requests
 pyjwt
+python-jose

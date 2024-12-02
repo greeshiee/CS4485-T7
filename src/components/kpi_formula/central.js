@@ -244,18 +244,7 @@ function App() {
     }
 
     const labels = data.map((row) => row["Timestamp"]);
-    const dataValues = data.map((row) => {
-      switch (row["Health"]) {
-        case "BAD":
-          return 0;
-        case "MARGINAL":
-          return 1;
-        case "GOOD":
-          return 2;
-        default:
-          return null;
-      }
-    });
+    const dataValues = data.map((row) => row["Signal_Strength"]);
 
     if (labels.length === 0 || dataValues.length === 0) {
       console.log("No valid labels or data values for chart");
@@ -266,11 +255,10 @@ function App() {
       labels: labels,
       datasets: [
         {
-          label: "Health Status Over Time",
+          label: "Signal Strength Over Time",
           data: dataValues,
-          borderColor: "#4cc9f0",
-          backgroundColor: "#4cc9f0",
-          stepped: true,
+          borderColor: "#A2C4CB",
+          backgroundColor: "#A2C4CB",
         },
       ],
     };
@@ -290,43 +278,7 @@ function App() {
       y: {
         title: {
           display: true,
-          text: "Health Status",
-        },
-        ticks: {
-          callback: function (value) {
-            switch (value) {
-              case 0:
-                return "BAD";
-              case 1:
-                return "MARGINAL";
-              case 2:
-                return "GOOD";
-              default:
-                return "";
-            }
-          },
-        },
-        min: 0,
-        max: 2,
-        stepSize: 1,
-      },
-    },
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            const value = context.raw;
-            switch (value) {
-              case 0:
-                return "BAD";
-              case 1:
-                return "MARGINAL";
-              case 2:
-                return "GOOD";
-              default:
-                return "";
-            }
-          },
+          text: "Signal Strength",
         },
       },
     },
@@ -593,7 +545,10 @@ function App() {
       </div>
 
       {isJoinModalOpen && (
-        <div className="modal">
+        <div
+          className="modal"
+          style={{ position: "absolute", opacity: "1", right: "0" }}
+        >
           <div className="modal-content">
             <span className="close" onClick={() => setIsJoinModalOpen(false)}>
               &times;

@@ -11,6 +11,7 @@ import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage'
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
 import Performance from '../components/performanceManagement/Performance';
+import KPIComponent from '../components/kpi_formula/central';
 import AuthWrapper from '../components/authwrapper';
 
 
@@ -62,7 +63,7 @@ export default function Dashboard() {
       label: 'Data Pipelining', 
       url: 'http://localhost:6789',
     },
-    { label: 'KPI Formulas' },
+    { label: 'KPI Formulas', component: <KPIComponent/> },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Fault Management', component: <FaultMainPage/>},
     { label: 'Performance Management', component: <Performance/>},

@@ -1,0 +1,179 @@
+/* Modern gradient background and glass morphism effects */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e9ecef;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.App {
+  display: flex;
+  height: 100vh;
+  overflow-x: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.sidebar {
+  width: 320px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  flex-grow: 1;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Neon text effects */
+h2,
+h3,
+h4 {
+  color: #4cc9f0;
+  text-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* Glass cards */
+.upload-card,
+.kpi-selection-card,
+.current-table {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.upload-card:hover,
+.kpi-selection-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+}
+
+/* Modern file upload */
+.file-upload input[type="file"] {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  color: #e9ecef;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.file-upload input[type="file"]:hover {
+  border-color: #4cc9f0;
+  background: rgba(76, 201, 240, 0.1);
+}
+
+/* Gradient buttons */
+button {
+  background: linear-gradient(45deg, #4361ee, #4cc9f0);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+}
+
+.delete-button {
+  background: linear-gradient(45deg, #ef476f, #ff6b6b);
+  box-shadow: 0 4px 15px rgba(239, 71, 111, 0.3);
+}
+
+.delete-button:hover {
+  box-shadow: 0 6px 20px rgba(239, 71, 111, 0.4);
+}
+
+/* Modern table styling */
+.csv-table {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.csv-table th {
+  background: rgba(76, 201, 240, 0.1);
+  color: #4cc9f0;
+  padding: 16px;
+  font-weight: 600;
+}
+
+.csv-table td {
+  padding: 14px 16px;
+  color: #e9ecef;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.csv-table tr:hover td {
+  background: rgba(76, 201, 240, 0.05);
+}
+
+/* Chart container */
+.Line_chart {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 24px;
+}
+
+/* Form controls */
+select,
+textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e9ecef;
+  padding: 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+select:focus,
+textarea:focus {
+  border-color: #4cc9f0;
+  box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+  outline: none;
+}
+
+/* Modal styling */
+.modal {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+}
+
+.csv-table-container {
+  overflow-x: auto; /* Enables horizontal scrolling */
+  margin-bottom: 24px; /* Adds some space below the table */
+}

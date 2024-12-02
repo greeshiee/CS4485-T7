@@ -27,9 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-subDir = os.environ.get('NOTEBOOK_NAME')
-os.makedirs(subDir, exist_ok=True)
-os.chdir(subDir)
+# subDir = os.environ.get('NOTEBOOK_NAME')
+# os.makedirs(subDir, exist_ok=True)
+# os.chdir(subDir)
 
 shell = InteractiveShell.instance()
 

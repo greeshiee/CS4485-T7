@@ -77,7 +77,10 @@ const Landing = ({ onNavigate, userEmail }) => {
     try {
       const mapResponse = await axios.get(`http://127.0.0.1:8000/dashboards/map?user_email=${userEmail}`);
       const dashboardMetadatas = mapResponse.data.dashboard_metadatas;
-      setOwnedDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'owner'));
+      console.log(dashboardMetadatas);
+      setOwnedDashboards(dashboardMetadatas.filter(dash => 
+        dash.permission_type === 'owner' && dash.created_by === userEmail
+      ));
       setEditableDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'edit'));
       setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view'));
       setPublicDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'public')); 

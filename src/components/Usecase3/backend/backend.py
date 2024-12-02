@@ -53,13 +53,19 @@ class DashboardAccessLevelUpdate(BaseModel):
 
 app = FastAPI()
 
-# Add CORS middleware
+# Update CORS middleware settings with both frontend and backend URLs
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Your React frontend URL
+    allow_origins=[
+        "http://localhost:3000",     # React frontend
+        "http://127.0.0.1:8000",     # FastAPI backend
+        "http://localhost:8000"      # Alternative backend URL
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicitly list allowed methods
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 db_manager = DataVisualizationFacade()
@@ -259,7 +265,9 @@ async def get_public_dashboards() -> DashboardMapResponse:
                     dashboard_title=dash['dashboard_title'],
                     metadata_graphs=[],  # Can be populated if needed
                     permission_type='view',
-                    access_level='public'
+                    access_level='public',
+                    created_by=dash['created_by']
+
                 ) for dash in dashboards
             ]
 

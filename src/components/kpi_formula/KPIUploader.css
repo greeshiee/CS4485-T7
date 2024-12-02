@@ -1,295 +1,179 @@
-/* KPIUploader.css */
+/* Modern gradient background and glass morphism effects */
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e9ecef;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 .App {
-    display: flex;
-    height: 100vh;
-    font-family: 'Roboto', sans-serif;
-    background-color: #000000;
-    overflow-x: hidden;
-    color: #FFFFFF;
+  display: flex;
+  height: 100vh;
+  overflow-x: hidden;
+  backdrop-filter: blur(10px);
 }
 
 .sidebar {
-    width: 250px;
-    background-color: #000000;
-    padding: 15px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    color: #FFFFFF;
+  width: 320px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .content {
-    flex-grow: 1;
-    margin-left: 320px;
-    padding: 20px;
-    background-color: #000000;
-    color: #FFFFFF;
+  flex-grow: 1;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.body {
-    background-color: #000000;
-    color: #FFFFFF;
-    font-family: 'Roboto', sans-serif;
+/* Neon text effects */
+h2,
+h3,
+h4 {
+  color: #4cc9f0;
+  text-shadow: 0 0 10px rgba(76, 201, 240, 0.3);
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
-h2, h4 {
-    color: #A2C4CB;
+/* Glass cards */
+.upload-card,
+.kpi-selection-card,
+.current-table {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
 }
 
-h3 {
-    font-size: 16px;
-    color: #A2C4CB;
-    margin-bottom: 20px;
+.upload-card:hover,
+.kpi-selection-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
 }
 
-.upload-card {
-    background-color: #ffffff;
-    border: 1px solid #E0E0E0;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    color: #000000;
-}
-
-.kpi-selection-card {
-    background-color: #ffffff;
-    border: 1px solid #E0E0E0;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    color: #000000;
-}
-
-file-upload-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
+/* Modern file upload */
 .file-upload input[type="file"] {
-    background-color: #A2C4CB;
-    border: none;
-    color: #FFFFFF;
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  color: #e9ecef;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
-    .file-upload input[type="file"]:hover {
-        background-color: #7A9DA3;
-    }
-
-.file-into p {
-    font-size: 14px;
-    color: #666;
+.file-upload input[type="file"]:hover {
+  border-color: #4cc9f0;
+  background: rgba(76, 201, 240, 0.1);
 }
 
-.file-name {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #666666;
-}
-
-.column-section {
-    margin-bottom: 10px;
-}
-
-.column-item {
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-}
-
-    .column-item input[type="checkbox"] {
-        accent-color: #A2C4CB;
-        margin-right: 10px;
-        width: 16px;
-        height: 16px;
-    }
-
-    .column-item label {
-        font-size: 14px;
-        color: #333;
-        margin-right: 10px;
-        flex-grow: 1;
-    }
-
-    .column-item select {
-        background-color: #FFFFFF;
-        color: #000000;
-        border: 1px solid #A2C4CB;
-        padding: 3px 5px;
-        margin-left: 10px;
-        font-size: 14px;
-    }
-
-.calculation-section textarea {
-    width: 300px !important;
-    background-color: #FFFFFF;
-    color: #000000;
-    border: 1px solid #99CC33;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
-
+/* Gradient buttons */
 button {
-    padding: 6px 10px;
-    background-color: #A2C4CB;
-    color: #FFFFFF;
-    border: none;
-    font-size: 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 2px
+  background: linear-gradient(45deg, #4361ee, #4cc9f0);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
 }
 
-    button:hover {
-        background-color: #7A9DA3;
-        box-shadow: 0px 0px 8px #7A9DA3;
-    }
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+}
 
 .delete-button {
-    padding: 6px 10px;
-    background-color: #A2C4CB;
-    color: #FFFFFF;
-    border: none;
-    font-size: 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
+  background: linear-gradient(45deg, #ef476f, #ff6b6b);
+  box-shadow: 0 4px 15px rgba(239, 71, 111, 0.3);
 }
 
-    .delete-button:hover {
-        background-color: #7A9DA3;
-        box-shadow: 0px 0px 6px #7A9DA3;
-    }
-
-.result {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #333333;
+.delete-button:hover {
+  box-shadow: 0 6px 20px rgba(239, 71, 111, 0.4);
 }
 
-.chart-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.Line_chart {
-    width: 700px;
-}
-
-.Doughnut_chart {
-    width: 300px;
-}
-
+/* Modern table styling */
 .csv-table {
-    width: 100%;
-    min-width: 800px;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    width: auto;
-}
-
-.csv-table-container {
-    max-width: calc(100% - 320px);
-    overflow-x: auto;
-    padding-bottom: 20px;
-    white-space: nowrap;
-}
-
-.csv-table th, .csv-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    color: #000000;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .csv-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    position: sticky;
-    top: 0;
-    text-align: left;
+  background: rgba(76, 201, 240, 0.1);
+  color: #4cc9f0;
+  padding: 16px;
+  font-weight: 600;
 }
 
 .csv-table td {
-    background-color: #fff;
+  padding: 14px 16px;
+  color: #e9ecef;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.csv-table-container::-webkit-scrollbar {
-    height: 8px;
-    background-color: #f5f5f5;
+.csv-table tr:hover td {
+  background: rgba(76, 201, 240, 0.05);
 }
 
-.csv-table-container::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
+/* Chart container */
+.Line_chart {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 24px;
 }
 
-    .csv-table-container::-webkit-scrollbar-thumb:hover {
-        background-color: #99CC33;
-    }
-
-.current-table a {
-    color: #7A9DA3;
-    text-decoration: underline;
-    cursor: pointer;
+/* Form controls */
+select,
+textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e9ecef;
+  padding: 12px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
 }
 
-    .current-table a:hover {
-        color: #A2C4CB;
-    }
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+select:focus,
+textarea:focus {
+  border-color: #4cc9f0;
+  box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.2);
+  outline: none;
 }
 
-    .pagination button {
-        padding: 4px 8px;
-        margin: 0 4px;
-        background-color: #A2C4CB;
-        color: #FFFFFF;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-
-        .pagination button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-    .pagination span {
-        margin: 0 8px;
-    }
-
-.sidebar select {
-    padding: 8px;
-    margin: 10px 0;
-    width: 100%;
-    border: 1px solid #A2C4CB;
-    border-radius: 5px;
+/* Modal styling */
+.modal {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
 }
 
-.kpi-formula-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    background-color: #0a0a0a;
-    padding: 20px;
-    box-sizing: border-box;
+.modal-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+}
+
+.csv-table-container {
+  overflow-x: auto; /* Enables horizontal scrolling */
+  margin-bottom: 24px; /* Adds some space below the table */
 }

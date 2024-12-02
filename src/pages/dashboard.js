@@ -1,16 +1,16 @@
 import "./dashboard-styles.css";
-import React, { useContext, createContext, useState } from 'react';
-import Navbar from '../components/header';
-import { NavLink } from 'react-router-dom';
+import React, { useContext, createContext, useState } from "react";
+import Navbar from "../components/header";
+import { NavLink } from "react-router-dom";
 import { ChevronLast, ChevronFirst } from "lucide-react";
-import Usecase1 from '../components/usecase1';
-import DataGeneration from '../components/datageneration';
+import Usecase1 from "../components/usecase1";
+import DataGeneration from "../components/datageneration";
 
-import FaultMainPage from '../components/faultmanagement/faultmainpage';
-import FaultSide from '../components/faultmanagement/faultside';
-import DataIngestion from '../components/data_ingestion/DataIngestion';
-import AuthWrapper from '../components/authwrapper';
-import KPIFormula from '../components/kpi_formula/central';
+import FaultMainPage from "../components/faultmanagement/faultmainpage";
+import FaultSide from "../components/faultmanagement/faultside";
+import DataIngestion from "../components/data_ingestion/DataIngestion";
+import AuthWrapper from "../components/authwrapper";
+import KPIFormula from "../components/kpi_formula/central";
 
 const SidebarContext = createContext();
 
@@ -22,11 +22,17 @@ export function SidebarItem({ to, label, onClick }) {
       <NavLink
         to={to}
         className={({ isActive }) =>
-          `w-full flex items-center ${isActive ? "text-electricblue font-semibold" : ""}`
+          `w-full flex items-center ${
+            isActive ? "text-electricblue font-semibold" : ""
+          }`
         }
         onClick={onClick} // Call the onClick function when the item is clicked
       >
-        <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
+        <span
+          className={`overflow-hidden transition-all ${
+            expanded ? "w-52 ml-3" : "w-0"
+          }`}
+        >
           {label}
         </span>
       </NavLink>
@@ -43,14 +49,14 @@ export default function Dashboard() {
   };
 
   const sidebarItems = [
-    { label: 'Exploratory Data Analysis', component: <Usecase1 /> },
-    { label: 'Data Ingestion', component: <DataIngestion />},
-    { label: 'Dashboarding' },
-    { label: 'Data Pipelining' },
-    { label: 'KPI Formulas', component: <KPIFormula /> },
-    { label: 'Data Generation', component: <DataGeneration /> },
-    { label: 'Fault Management', component: <FaultMainPage/>},
-    { label: 'Performance Metrics' },
+    { label: "Exploratory Data Analysis", component: <Usecase1 /> },
+    { label: "Data Ingestion", component: <DataIngestion /> },
+    { label: "Dashboarding" },
+    { label: "Data Pipelining" },
+    { label: "KPI Formulas", component: <KPIFormula /> },
+    { label: "Data Generation", component: <DataGeneration /> },
+    { label: "Fault Management", component: <FaultMainPage /> },
+    { label: "Performance Metrics" },
   ];
 
   // Function to handle the click event on sidebar items
@@ -66,7 +72,11 @@ export default function Dashboard() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="flex flex-1 h-[calc(100vh-4.5rem)] mt-[4.5rem] overflow-hidden">
-        <div className={`bg-yellow-300 transition-all h-[calc(100vh-4.5rem)] ${expanded ? "w-[20%]" : "w-[5%]"}`}>
+        <div
+          className={`bg-yellow-300 transition-all h-[calc(100vh-4.5rem)] ${
+            expanded ? "w-[20%]" : "w-[5%]"
+          }`}
+        >
           <aside className="h-full overflow-hidden">
             <nav className="h-full flex flex-row bg-background border-r border-gray-200 shadow-sm">
               {/* Left Column - Sidebar Items */}
@@ -74,10 +84,10 @@ export default function Dashboard() {
                 <SidebarContext.Provider value={{ expanded }}>
                   <ul className="flex flex-col items-center justify-center px-3 overflow-hidden h-full">
                     {sidebarItems.map((item, index) => (
-                      <SidebarItem 
-                        key={index} 
-                        to={item.to} 
-                        label={item.label} 
+                      <SidebarItem
+                        key={index}
+                        to={item.to}
+                        label={item.label}
                         onClick={() => handleSidebarClick(item.component)} // Pass the component to the click handler
                       />
                     ))}
@@ -96,21 +106,16 @@ export default function Dashboard() {
         </div>
         <div className="bg-background h-[calc(100vh-4.5rem)] flex-1 overflow-hidden">
           <div className="scrollable-content">
-            {activeComponent || <Usecase1 />} {/* Render the active component */}
+            {activeComponent || <Usecase1 />}{" "}
+            {/* Render the active component */}
           </div>
         </div>
-        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" >
+        {/* <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" >
           <FaultSide/>
+      </div> */}
       </div>
     </div>
-  </div>
   );
 
-
-  return (
-    <AuthWrapper>
-      {content}
-    </AuthWrapper>
-  )
+  return <AuthWrapper>{content}</AuthWrapper>;
 }
-

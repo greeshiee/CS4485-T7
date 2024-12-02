@@ -96,7 +96,7 @@ function App() {
 
   // Fetch available tables from the database
   const fetchAvailableTables = async () => {
-    const url = "http://localhost:8001/api/tables";
+    const url = "http://localhost:8000/api/tables";
     console.log(`Fetching tables from: ${url}`);
     try {
       const response = await fetch(url);
@@ -122,7 +122,7 @@ function App() {
     console.log(`Fetching data for table: ${tableName}`);
     try {
       const response = await fetch(
-        `http://localhost:8001/api/kpis?table=${tableName}`
+        `http://localhost:8000/api/kpis?table=${tableName}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,3 +1,4 @@
+
 import { useAuth0 } from '@auth0/auth0-react';
 import "./dashboard-styles.css";
 import React, { useContext, createContext, useState } from 'react';
@@ -11,6 +12,7 @@ import DataGeneration from '../components/datageneration';
 import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
+import DataPipelining from '../components/datapipelining';
 
 const SidebarContext = createContext();
 
@@ -58,8 +60,7 @@ export default function Dashboard() {
     { label: 'Data Ingestion', component: <DataIngestion />},
     { label: 'Dashboarding' },
     { 
-      label: 'Data Pipelining', 
-      url: 'http://localhost:6789',
+      label: 'Data Pipelining',  component: <DataPipelining />
     },
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
@@ -119,6 +120,12 @@ export default function Dashboard() {
         <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden">
           <FaultSide />
         </div>
+        <div className="bg-background h-[calc(100vh-4.5rem)] flex-1 overflow-hidden">
+          <div className="scrollable-content">
+             <DataPipelining />
+          </div>
+        </div>
+
       </div>
     </div>
   );

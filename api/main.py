@@ -23,11 +23,18 @@ app = FastAPI()
 # JWT Authentication Middleware
 @app.middleware("http")
 async def jwt_authentication_middleware(request: Request, call_next):
-
+    # List of paths that should bypass JWT authentication
+    bypass_paths = ["/dashboarding/public-dashboards", "/dashboarding/dashboards"]
+    
+    # Always allow OPTIONS requests
     if request.method == "OPTIONS":
         response = await call_next(request)
         return response
 
+    # Check if the path should bypass authentication
+    if any(request.url.path.startswith(path) for path in bypass_paths):
+        response = await call_next(request)
+        return response
 
     print('auth started')
 
@@ -107,5 +114,5 @@ app.mount("/fault_management", fault_management_app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5001)
 

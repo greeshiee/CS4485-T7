@@ -82,6 +82,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       setOwnedDashboards(dashboardMetadatas.filter(dash => 
         dash.permission_type === 'owner' && dash.created_by === userEmail
       ));
+      console.log("owner: ", ownedDashboards);
       setEditableDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'edit'));
       setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view'));
       setPublicDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'public')); 
@@ -100,8 +101,8 @@ const Landing = ({ onNavigate, userEmail }) => {
         xy_coords: []       // Empty to delete entire dashboard
       };
 
-      const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
-      await apiClient.delete('/dashboards', { data: requestBody });
+      //const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
+      await apiClient.delete('/dashboarding/dashboards', { data: requestBody });
       // Refresh the dashboard list after successful deletion
       fetchDashboards();
     } catch (error) {

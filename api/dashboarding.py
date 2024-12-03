@@ -19,10 +19,15 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 # Add these new models
 from DataViz.DashboardManager import DashboardPermission, DashboardMetadata
+
 class DashboardPermission(BaseModel):
     user_email: str
     permission_type: str  # 'view' or 'edit'
 
+class DashboardPermissionsUpdateParams(BaseModel):
+    dashboard_id: int
+    permissions: List[DashboardPermission]
+    requester_email: str
 class DashboardWithPermissions(BaseModel):
     dashboard_title: str
     permissions: List[DashboardPermission] = []
@@ -51,18 +56,35 @@ class DashboardAccessLevelUpdate(BaseModel):
             )
         return data
 
+class DashboardLayoutUpdateParams(BaseModel):
+    dashboard_id: int
+    graph_ids: List[int]
+    xy_coords: List[List[int]]
+    width_height: List[List[int]]
+
 app = FastAPI()
 
-# Add CORS middleware
+# Update CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # Your React frontend URL
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Add all allowed methods
+    allow_headers=["*", "Authorization"],
 )
 
+# Initialize database and tables before any endpoints are called
 db_manager = DataVisualizationFacade()
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database tables when the application starts"""
+    try:
+        db_manager.dashb_manager._DashboardManager__create_tables()
+        print("Database tables initialized successfully")
+    except Exception as e:
+        print(f"Error initializing database tables: {str(e)}")
+        raise
 
 @app.get("/tables/map")
 def get_table_map() -> TableMapResponse:
@@ -123,11 +145,6 @@ async def get_dashboard(dashboard_id: int, user_email: str | None = None) -> Das
 async def post_new_dashboard(query_params: DashboardCreateQueryParams = Depends()) -> Dashboard:
     return db_manager.create_new_dashboard(query=query_params)
 
-class DashboardPermissionsUpdateParams(BaseModel):
-    dashboard_id: int
-    permissions: List[DashboardPermission]
-    requester_email: str
-
 @app.put("/dashboards/permissions")
 async def update_dashboard_permissions(
     query_params: DashboardPermissionsUpdateParams
@@ -158,13 +175,7 @@ async def add_new_graphs_dashboard(query_params: DashboardPutQueryParams = Depen
 
 @app.delete("/dashboards")
 async def delete_dashboards(query_params: DashboardDeleteQueryParams):
-    db_manager.delete_dashboard(query=query_params)
-
-class DashboardLayoutUpdateParams(BaseModel):
-    dashboard_id: int
-    graph_ids: List[int]
-    xy_coords: List[List[int]]
-    width_height: List[List[int]]
+    return db_manager.delete_dashboard(query=query_params)
 
 @app.put("/dashboards/layout")
 async def update_dashboard_layout(query_params: DashboardLayoutUpdateParams) -> None:
@@ -259,7 +270,8 @@ async def get_public_dashboards() -> DashboardMapResponse:
                     dashboard_title=dash['dashboard_title'],
                     metadata_graphs=[],  # Can be populated if needed
                     permission_type='view',
-                    access_level='public'
+                    access_level='public', 
+                    created_by=dash['created_by']
                 ) for dash in dashboards
             ]
 

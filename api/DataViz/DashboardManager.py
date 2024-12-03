@@ -84,6 +84,7 @@ class DashboardMetadata(BaseModel):
     metadata_graphs: List[DashboardGraphMetadata]
     permission_type: str
     access_level: str
+    created_by: str
 
 class DashboardMapResponse(BaseModel):
     dashboard_metadatas: List[DashboardMetadata]
@@ -166,7 +167,7 @@ class DashboardManager:
 
         # First check access level
             access_result = conn.execute("""
-                SELECT dashboard_title, access_level
+                SELECT dashboard_title, access_level, created_by
                 FROM dashboard_title_mp
                 WHERE dashboard_id = ?
             """, (dashboard_id,)).fetchone()
@@ -182,6 +183,8 @@ class DashboardManager:
 
             # If dashboard is public or user is authenticated, proceed
             if access_result['access_level'] == 'public':
+                permission_type = 'view'
+            elif access_result['access_level'] == 'all_users' and user_email:
                 permission_type = 'view'
             else:
                 # Check user permissions if not public
@@ -221,7 +224,8 @@ class DashboardManager:
                 dashboard_title=access_result['dashboard_title'],
                 metadata_graphs=metadata_graphs,
                 permission_type=permission_type,
-                access_level=access_result['access_level']
+                access_level=access_result['access_level'],
+                created_by=access_result['created_by']
             )
 
     def get_dashboard_id_mp(self) -> DashboardMapResponse:
@@ -266,7 +270,8 @@ class DashboardManager:
                 DashboardMetadata(
                     dashboard_id=meta["dashboard_id"],
                     dashboard_title=meta["dashboard_title"],
-                    metadata_graphs=meta["metadata_graphs"]
+                    metadata_graphs=meta["metadata_graphs"], 
+
                 ) for meta in dashboard_map.values()
             ]
 
@@ -536,7 +541,8 @@ class DashboardManager:
                     dashboard_title=meta["dashboard_title"],
                     metadata_graphs=meta["metadata_graphs"],
                     permission_type=meta["permission_type"],
-                    access_level=meta["access_level"]
+                    access_level=meta["access_level"],
+                    created_by=meta["created_by"]
                 ) for meta in dashboard_map.values()
             ]
 

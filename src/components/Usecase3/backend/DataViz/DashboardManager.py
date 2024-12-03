@@ -182,7 +182,9 @@ class DashboardManager:
                 )
 
             # If dashboard is public or user is authenticated, proceed
-            if access_result['access_level'] == 'public' or access_result['access_level'] == 'all_users':
+            if access_result['access_level'] == 'public':
+                permission_type = 'view'
+            elif access_result['access_level'] == 'all_users' and user_email:
                 permission_type = 'view'
             else:
                 # Check user permissions if not public

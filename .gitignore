@@ -31,3 +31,4 @@ yarn-error.log*
 venv/
 __pycache__/
 /api/notebook
+/api/.venv

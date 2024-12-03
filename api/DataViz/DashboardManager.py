@@ -165,7 +165,7 @@ class DashboardManager:
         with self.get_sql_db_connection() as conn:
             conn.row_factory = sqlite3.Row
 
-        # First check access level
+            # First check access level
             access_result = conn.execute("""
                 SELECT dashboard_title, access_level, created_by
                 FROM dashboard_title_mp
@@ -181,25 +181,28 @@ class DashboardManager:
                     detail="This dashboard requires authentication"
                 )
 
-            # If dashboard is public or user is authenticated, proceed
-            if access_result['access_level'] == 'public':
-                permission_type = 'view'
-            elif access_result['access_level'] == 'all_users' and user_email:
-                permission_type = 'view'
-            else:
-                # Check user permissions if not public
+            # Check user permissions if user_email is provided
+            if user_email:
                 result = conn.execute("""
                     SELECT permission_type
                     FROM dashboard_permissions
                     WHERE dashboard_id = ? AND user_email = ?
                 """, (dashboard_id, user_email)).fetchone()
+                   
 
-                if not result:
+                if result:
+                    permission_type = result['permission_type']
+                else:
+                    permission_type = 'view' if access_result['access_level'] in ['public', 'all_users'] else None
+
+                if not permission_type:
                     raise HTTPException(
                         status_code=403,
                         detail="You don't have permission to access this dashboard"
                     )
-                permission_type = result['permission_type']
+            else:
+                # Default to view if public and no user_email
+                permission_type = 'view'
 
             # Retrieve the graph metadata
             cursor = conn.execute("""
@@ -486,14 +489,19 @@ class DashboardManager:
         with self.get_sql_db_connection() as conn:
             conn.row_factory = sqlite3.Row
             
-            # Modified query to include all_users access level
+            # Modified query to handle all permission cases
             dashboards = conn.execute("""
                 SELECT DISTINCT 
                     dt.dashboard_id, 
                     dt.dashboard_title,
                     dt.created_by,
                     dt.access_level,
-                    dp.permission_type,
+                    COALESCE(dp.permission_type, 
+                        CASE 
+                            WHEN dt.access_level IN ('public', 'all_users') THEN 'view'
+                            ELSE NULL 
+                        END
+                    ) as permission_type,
                     md.graph_id, 
                     md.width, 
                     md.height, 
@@ -501,14 +509,16 @@ class DashboardManager:
                     md.y_coord
                 FROM dashboard_title_mp dt
                 LEFT JOIN dashboard_permissions dp 
-                    ON dt.dashboard_id = dp.dashboard_id
+                    ON dt.dashboard_id = dp.dashboard_id 
+                    AND dp.user_email = ?
                 LEFT JOIN master_dashboard md 
                     ON dt.dashboard_id = md.dashboard_id
-                WHERE dp.user_email = ? 
-                    OR dt.access_level = 'public'
-                    OR (dt.access_level = 'all_users' AND ? IS NOT NULL)
+                WHERE 
+                    dp.user_email = ?  -- User has explicit permissions
+                    OR dt.access_level = 'public'  -- Public dashboards
+                    OR (dt.access_level = 'all_users' AND ? IS NOT NULL)  -- All users dashboards if email is valid
                 ORDER BY dt.dashboard_id
-            """, (user_email, user_email))  # Pass user_email twice for the two parameters
+            """, (user_email, user_email, user_email))
 
             # Update the dashboard_map dictionary creation
             dashboard_map = {}
@@ -586,11 +596,10 @@ class DashboardManager:
             )
         
         with self.get_sql_db_connection() as conn:
-            # check if the user already has permission, if the user already has permission, update it other wise insert it
-            # Insert new permissions
+            # Use UPSERT (INSERT OR REPLACE) for each permission
             conn.executemany(
                 """
-                INSERT INTO dashboard_permissions 
+                INSERT OR REPLACE INTO dashboard_permissions 
                 (dashboard_id, user_email, permission_type) 
                 VALUES (?, ?, ?)
                 """,

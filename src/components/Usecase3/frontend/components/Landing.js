@@ -84,7 +84,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       ));
       console.log("owner: ", ownedDashboards);
       setEditableDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'edit'));
-      setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view'));
+      setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view' && dash.access_level === 'private'));
       setPublicDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'public')); 
       setAllUsersDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'all_users'));
     } catch (error) {

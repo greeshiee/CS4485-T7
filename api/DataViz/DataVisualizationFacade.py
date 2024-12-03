@@ -50,6 +50,7 @@ class DataVisualizationFacade:
                 raise HTTPException(status_code=404, detail=f"Graph ID {graph_id} does not exist!")
         dashboard_id = self.dashb_manager.create_dashboard_with_permissions(query)
         return self.render_dashboard(dashboard_id=dashboard_id, user_email=query.owner_email)
+    
     def render_dashboard(self, dashboard_id: int, user_email: str | None = None) -> Dashboard:
 
         # If they have permission, proceed with rendering
@@ -74,18 +75,18 @@ class DataVisualizationFacade:
         # Then render and return the dashboard
         return None
 
-    def create_dashboard_with_permissions(
-        self, 
-        query: DashboardCreateWithPermissions
-    ) -> Dashboard:
-        dashboard_id = self.dashb_manager.create_dashboard_with_permissions(query)
-        return self.render_dashboard(
-            dashboard_id=dashboard_id, 
-            user_email=query.owner_email
-        )
+    # def create_dashboard_with_permissions(
+    #     self, 
+    #     query: DashboardCreateWithPermissions
+    # ) -> Dashboard:
+    #     dashboard_id = self.dashb_manager.create_dashboard_with_permissions(query)
+    #     return self.render_dashboard(
+    #         dashboard_id=dashboard_id, 
+    #         user_email=query.owner_email
+    #     )
 
-    def get_user_dashboards(self, user_email: str) -> DashboardMapResponse:
-        return self.dashb_manager.get_user_dashboards(user_email)
+    #def get_user_dashboards(self, user_email: str) -> DashboardMapResponse:
+        #return self.dashb_manager.get_user_dashboards(user_email)
 
     def update_dashboard_permissions(
         self, 
@@ -99,17 +100,17 @@ class DataVisualizationFacade:
             requester_email
         )
 
-    def check_dashboard_access(
-        self, 
-        dashboard_id: int, 
-        user_email: str, 
-        required_permission: str = 'view'
-    ) -> bool:
-        return self.dashb_manager.check_user_permission(
-            dashboard_id, 
-            user_email, 
-            required_permission
-        )
+    # def check_dashboard_access(
+    #     self, 
+    #     dashboard_id: int, 
+    #     user_email: str, 
+    #     required_permission: str = 'view'
+    # ) -> bool:
+    #     return self.dashb_manager.check_user_permission(
+    #         dashboard_id, 
+    #         user_email, 
+    #         required_permission
+    #     )
 
     def get_dashboard_permissions(
         self, 

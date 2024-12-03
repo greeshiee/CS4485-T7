@@ -231,83 +231,83 @@ class DashboardManager:
                 created_by=access_result['created_by']
             )
 
-    def get_dashboard_id_mp(self) -> DashboardMapResponse:
-        with self.get_sql_db_connection() as conn:
-            # Set row factory to get dictionary-like row objects
-            conn.row_factory = sqlite3.Row
+    # def get_dashboard_id_mp(self) -> DashboardMapResponse:
+    #     with self.get_sql_db_connection() as conn:
+    #         # Set row factory to get dictionary-like row objects
+    #         conn.row_factory = sqlite3.Row
 
-            # Retrieve all dashboards with their metadata
-            dashboards = conn.execute("""
-                SELECT dt.dashboard_id, dt.dashboard_title, 
-                    md.graph_id, md.width, md.height, md.x_coord, md.y_coord
-                FROM dashboard_title_mp AS dt
-                LEFT JOIN master_dashboard AS md ON dt.dashboard_id = md.dashboard_id
-                ORDER BY dt.dashboard_id
-            """).fetchall()
+    #         # Retrieve all dashboards with their metadata
+    #         dashboards = conn.execute("""
+    #             SELECT dt.dashboard_id, dt.dashboard_title, 
+    #                 md.graph_id, md.width, md.height, md.x_coord, md.y_coord
+    #             FROM dashboard_title_mp AS dt
+    #             LEFT JOIN master_dashboard AS md ON dt.dashboard_id = md.dashboard_id
+    #             ORDER BY dt.dashboard_id
+    #         """).fetchall()
 
-            # Group metadata by dashboard_id
-            dashboard_map = {}
-            for row in dashboards:
-                dashboard_id = row['dashboard_id']
-                if dashboard_id not in dashboard_map:
-                    dashboard_map[dashboard_id] = {
-                        "dashboard_id": dashboard_id,
-                        "dashboard_title": row['dashboard_title'],
-                        "metadata_graphs": []
-                    }
+    #         # Group metadata by dashboard_id
+    #         dashboard_map = {}
+    #         for row in dashboards:
+    #             dashboard_id = row['dashboard_id']
+    #             if dashboard_id not in dashboard_map:
+    #                 dashboard_map[dashboard_id] = {
+    #                     "dashboard_id": dashboard_id,
+    #                     "dashboard_title": row['dashboard_title'],
+    #                     "metadata_graphs": []
+    #                 }
                 
-                # Append graph metadata if exists
-                if row['graph_id'] is not None:
-                    dashboard_map[dashboard_id]["metadata_graphs"].append(
-                        DashboardGraphMetadata(
-                            graph_id=row['graph_id'],
-                            width=row['width'],
-                            height=row['height'],
-                            x_coord=row['x_coord'],
-                            y_coord=row['y_coord']
-                        )
-                    )
+    #             # Append graph metadata if exists
+    #             if row['graph_id'] is not None:
+    #                 dashboard_map[dashboard_id]["metadata_graphs"].append(
+    #                     DashboardGraphMetadata(
+    #                         graph_id=row['graph_id'],
+    #                         width=row['width'],
+    #                         height=row['height'],
+    #                         x_coord=row['x_coord'],
+    #                         y_coord=row['y_coord']
+    #                     )
+    #                 )
 
-            # Convert dictionary to list of DashboardMetadata objects
-            dashboard_metadatas = [
-                DashboardMetadata(
-                    dashboard_id=meta["dashboard_id"],
-                    dashboard_title=meta["dashboard_title"],
-                    metadata_graphs=meta["metadata_graphs"], 
+    #         # Convert dictionary to list of DashboardMetadata objects
+    #         dashboard_metadatas = [
+    #             DashboardMetadata(
+    #                 dashboard_id=meta["dashboard_id"],
+    #                 dashboard_title=meta["dashboard_title"],
+    #                 metadata_graphs=meta["metadata_graphs"], 
 
-                ) for meta in dashboard_map.values()
-            ]
+    #             ) for meta in dashboard_map.values()
+    #         ]
 
-            return DashboardMapResponse(dashboard_metadatas=dashboard_metadatas)
+    #         return DashboardMapResponse(dashboard_metadatas=dashboard_metadatas)
 
-    def create_new_dashboard(self, query: DashboardCreateQueryParams) -> int:
-        with self.get_sql_db_connection() as conn:
-            cursor = conn.execute(
-                "INSERT INTO dashboard_title_mp (dashboard_title) VALUES (?)",
-                (query.dashboard_title,)
-            )
-            dashboard_id = cursor.lastrowid
+    # def create_new_dashboard(self, query: DashboardCreateQueryParams) -> int:
+    #     with self.get_sql_db_connection() as conn:
+    #         cursor = conn.execute(
+    #             "INSERT INTO dashboard_title_mp (dashboard_title) VALUES (?)",
+    #             (query.dashboard_title,)
+    #         )
+    #         dashboard_id = cursor.lastrowid
 
-            # Updated data preparation to use paired xy coordinates
-            data_to_insert = [
-                (dashboard_id, graph_id, xy[0], xy[1], width, height)
-                for graph_id, xy, (width, height) in zip(query.graph_ids, query.xy_coords, query.width_height)
-                ]
+    #         # Updated data preparation to use paired xy coordinates
+    #         data_to_insert = [
+    #             (dashboard_id, graph_id, xy[0], xy[1], width, height)
+    #             for graph_id, xy, (width, height) in zip(query.graph_ids, query.xy_coords, query.width_height)
+    #             ]
 
-            # Insert the data into the master_dashboard table
-            conn.executemany(
-                """
-                INSERT INTO master_dashboard (dashboard_id, graph_id, x_coord, y_coord, width, height)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                data_to_insert
-            )
+    #         # Insert the data into the master_dashboard table
+    #         conn.executemany(
+    #             """
+    #             INSERT INTO master_dashboard (dashboard_id, graph_id, x_coord, y_coord, width, height)
+    #             VALUES (?, ?, ?, ?, ?, ?)
+    #             """,
+    #             data_to_insert
+    #         )
 
-            # Commit the transaction
-            conn.commit()
+    #         # Commit the transaction
+    #         conn.commit()
 
-        # Optionally, return the dashboard_id
-        return dashboard_id
+    #     # Optionally, return the dashboard_id
+    #     return dashboard_id
 
     def add_to_dashboard(self, query: DashboardPutQueryParams) -> int:
         dashboard_id = query.dashboard_id

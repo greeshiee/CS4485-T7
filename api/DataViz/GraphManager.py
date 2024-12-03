@@ -61,7 +61,7 @@ class GraphManager:
                     graph_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     table_id INTEGER NOT NULL,
                     graph_title TEXT NOT NULL,
-                    graph_type TEXT CHECK(graph_type IN ('Bar', 'Line', 'Pie')) NOT NULL,
+                    graph_type TEXT CHECK(graph_type IN ('Bar', 'Line', 'Scatter', 'Scorecard', 'Pie')) NOT NULL,
                     ax0 TEXT NOT NULL,
                     ax1 TEXT NOT NULL,
                     FOREIGN KEY (table_id) REFERENCES master_tables(table_id) ON DELETE CASCADE

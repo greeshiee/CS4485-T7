@@ -17,25 +17,27 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
   const [file, setFile] = useState('');
   const [savedFiles, setSavedFiles] = useState([]);
   const [headers, setHeaders] = useState([]);
-  const [columnTypes, setColumnTypes] = useState({}); // State to store column data types
   const [selectedFile, setSelectedFile] = useState('');
   const [chartType, setChartType] = useState('');
   const [y, setY] = useState([]);
   const [x, setX] = useState([]);
   const [activeTab, setActiveTab] = useState('1');
   const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [filters, setFilters] = useState({});
-  const [selected, setSelected] = useState([]);
-  const handleChange = (event, value) => setY(value);
+  const [singleValue, setSingleValue] = useState(null);
+  const handleChange = (event, value) => {
+    if (value.length > 1) {
+      alert('Multiple Y-axis selection will be supported in a future update. Please select only one value for now.');
+      // If there was already one value selected, keep it
+      if (y.length > 0) {
+        setY([y[0]]);
+      }
+      return;
+    }
+    setY(value);
+  };
   const handleChartTypeChange = (e) => setChartType(e.target.value);
-  const [selectedColumn, setSelectedColumn] = useState(null);
-  const [filterValue, setFilterValue] = useState(null);
   const [tableMap, setTableMap] = useState({ ids: [], names: [] });
   const [selectedTableId, setSelectedTableId] = useState(null);
-  useEffect(() => {
-    setY(selected.map(z => z.value));
-  }, [selected]);
 
   useEffect(() => {
     fetchSavedFiles();
@@ -57,7 +59,6 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
         const response = await apiClient.get(`/dashboarding/tables?table_id=${tableId}`);
         setData(response.data.rows);
         setHeaders(response.data.column_names);
-        determineColumnTypes(response.data.rows);
         setFileUploaded(true);
       } catch (error) {
         console.error('Error fetching table data:', error);
@@ -67,10 +68,6 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
     fetchData();
   }, [selectedFile, tableMap]);
 
-  // Apply filters when data or filters change
-  useEffect(() => {
-    applyFilters();
-  }, [data, filters]);
 
   const fetchSavedFiles = async () => {
     try {
@@ -106,65 +103,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
     setFile('');
   };
 
-  // Determine column data types by inspecting the data
-  const determineColumnTypes = (data) => {
-    const types = {};
-    data[0].forEach((value, index) => {
-      if (!isNaN(value)) {
-        types[index] = 'number';
-      } else if (Date.parse(value)) {
-        types[index] = 'date';
-      } else {
-        types[index] = 'string';
-      }
-    });
-    setColumnTypes(types);
-  };
-
-  const applyFilters = () => {
-    const filtered = data.filter(row => {
-      // Check if the row satisfies all filters
-      return Object.keys(filters).every(column => {
-        const filterValues = filters[column];
-        const columnType = columnTypes[column];
-        
-        if (!filterValues || filterValues.length === 0) {
-          return true; // No filter for this column, so include the row
-        }
   
-        // Check if row satisfies at least one of the filter values
-        return filterValues.some(value => {
-          if (columnType === 'number') {
-            const [min, max] = value;
-            return (!min || row[column] >= min) && (!max || row[column] <= max);
-          } else if (columnType === 'date') {
-            const [startDate, endDate] = value;
-            return (!startDate || new Date(row[column]) >= new Date(startDate)) &&
-                   (!endDate || new Date(row[column]) <= new Date(endDate));
-          } else {
-            // String filter
-            return row[column].toString().includes(value);
-          }
-        });
-      });
-    });
-    
-    setFilteredData(filtered);
-  };
-  
-  const handleAddFilter = () => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [selectedColumn]: [...(prevFilters[selectedColumn] || []), filterValue],
-    }));
-  };
-
-  const handleRemoveFilter = (column, index) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [column]: prevFilters[column].filter((_, i) => i !== index),
-    }));
-  };
 
   const handleFileSelect = (event) => {
     const selectedFileName = event.target.value;
@@ -187,6 +126,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
         ax0: headers[x],
         ax1: y.map(yAxis => headers[yAxis.value]).join(', ')
     };
+    console.log(params);
     
     
     try {
@@ -372,98 +312,8 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
 
               {/* Table Panel */}
               <TabPanel value="1">
-              <Box>
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <Select
-                    value={selectedColumn}
-                    onChange={(e) => {setSelectedColumn(e.target.value); setFilterValue(null);}}
-                  >
-                    {headers.map((header, index) => (
-                      <MenuItem key={header} value={index}>
-                        {header}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
 
-      {selectedColumn!= null && (
-        <Box>
-          {columnTypes[selectedColumn] === 'number' && (
-            <Box display="flex" alignItems="center" mb={2}>
-              <TextField
-                label="Min"
-                type="number"
-                value={filterValue?.[0] || ''}
-                onChange={(e) => setFilterValue([Number(e.target.value), filterValue?.[1] || null])}
-              />
-              <Box mx={1}>to</Box>
-              <TextField
-                label="Max"
-                type="number"
-                value={filterValue?.[1] || ''}
-                onChange={(e) => setFilterValue([filterValue?.[0] || null, Number(e.target.value)])}
-              />
-            </Box>
-          )}
-
-          {columnTypes[selectedColumn] === 'date' && (
-            <DateRangePicker
-              startText="Start Date"
-              endText="End Date"
-              value={filterValue || [null, null]}
-              onChange={(newValue) => setFilterValue(newValue)}
-              renderInput={(startProps, endProps) => (
-                <>
-                  <TextField {...startProps} fullWidth />
-                  <Box sx={{ mx: 1 }}>to</Box>
-                  <TextField {...endProps} fullWidth />
-                </>
-              )}
-            />
-          )}
-
-          {columnTypes[selectedColumn] === 'string' && (
-            
-            <TextField
-              label="Contains"
-              value={filterValue || ""}
-              onChange={(e) => setFilterValue(e.target.value)}
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-          )}
-        </Box>
-      )}
-      <Box mt={3}>
-        <Button
-          variant="contained"
-          onClick={handleAddFilter}
-        >
-          Apply Filters
-        </Button>
-      </Box>
-
-      <Box mt={2}>
-        {Object.keys(filters).map((column, colIndex) => (
-          <Box key={colIndex} mb={2}>
-            <Typography variant="subtitle1">{`Filters for ${headers[column]}:`}</Typography>
-            {(filters[column].map((value, i) => (
-              <Box key={i} display="flex" alignItems="center" mt={1}>
-                <Typography>
-                  {columnTypes[column] === 'number' && `Range: ${value[0] || "Min"} - ${value[1] || "Max"}`}
-                  {columnTypes[column] === 'date' && `From: ${value[0]?.toLocaleDateString()} To: ${value[1]?.toLocaleDateString()}`}
-                  {columnTypes[column] === 'string' && `Contains: ${value}`}
-                </Typography>
-                <IconButton onClick={() => handleRemoveFilter(column, i)}>
-                  <CloseIcon />
-                </IconButton>
-              </Box>)
-            ))}
-          </Box>
-        ))}
-      </Box>
-    </Box>
-              <DataTable headers={headers} data={filteredData} />
+              <DataTable headers={headers} data={data} />
               </TabPanel>
 
               {/* Graph Panel */}
@@ -475,70 +325,100 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
                       value={chartType}
                       label="Chart Type"
                       onChange={handleChartTypeChange}
-                      sx={{
-                        backgroundColor: '#f8f9fa',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e0e0e0'
-                        }
-                      }}
                     >
                       <MenuItem value="Bar">Bar Chart</MenuItem>
                       <MenuItem value="Line">Line Chart</MenuItem>
                       <MenuItem value="Pie">Pie Chart</MenuItem>
+                      <MenuItem value="Scatter">Scatter Plot</MenuItem>
+                      <MenuItem value="Scorecard">Scorecard</MenuItem>
                     </Select>
                   </FormControl>
 
-                  <FormControl fullWidth>
-                    <InputLabel>X-Axis</InputLabel>
-                    <Select
-                      value={x}
-                      label="X-Axis"
-                      onChange={(e) => setX(e.target.value)}
-                      sx={{
-                        backgroundColor: '#f8f9fa',
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: '#e0e0e0'
-                        }
-                      }}
-                    >
-                      {headers.map((header, index) => (
-                        <MenuItem key={index} value={index}>{header}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  {['Bar', 'Line', 'Scatter'].includes(chartType) && (
+                    <FormControl fullWidth>
+                      <InputLabel>X-Axis</InputLabel>
+                      <Select
+                        value={x}
+                        label="X-Axis"
+                        onChange={(e) => setX(e.target.value)}
+                      >
+                        {headers.map((header, index) => (
+                          <MenuItem key={index} value={index}>{header}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
 
-                  <Autocomplete
-                    multiple
-                    options={headers.map((header, index) => ({ label: header, value: index }))}
-                    onChange={handleChange}
-                    getOptionLabel={(option) => option.label}
-                    value={y}
-                    isOptionEqualToValue={(option, value) => option.value === value.value}
-                    renderInput={(params) => (
-                      <TextField 
-                        {...params} 
-                        label="Y-Axis" 
-                        placeholder="Select columns"
-                        sx={{
-                          backgroundColor: '#f8f9fa',
-                          '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#e0e0e0'
-                          }
+                  {['Bar', 'Line', 'Scatter'].includes(chartType) && (
+                    <Autocomplete
+                      multiple
+                      options={headers.map((header, index) => ({ label: header, value: index }))}
+                      onChange={handleChange}
+                      getOptionLabel={(option) => option.label}
+                      value={y}
+                      isOptionEqualToValue={(option, value) => option.value === value.value}
+                      renderInput={(params) => (
+                        <TextField 
+                          {...params} 
+                          label="Y-Axis" 
+                          placeholder="Select one column"
+                          helperText="Currently limited to one Y-axis selection"
+                        />
+                      )}
+                    />
+                  )}
+
+                  {chartType === 'Pie' && (
+                    <FormControl fullWidth>
+                      <InputLabel>Categories</InputLabel>
+                      <Select
+                        value={x}
+                        label="Categories"
+                        onChange={(e) => {
+                          setX(e.target.value);
+                          // Set a random y value for Pie chart
+                          const randomIndex = Math.floor(Math.random() * headers.length);
+                          setY([{ label: headers[randomIndex], value: randomIndex }]);
                         }}
-                      />
-                    )}
-                  />
-                   
-                    { x !== undefined && 
-                    chartType !== '' && 
-                    y && 
-                    y.length > 0 && <Graph 
-                    headers={headers} 
-                    data={data} 
-                    chartType={chartType} 
-                    x={x} 
-                    y={y.map(y => y.value)} 
-                  /> }
+                      >
+                        {headers.map((header, index) => (
+                          <MenuItem key={index} value={index}>{header}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  {chartType === 'Scorecard' && (
+                    <FormControl fullWidth>
+                      <InputLabel>Value</InputLabel>
+                      <Select
+                        value={singleValue}
+                        label="Value"
+                        onChange={(e) => {
+                          setSingleValue(e.target.value);
+                          // Set a random y value for Scorecard
+                          const randomIndex = Math.floor(Math.random() * headers.length);
+                          setY([{ label: headers[randomIndex], value: randomIndex }]);
+                          setX(e.target.value); // For consistency with backend
+                        }}
+                      >
+                        {headers.map((header, index) => (
+                          <MenuItem key={index} value={index}>{header}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  { x !== undefined && 
+                  chartType !== '' && 
+                  y && 
+                  y.length > 0 && <Graph 
+                  headers={headers} 
+                  data={data} 
+                  chartType={chartType} 
+                  x={x} 
+                  y={y.map(y => y.value)} 
+                /> }
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
                     <Button
                       variant="contained"

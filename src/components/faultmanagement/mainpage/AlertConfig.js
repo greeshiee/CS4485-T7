@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import apiClient from '../../../services/api';
 
 function AlertConfig({ selectedDatabase, refreshAlerts }) {
   const [alertTitle, setAlertTitle] = useState('');
@@ -18,7 +19,7 @@ function AlertConfig({ selectedDatabase, refreshAlerts }) {
       if (!selectedDatabase) return; // Only fetch if a database is selected
 
       try {
-        const response = await axios.get(`http://localhost:8000/columns_from_devices_table?database=${selectedDatabase}`);
+        const response = await apiClient.get(`/fault_management/columns_from_devices_table?database=${selectedDatabase}`);
         setDeviceColumns(response.data.columns); // Update deviceColumns with the fetched column names
       } catch (error) {
         console.error('Error fetching device columns:', error);
@@ -49,7 +50,7 @@ function AlertConfig({ selectedDatabase, refreshAlerts }) {
       setSuccessMessage('');
   
       // Update: Send 'database' in query string
-      await axios.post(`http://localhost:8000/add_alert?database=${selectedDatabase}`, {
+      await apiClient.post(`/fault_management/add_alert?database=${selectedDatabase}`, {
         alert_title: alertTitle,
         alert_message: alertMessage,
         field_name: fieldName,

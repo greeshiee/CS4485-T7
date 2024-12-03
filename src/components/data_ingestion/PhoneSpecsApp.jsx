@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LatestPhones from './LatestPhones';  // Import the new component
-
+import apiClient from '../../services/api';
 const PhoneSpecsApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [latestPhones, setLatestPhones] = useState([]);
@@ -14,11 +14,8 @@ const PhoneSpecsApp = () => {
 
   const fetchLatestPhones = async () => {
     try {
-      const response = await fetch('http://localhost:8000/latest');
-      if (!response.ok) {
-        throw new Error('Failed to fetch latest phones');
-      }
-      const data = await response.json();
+      const response = await apiClient.get('/latest');
+      const data = response.data;
       setLatestPhones(data.latest.phones || []);
     } catch (err) {
       console.error('Error fetching latest phones:', err);
@@ -27,23 +24,26 @@ const PhoneSpecsApp = () => {
       setLoading(false);
     }
   };
+  
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-
+  
     try {
-      const response = await fetch(`http://localhost:8000/search?query=${encodeURIComponent(searchQuery)}`);
-      if (!response.ok) {
-        throw new Error('Search failed');
-      }
-      const data = await response.json();
+      const response = await apiClient.get('/search', {
+        params: {
+          query: searchQuery.trim(),
+        },
+      });
+      const data = response.data;
       // Handle search results as needed
     } catch (err) {
       console.error('Search error:', err);
       setError('Search failed');
     }
   };
+  
 
   return (
     <div className="container mx-auto px-4">

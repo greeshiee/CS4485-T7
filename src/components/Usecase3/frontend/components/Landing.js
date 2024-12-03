@@ -17,6 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ShareIcon from '@mui/icons-material/Share';
 import PublicIcon from '@mui/icons-material/Public';
 import BadgeIcon from '@mui/icons-material/Badge';
+import apiClient from '../../../../services/api';
 
 const Landing = ({ onNavigate, userEmail }) => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Landing = ({ onNavigate, userEmail }) => {
           width_height: []
         };
 
-        const response = await axios.post(`http://127.0.0.1:8000/dashboards?${params.toString()}`, requestBody);
+        const response = await apiClient.post(`/dashboarding/dashboards?${params.toString()}`, requestBody);
         const newDashboard = response.data;
         
         setDashboardName('');
@@ -75,12 +76,13 @@ const Landing = ({ onNavigate, userEmail }) => {
 
   const fetchDashboards = async () => {
     try {
-      const mapResponse = await axios.get(`http://127.0.0.1:8000/dashboards/map?user_email=${userEmail}`);
+      const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
       const dashboardMetadatas = mapResponse.data.dashboard_metadatas;
       console.log(dashboardMetadatas);
       setOwnedDashboards(dashboardMetadatas.filter(dash => 
         dash.permission_type === 'owner' && dash.created_by === userEmail
       ));
+      console.log("owner: ", ownedDashboards);
       setEditableDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'edit'));
       setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view'));
       setPublicDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'public')); 
@@ -99,7 +101,8 @@ const Landing = ({ onNavigate, userEmail }) => {
         xy_coords: []       // Empty to delete entire dashboard
       };
 
-      await axios.delete('http://127.0.0.1:8000/dashboards', { data: requestBody });
+      //const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
+      await apiClient.delete('/dashboarding/dashboards', { data: requestBody });
       // Refresh the dashboard list after successful deletion
       fetchDashboards();
     } catch (error) {

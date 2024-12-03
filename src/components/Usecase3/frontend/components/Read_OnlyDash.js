@@ -5,7 +5,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import Tile from './Tile';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-
+import apiClient from '../../../../services/api';
 const GridLayout = WidthProvider(Responsive);
 
 function Read_OnlyDash({ dashboardId, onNavigate, userEmail }) {
@@ -19,17 +19,19 @@ function Read_OnlyDash({ dashboardId, onNavigate, userEmail }) {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const url = `http://127.0.0.1:8000/dashboards?dashboard_id=${dashboardId}`;
-        const response = await fetch(
-          userEmail ? `${url}&user_email=${userEmail}` : `${url}`
-        );
-        if (!response.ok) throw new Error('Failed to fetch dashboard');
-        const data = await response.json();
+        const response = await apiClient.get('/dashboarding/dashboards', {
+          params: {
+            dashboard_id: dashboardId,
+            user_email: userEmail,
+          },
+        });
+        const data = response.data;
         setDashboard(data);
       } catch (error) {
         console.error('Error fetching dashboard:', error);
       }
     };
+    
 
     if (dashboardId) {
       fetchDashboard();

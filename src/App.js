@@ -7,8 +7,12 @@ import Splash from "./pages/splash";
 import Callback from "./pages/callback";
 import Loading from "./components/loading";
 import PublicDashboards from './components/Usecase3/frontend/components/PublicDashboards';
+import useAxiosInterceptor from "./authInterceptor";
 
 function App() {
+
+  useAxiosInterceptor();
+
   return (
       <div className="min-h-screen flex flex-col bg-background text-foreground">
           <Suspense

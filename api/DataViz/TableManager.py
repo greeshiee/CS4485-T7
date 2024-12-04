@@ -3,6 +3,11 @@ import pandas as pd
 from typing import List, Any, Callable, Optional, Dict
 from pydantic import BaseModel
 
+from dotenv import load_dotenv
+import boto3
+import os
+import io
+
 class TableResponse(BaseModel):
     table_id: int
     table_name: str
@@ -18,6 +23,7 @@ class TableManager:
     def __init__(self, get_connection_callback: Callable[[], sqlite3.Connection]):
         self.get_sql_db_connection = get_connection_callback
         self.__create_tables()
+        self.__cache_t2_tables()
 
     def __create_tables(self):
         with self.get_sql_db_connection() as conn:
@@ -66,7 +72,7 @@ class TableManager:
             conn.commit()
         return db_name
 
-    def add_table(self, table_name: str, dataframe: pd.DataFrame, tbl_response) -> Optional[TableResponse]:
+    def add_table(self, table_name: str, dataframe: pd.DataFrame, tbl_response: bool) -> Optional[TableResponse]:
         with self.get_sql_db_connection() as conn:
             cursor = conn.cursor()
             db_name = self.insert_master_table(table_name)
@@ -152,3 +158,32 @@ class TableManager:
             column_names=list(df.columns),
             rows=df.values.tolist()
         )
+    
+    def __cache_t2_tables(self):
+        tbl_map = self.get_table_id_mp()
+        try:
+            load_dotenv()
+            AWS_ACCESS_KEY = os.getenv('AWS_ACCCES_KEY')
+            AWS_SECRET_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+            AWS_S3_BUCKET_NAME = 'senior-design-utd' 
+            AWS_REGION = 'us-east-1'
+
+            s3_client = boto3.client(
+                    service_name='s3',
+                    region_name=AWS_REGION,
+                    aws_access_key_id=AWS_ACCESS_KEY,
+                    aws_secret_access_key=AWS_SECRET_KEY
+            )
+
+            response = s3_client.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME)
+            for obj in response['Contents']:
+                file_key = obj['Key']
+                if file_key in tbl_map.table_names: continue
+
+                file_obj = s3_client.get_object(Bucket=AWS_S3_BUCKET_NAME, Key=file_key)
+                obj = io.StringIO(file_obj['Body'].read().decode('utf-8'))
+                df = pd.read_csv(obj)
+                self.add_table(file_key, df, tbl_response=None)
+        except:
+            print("Environment keys not loaded.")
+

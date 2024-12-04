@@ -16,7 +16,7 @@ const CSVUploader = () => {
 
   const fetchDatabases = async () => {
     try {
-      const response = await apiClient.get('/databases'); // Base URL + endpoint
+      const response = await apiClient.get('/data_ingestion/databases'); // Base URL + endpoint
       const databases = response.data; // Axios parses JSON automatically
       const options = databases.map(db => ({ label: db.name, value: db.id }));
       setDatabaseOptions(options);
@@ -27,7 +27,7 @@ const CSVUploader = () => {
   
   const fetchTables = async (databaseId) => {
     try {
-      const response = await apiClient.get(`/tables/${databaseId}`); // Base URL + endpoint
+      const response = await apiClient.get(`/data_ingestion/tables/${databaseId}`); // Base URL + endpoint
       const tables = response.data; // Axios parses JSON automatically
       const options = tables.map(table => ({ label: table, value: table }));
       setTableOptions(options);
@@ -66,7 +66,7 @@ const CSVUploader = () => {
     formData.append('table_name', selectedTable.label);
   
     try {
-      const response = await apiClient.post('/upload-csv', formData, {
+      const response = await apiClient.post('/data_ingestion/upload-csv', formData, {
         withCredentials: true, // Include credentials if your backend requires it
       });
   

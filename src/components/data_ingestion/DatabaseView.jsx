@@ -64,7 +64,7 @@ const DatabaseView = () => {
   useEffect(() => {
     const fetchDatabases = async () => {
       try {
-        const response = await apiClient.get('/databases'); // Base URL is already set in apiClient
+        const response = await apiClient.get('/data_ingestion/databases'); // Base URL is already set in apiClient
         setDatabases(response.data);
       } catch (error) {
         console.error("Error fetching databases:", error);
@@ -78,7 +78,7 @@ const DatabaseView = () => {
     if (selectedDatabase) {
       const fetchTables = async () => {
         try {
-          const response = await apiClient.get(`/tables/${selectedDatabase.id}`);
+          const response = await apiClient.get(`/data_ingestion/tables/${selectedDatabase.id}`);
           setTables(response.data);
         } catch (error) {
           console.error("Error fetching tables:", error);
@@ -94,7 +94,7 @@ const DatabaseView = () => {
     if (selectedDatabase && selectedTable) {
       const fetchTableData = async () => {
         try {
-          const response = await apiClient.get(`/table-data/${selectedDatabase.id}/${selectedTable}`);
+          const response = await apiClient.get(`/data_ingestion/table-data/${selectedDatabase.id}/${selectedTable}`);
           const data = response.data;
           setTableData(data);
           if (data.length > 0) {

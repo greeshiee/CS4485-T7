@@ -391,6 +391,32 @@ function KPIUploader({
     setIsColumnModalOpen(true);
   };
 
+  // Update the modal styling to include text color
+  const modalStyle = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fff",
+    padding: "20px",
+    zIndex: 1000,
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    maxWidth: "500px",
+    width: "90%",
+    color: "black",
+  };
+
+  const overlayStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
+  };
+
   return (
     <div style={{ marginTop: "0.3em" }}>
       {dataSource === "csv" && (
@@ -434,46 +460,70 @@ function KPIUploader({
             onChange={(e) => setExpression(e.target.value)}
           />
           <br />
-          <button onClick={handleExpression} style={{ marginRight: "1em" }}>
-            Generate New Column
-          </button>
+          <div className="no-scrollbar" style={{ width: "100%" }}>
+            <button
+              onClick={handleExpression}
+              style={{ marginRight: "1em", display: "inline-block" }}
+            >
+              Generate New Column
+            </button>
 
-          <button
-            onClick={handleManageColumnsClick}
-            style={{ marginRight: "1em" }}
-          >
-            Manage Added Columns
-          </button>
+            <button
+              onClick={handleManageColumnsClick}
+              style={{ marginRight: "1em", display: "inline-block" }}
+            >
+              Manage Added Columns
+            </button>
 
-          <button
-            onClick={() => setIsJoinModalOpen(true)}
-            style={{ marginRight: "1em" }}
-          >
-            Open Join Table Form
-          </button>
-          <button onClick={handleExport} style={{ marginRight: "1em" }}>
-            Export CSV
-          </button>
-          <button onClick={handleImport}>Export to Database</button>
+            <button
+              onClick={() => setIsJoinModalOpen(true)}
+              style={{ marginRight: "1em", display: "inline-block" }}
+            >
+              Open Join Table Form
+            </button>
+            <button
+              onClick={handleExport}
+              style={{ marginRight: "1em", display: "inline-block" }}
+            >
+              Export CSV
+            </button>
+            <button onClick={handleImport} style={{ display: "inline-block" }}>
+              Export to Database
+            </button>
+          </div>
         </>
       )}
 
       {isColumnModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setIsColumnModalOpen(false)}>
+        <>
+          <div
+            style={overlayStyle}
+            onClick={() => setIsColumnModalOpen(false)}
+          />
+          <div style={modalStyle}>
+            <span
+              className="close"
+              onClick={() => setIsColumnModalOpen(false)}
+              style={{ cursor: "pointer", float: "right" }}
+            >
               &times;
             </span>
             <h3>Manage Added Columns</h3>
             {addedColumns.length > 0 ? (
-              <ul>
+              <ul style={{ listStyle: "none", padding: 0 }}>
                 {addedColumns.map((column) => (
-                  <li key={column}>
+                  <li key={column} style={{ marginBottom: "10px" }}>
                     <span>{column}</span>
-                    <button onClick={() => handleToggleSaveColumn(column)}>
+                    <button
+                      onClick={() => handleToggleSaveColumn(column)}
+                      style={{ marginLeft: "10px" }}
+                    >
                       {savedColumns.includes(column) ? "Unsave" : "Save"}
                     </button>
-                    <button onClick={() => handleDeleteColumn(column)}>
+                    <button
+                      onClick={() => handleDeleteColumn(column)}
+                      style={{ marginLeft: "10px" }}
+                    >
                       Delete
                     </button>
                   </li>
@@ -483,7 +533,7 @@ function KPIUploader({
               <p>No columns added yet.</p>
             )}
           </div>
-        </div>
+        </>
       )}
     </div>
   );

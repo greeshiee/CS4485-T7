@@ -257,8 +257,14 @@ function App() {
         {
           label: "Signal Strength Over Time",
           data: dataValues,
-          borderColor: "#A2C4CB",
-          backgroundColor: "#A2C4CB",
+          borderColor: "#4361ee",
+          backgroundColor: "rgba(67, 97, 238, 0.1)",
+          borderWidth: 2,
+          tension: 0.4,
+          pointBackgroundColor: "#4cc9f0",
+          pointBorderColor: "#4cc9f0",
+          pointHoverBackgroundColor: "#fff",
+          pointHoverBorderColor: "#4cc9f0",
         },
       ],
     };
@@ -273,42 +279,41 @@ function App() {
         title: {
           display: true,
           text: "Timestamp",
+          color: "#4cc9f0",
+        },
+        ticks: {
+          color: "#e9ecef",
+        },
+        grid: {
+          color: "rgba(76, 201, 240, 0.1)",
         },
       },
       y: {
         title: {
           display: true,
           text: "Signal Strength",
+          color: "#4cc9f0",
+        },
+        ticks: {
+          color: "#e9ecef",
+        },
+        grid: {
+          color: "rgba(76, 201, 240, 0.1)",
         },
       },
     },
-  };
-
-  // Add this function before the renderTable function
-  const renderPagination = () => {
-    const totalPages = Math.ceil(currentData.length / rowsPerPage);
-    return (
-      <div className="pagination">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          style={{ marginRight: "0.3em" }}
-        >
-          Previous
-        </button>
-        <span
-          style={{ marginRight: "0.3em" }}
-        >{`Page ${currentPage} of ${totalPages}`}</span>
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
-    );
+    plugins: {
+      legend: {
+        labels: {
+          color: "#4cc9f0",
+          font: {
+            family: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
+          },
+        },
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   const renderTable = () => {
@@ -322,9 +327,10 @@ function App() {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const pageData = data.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(currentData.length / rowsPerPage);
 
     return (
-      <div className="csv-table-container">
+      <div className="csv-table-container" style={{ width: "65%" }}>
         <table className="csv-table">
           <thead>
             <tr>
@@ -343,7 +349,25 @@ function App() {
             ))}
           </tbody>
         </table>
-        {renderPagination()}
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
       </div>
     );
   };
@@ -446,10 +470,17 @@ function App() {
   return (
     <div
       className="App"
-      style={{ paddingLeft: "20px", paddingRight: "20px", marginTop: "0.5em" }}
+      style={{
+        paddingLeft: "20px",
+        paddingRight: "20px",
+        marginTop: "0.5em",
+        width: "100%",
+      }}
     >
       <div className="kpi-formula-container">
         <div className="kpi-formula-sidebar">
+          <h2>Welcome to the KPI Uploader!</h2>
+
           <label>Select Data Source:</label>
           <select value={dataSource} onChange={handleDataSourceChange}>
             <option value="csv">CSV File</option>
@@ -523,20 +554,18 @@ function App() {
 
         <div className="kpi-formula-content">
           {!isDataLoaded ? (
-            <div className="card">
-              <h2>Welcome to the KPI Uploader!</h2>
+            <div className="card" style={{ background: "black" }}>
               {dataSource === "db" && <p>Loading data from database...</p>}
             </div>
           ) : (
-            <div className="card">
-              <h2>Welcome to the KPI Uploader!</h2>
-              <p>
+            <div className="card" style={{ background: "black" }}>
+              <p style={{ color: "#4cc9f0" }}>
                 Current Table: <strong>{fileName}</strong>
               </p>
 
               {renderTable()}
 
-              <div className="Line_chart">
+              <div className="Line_chart" style={{ width: "65%" }}>
                 <Line data={chartData} options={chartOptions} />
               </div>
             </div>
@@ -609,7 +638,12 @@ function App() {
                 ))}
               </select>
             </div>
-            <button onClick={handleJoinSubmit}>Submit</button>
+            <button
+              onClick={handleJoinSubmit}
+              style={{ marginBottom: "0.5em" }}
+            >
+              Submit
+            </button>
             <button onClick={() => setIsJoinModalOpen(false)}>Cancel</button>
           </div>
         </div>

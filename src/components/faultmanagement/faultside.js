@@ -10,18 +10,18 @@
 //   // Function to fetch alerts with pagination
 //   const fetchAlerts = useCallback(async () => {
 //     if (loading || !hasMore) return; // Avoid fetching if already loading or no more alerts to load
-    
+
 //     setLoading(true);
 //     setNoAlerts(false); // Reset no alerts flag before fetching
 //     try {
 //       const response = await fetch(`/check_device_alerts?skip=${skip}&limit=3`);  // Fetch from /check_device_alerts
 //       const data = await response.json();
-  
+
 //       if (data.triggered_alerts.length === 0 && skip === 0) {
 //         setNoAlerts(true);  // No alerts triggered
 //       } else {
 //         setAlerts((prevAlerts) => [...prevAlerts, ...data.triggered_alerts]);
-  
+
 //         // Check if there are more alerts to load
 //         if (data.triggered_alerts.length < 3) {
 //           setHasMore(false);  // No more alerts to load
@@ -33,7 +33,6 @@
 //       setLoading(false);
 //     }
 //   }, [skip, loading, hasMore]);
-  
 
 //   // Fetch alerts when component mounts or when skip changes
 //   useEffect(() => {
@@ -106,7 +105,7 @@
 
 // export default FaultSide;
 
-import React from 'react';
+import React from "react";
 
 const FaultSide = () => {
   return (
@@ -117,4 +116,3 @@ const FaultSide = () => {
 };
 
 export default FaultSide;
-

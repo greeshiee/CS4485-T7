@@ -53,7 +53,7 @@ export function SidebarItem({ to, label, onClick, url }) {
 export default function Dashboard() {
   const [expanded, setExpanded] = useState(true);
   const [activeComponent, setActiveComponent] = useState(null); // State for active component
-
+  const [activeItem, setAcitveItem] = useState("");
   const toggleSidebar = () => {
     setExpanded((prevExpanded) => !prevExpanded);
   };
@@ -73,8 +73,10 @@ export default function Dashboard() {
   ];
 
   // Function to handle the click event on sidebar items
-  const handleSidebarClick = (component) => {
+  const handleSidebarClick = (component, label) => {
     setActiveComponent(component); // Set the active component
+    console.log(label);
+    setAcitveItem(label);
   };
 
   let content = (
@@ -97,7 +99,9 @@ export default function Dashboard() {
                         key={index}
                         to={item.to}
                         label={item.label}
-                        onClick={() => handleSidebarClick(item.component)}
+                        onClick={() =>
+                          handleSidebarClick(item.component, item.label)
+                        }
                         url={item.url} // Pass the URL property
                       />
                     ))}
@@ -120,9 +124,12 @@ export default function Dashboard() {
             {/* Render the active component */}
           </div>
         </div>
-        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden">
-          <FaultSide />
-        </div>
+
+        {activeItem !== "KPI Formulas" && (
+          <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden">
+            <FaultSide />
+          </div>
+        )}
       </div>
     </div>
   );

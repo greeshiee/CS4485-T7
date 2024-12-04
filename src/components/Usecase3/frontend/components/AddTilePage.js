@@ -139,7 +139,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
         const dashboardParams = {
           graph_ids: [response.data.graph_id],
           xy_coords: [[0, -1]],
-          width_height: [[2, 2]],
+          width_height: [[5, 5]],
         };
 
         

@@ -121,7 +121,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'myDashboards':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               My Dashboards
             </Typography>
             <Box sx={{ 
@@ -146,7 +146,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'shared':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Shared with Me
             </Typography>
             
@@ -238,7 +238,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'public':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Public Dashboards
             </Typography>
             <Box sx={{ 
@@ -268,7 +268,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'allUsers':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Internal Dashboards
             </Typography>
             <Box sx={{ 

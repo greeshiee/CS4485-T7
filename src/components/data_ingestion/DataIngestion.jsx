@@ -4,6 +4,7 @@ import CSVUploader from './CSVUploader';
 import ManageDatabases from './DatabasePage';
 import PhoneSpecsApp from './PhoneSpecsApp';
 import PhoneTable from './PhoneTable';
+import GeneralAPI from './GeneralAPI';
 
 const DataIngestion = () => {
     const [activeTab, setActiveTab] = useState('CSVUploader');
@@ -14,6 +15,8 @@ const DataIngestion = () => {
                 return <CSVUploader />;
             case 'ManageDatabases':
                 return <ManageDatabases />;
+            case 'GeneralAPI':
+                    return <GeneralAPI />;
             case 'PhoneSpecsApp':
                 return <PhoneSpecsApp />;
             case 'PhoneTable':
@@ -40,17 +43,12 @@ const DataIngestion = () => {
                     Manage Databases
                 </button>
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'PhoneSpecsApp' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
-                    onClick={() => setActiveTab('PhoneSpecsApp')}
+                    className={`tab-item px-4 py-2 ${activeTab === 'GeneralAPI' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('GeneralAPI')}
                 >
-                    Phone Specs
+                    General API
                 </button>
-                <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'PhoneTable' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
-                    onClick={() => setActiveTab('PhoneTable')}
-                >
-                    All Phones
-                </button>
+           
             </nav>
 
             {/* Tab Content */}

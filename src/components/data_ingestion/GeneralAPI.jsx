@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import apiClient from '../../services/api';
+
 
 const GeneralAPI = () => {
   const [apiConfig, setApiConfig] = useState({
@@ -35,30 +37,23 @@ const GeneralAPI = () => {
     }, {});
 
     try {
-      const response = await fetch('http://localhost:8000/test-api', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          endpoint: apiConfig.endpoint,
-          method: apiConfig.method,
-          headers,
-          params
-        }),
-      });
+        const response = await apiClient.post('/data_ingestion/test-api', {
+            endpoint: apiConfig.endpoint,
+            method: apiConfig.method,
+            headers,
+            params
+          });
       
-      const data = await response.json();
       
-      if (response.ok) {
-        setResponse(data);
+    if (response.status === 200) {
+        setResponse(response.data);
         addLogEntry({
           type: 'success',
           message: 'API call successful',
-          details: data
+          details: response.data
         });
       } else {
-        throw new Error(data.detail || 'API call failed');
+        throw new Error(response.data.detail || 'API call failed');
       }
     } catch (err) {
       setError(err.message);

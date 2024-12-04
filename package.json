@@ -13,6 +13,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "alasql": "^4.5.2",
     "auth0": "^4.10.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
@@ -30,9 +31,8 @@
     "react-plotly.js": "^2.6.0",
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
-    "react-select": "^5.8.2"
-
+    "react-select": "^5.8.2",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

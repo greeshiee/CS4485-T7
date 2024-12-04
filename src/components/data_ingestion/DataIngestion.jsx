@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import CSVUploader from './CSVUploader';
 import ManageDatabases from './DatabasePage';
+import DatabaseView from './DatabaseView';
 import PhoneSpecsApp from './PhoneSpecsApp';
 import PhoneTable from './PhoneTable';
 import GeneralAPI from './GeneralAPI';
@@ -13,8 +14,8 @@ const DataIngestion = () => {
         switch (activeTab) {
             case 'CSVUploader':
                 return <CSVUploader />;
-            case 'ManageDatabases':
-                return <ManageDatabases />;
+            case 'DatabaseView':
+                return <DatabaseView />;
             case 'GeneralAPI':
                     return <GeneralAPI />;
             case 'PhoneSpecsApp':
@@ -37,10 +38,10 @@ const DataIngestion = () => {
                     Upload CSV
                 </button>
                 <button
-                    className={`tab-item px-4 py-2 ${activeTab === 'ManageDatabases' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
-                    onClick={() => setActiveTab('ManageDatabases')}
+                    className={`tab-item px-4 py-2 ${activeTab === 'DatabaseView' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}
+                    onClick={() => setActiveTab('DatabaseView')}
                 >
-                    Manage Databases
+                    View Databases
                 </button>
                 <button
                     className={`tab-item px-4 py-2 ${activeTab === 'GeneralAPI' ? 'border-b-2 border-electricblue text-electricblue font-semibold' : 'text-gray-600'}`}

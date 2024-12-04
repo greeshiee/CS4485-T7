@@ -1,0 +1,49 @@
+version: '3.9'  # Use a valid version
+
+services:
+  mageai:
+    image: mageai/mageai:latest
+    command: mage start ${PROJECT_NAME}
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MAGEAI_PROMETHEUS_URL: http://prometheus:9090
+      USER_CODE_PATH: /home/src/${PROJECT_NAME}
+      ENV: ${ENV}
+    ports:
+      - "6789:6789"
+      - "8000:8000"
+    volumes:
+      - .:/home/src/
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus_data  # Use the created volume for Prometheus data storage
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Mount the custom Prometheus config file
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # Ensure this file exists in ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - REACT_APP_AUTH0_DOMAIN=dev-qfm00zieya5sfr60.us.auth0.com
+      - REACT_APP_AUTH0_CLIENT_ID=Wl84NkSqwDmLAoVrpXAUHBoAsv3yuvPn
+      - REACT_APP_AUTH0_REDIRECT_URI=http://localhost:3000/callback
+    depends_on:
+      - prometheus  # If your frontend depends on Prometheus being up
+    command: npm start
+
+volumes:
+  prometheus_data:  # Docker will create this volume automatically, no need to run a command sepratrely

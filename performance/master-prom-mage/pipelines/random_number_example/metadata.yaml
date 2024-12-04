@@ -1,0 +1,40 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: hypnotic glacier
+  retry_config: null
+  status: updated
+  timeout: null
+  type: scratchpad
+  upstream_blocks: []
+  uuid: hypnotic_glacier
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-11-11 20:18:14.961671+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: random number example
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: random_number_example
+variables_dir: /home/src/mage_data/master-prom-mage
+widgets: []

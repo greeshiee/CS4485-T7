@@ -1,0 +1,117 @@
+const (
+    PrometheusQueryAddress = "http://prometheus:9090"
+    QueryEdgePart          = "gatewayID"
+ 
+    Cpu_percent                 = "cpu_percent"
+    Mem_used_bytes              = "mem_used"
+    Mem_total                   = "mem_total"
+    Disk_percent                = "disk_percent"
+    Disk_total                  = "disk_total"
+    Sent_bytes                  = "bytes_sent"
+    Received_bytes              = "bytes_received"
+    Radio_connected             = "enb_connected"
+    Devices_registered          = "ue_registered"
+    Devices_connected           = "devices_connected"
+    Ue_pdn_connections_success  = "ue_pdn_connections_success"
+    Ue_pdn_connections_released = "ue_pdn_connections_released"
+ 
+    Uplink_sent_bytes               = "eth0_bytes_sent"
+    Uplink_received_bytes           = "eth0_bytes_received"
+    Uplink_sent_packets             = "eth0_packets_sent"
+    Uplink_received_packets         = "eth0_packets_received"
+    Uplink_sent_packets_dropped     = "eth0_outgoing_packets_dropped"
+    Uplink_received_packets_dropped = "eth0_incoming_packets_dropped"
+ 
+    Downlink_sent_bytes               = "gtp_br0_bytes_sent"
+    Downlink_received_bytes           = "gtp_br0_bytes_received"
+    Downlink_sent_packets             = "gtp_br0_packets_sent"
+    Downlink_received_packets         = "gtp_br0_packets_received"
+    Downlink_sent_packets_dropped     = "gtp_br0_outgoing_packets_dropped"
+    Downlink_received_packets_dropped = "gtp_br0_incoming_packets_dropped"
+    //Stats from 5G
+    Radio_connected_5g       = "total_active_rans_5g"
+    Devices_connected_5g     = "total_reg_subs_5g"
+    Devices_registered_5g    = "total_reg_subs_5g"
+    Ue_active_pdu_session_5g = "total_active_pdu_sess_5g"
+ 
+    Uplink_sent_bytes_5g               = "uplink_bytes_sent_5g"
+    Uplink_received_bytes_5g           = "uplink_bytes_received_5g"
+    Uplink_sent_packets_5g             = "uplink_packets_sent_5g"
+    Uplink_received_packets_5g         = "uplink_packets_received_5g"
+    Uplink_sent_packets_dropped_5g     = "uplink_outgoing_packets_dropped_5g"
+    Uplink_received_packets_dropped_5g = "uplink_incoming_packets_dropped_5g"
+ 
+    Downlink_sent_bytes_5g               = "gtp_bytes_sent_5g"
+    Downlink_received_bytes_5g           = "gtp_bytes_received_5g"
+    Downlink_sent_packets_5g             = "gtp_packets_sent_5g"
+    Downlink_received_packets_5g         = "gtp_packets_received_5g"
+    Downlink_sent_packets_dropped_5g     = "gtp_outgoing_packets_dropped_5g"
+    Downlink_received_packets_dropped_5g = "gtp_incoming_packets_dropped_5g"
+    Uplink_success_rate_5g               = "ul_succ_rate_5g"
+    Uplink_drop_rate_5g                  = "ul_drop_rate_5g"
+    Downlink_success_rate_5g             = "dl_succ_rate_5g"
+    Downlink_drop_rate_5g                = "dl_drop_rate_5g"
+    Allocate_ip_success_5g               = "allocate_ip_succ_5g"
+    Release_ip_success_5g                = "release_ip_succ_5g"
+    Allocated_ip_count_5g                = "allocated_ip_count_5g"
+ 
+    // Radio Queries
+    Device_upload_throughput   = "device_upload_throughput"
+    Device_download_throughput = "device_download_throughput"
+ 
+    // UE Queries
+    UE_connection_status_imsi = "ue_connection_status_imsi"
+    UE_eci                    = "ue_eci"
+    UE_connection_state       = "ue_connection_state"
+    UE_radio_connection       = "ue_radio_connection"
+ 
+    // Radio Overall Health Queries
+    Radio_overall_health = "radio_overall_health"
+    Radio_Group_Area     = "radio_group_area"
+ 
+    // Zone Metrics
+    Zone_connected_devices = "zone_connected_devices"
+)
+ 
+var BaicellRadioMetricId = map[string]MetricInfo{
+    "radio_active":             GetMetricInfo("radio_active", SUM, false, false),
+    "radio_cp_connected":       GetMetricInfo("radio_cp_connected", LINEAR_SUM, false, false),
+    "radio_edge_connected":     GetMetricInfo("radio_edge_connected", LINEAR_SUM, false, false),
+    "radio_cell_status":        GetMetricInfo("radio_cell_status", LINEAR_SUM, false, false),
+    "radio_connected_ue_count": GetMetricInfo("radio_connected_ue_count", SUM, false, false),
+ 
+    // Radio Queries: Accessibility
+    "radio_device_upload_throughput_count":               GetMetricInfo("radio_Device_upload_throughput_count", SUM, false, false),
+    "radio_device_download_throughput_count":             GetMetricInfo("radio_Device_download_throughput_count", SUM, false, false),
+    "radio_rrcsuccessfulconnectionsestablished_count":    GetMetricInfo("radio_RRCSuccessfulConnectionsEstablished_count", SUM, false, false),
+    "radio_rrcattemptedconnectionsestablishment_count":   GetMetricInfo("radio_RRCAttemptedConnectionsEstablishment_count", SUM, false, false),
+    "radio_rrcsuccessfulconnectionsreestablished_count":  GetMetricInfo("radio_RRCSuccessfulConnectionsReestablished_count", SUM, false, false),
+    "radio_rrcattemptedconnectionsreestablishment_count": GetMetricInfo("radio_RRCAttemptedConnectionsReestablishment_count", SUM, false, false),
+    "radio_s1sigsuccessfulconnectionsestablished_count":  GetMetricInfo("radio_S1SIGSuccessfulConnectionsEstablished_count", SUM, false, false),
+    "radio_s1sigattemptedconnectionsestablishment_count": GetMetricInfo("radio_S1SIGAttemptedConnectionsEstablishment_count", SUM, false, false),
+    "radio_erabnbrsuccessfulestablished_count":           GetMetricInfo("radio_ERABNbrSuccessfulEstablished_count", SUM, false, false),
+    "radio_erabnbrattemptedestablishment_count":          GetMetricInfo("radio_ERABNbrAttemptedEstablishment_count", SUM, false, false),
+ 
+    // Radio Queries: Mobility KPIs
+    "radio_hoattemptedoutinterenbs1_count":    GetMetricInfo("radio_HOAttemptedOutInterEnbS1_count", SUM, false, false),
+    "radio_hoattemptedoutinterenbs1_1_count":  GetMetricInfo("radio_HOAttemptedOutInterEnbS1_1_count", SUM, false, false),
+    "radio_hosuccessfuloutinterenbs1_count":   GetMetricInfo("radio_HOSuccessfulOutInterEnbS1_count", SUM, false, false),
+    "radio_hosuccessfuloutinterenbs1_1_count": GetMetricInfo("radio_HOSuccessfulOutInterEnbS1_1_count", SUM, false, false),
+    "radio_hoattemptedoutinterenbx2_count":    GetMetricInfo("radio_HOAttemptedOutInterEnbX2_count", SUM, false, false),
+    "radio_hoattemptedoutinterenbx2_1_count":  GetMetricInfo("radio_HOAttemptedOutInterEnbX2_1_count", SUM, false, false),
+    "radio_hosuccessfuloutinterenbx2_count":   GetMetricInfo("radio_HOSuccessfulOutInterEnbX2_count", SUM, false, false),
+    "radio_hosuccessfuloutinterenbx2_1_count": GetMetricInfo("radio_HOSuccessfulOutInterEnbX2_1_count", SUM, false, false),
+    "radio_hofailout_count":                   GetMetricInfo("radio_HOFailOut_count", SUM, false, false),
+ 
+    // Radio Queries: Integrity KPIs
+    "radio_pdcpupoctdl_count": GetMetricInfo("radio_PDCPUpOctDl_count", SUM, false, false),
+    "radio_pdcpcpoctdl_count": GetMetricInfo("radio_PDCPCpOctDl_count", SUM, false, false),
+    "radio_pdcpupoctul_count": GetMetricInfo("radio_PDCPUpOctUl_count", SUM, false, false),
+    "radio_pdcpcpoctul_count": GetMetricInfo("radio_PDCPCpOctUl_count", SUM, false, false),
+ 
+    // Radio Queries: Utilization KPIs
+    "radio_rrupuschprbtotmeanul_count": GetMetricInfo("radio_RRUPuschPrbTotMeanUl_count", SUM, false, false),
+    "radio_rrupuschprbmeantot_count":   GetMetricInfo("radio_RRUPuschPrbMeanTot_count", SUM, false, false),
+    "radio_rrupdschprbtotmeandl_count": GetMetricInfo("radio_RRUPdschPrbTotMeanDl_count", SUM, false, false),
+    "radio_rrupdschprbmeantot_count":   GetMetricInfo("radio_RRUPdschPrbMeanTot_count", SUM, false, false),
+}

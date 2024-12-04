@@ -353,6 +353,7 @@ function App() {
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
+            className="myButton"
           >
             Previous
           </button>
@@ -364,6 +365,7 @@ function App() {
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
+            className="myButton"
           >
             Next
           </button>
@@ -641,10 +643,16 @@ function App() {
             <button
               onClick={handleJoinSubmit}
               style={{ marginBottom: "0.5em" }}
+              className="myButton"
             >
               Submit
             </button>
-            <button onClick={() => setIsJoinModalOpen(false)}>Cancel</button>
+            <button
+              onClick={() => setIsJoinModalOpen(false)}
+              className="myButton"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}

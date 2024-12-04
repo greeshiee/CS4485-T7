@@ -464,6 +464,7 @@ function KPIUploader({
             <button
               onClick={handleExpression}
               style={{ marginRight: "1em", display: "inline-block" }}
+              className="myButton"
             >
               Generate New Column
             </button>
@@ -471,6 +472,7 @@ function KPIUploader({
             <button
               onClick={handleManageColumnsClick}
               style={{ marginRight: "1em", display: "inline-block" }}
+              className="myButton"
             >
               Manage Added Columns
             </button>
@@ -478,16 +480,22 @@ function KPIUploader({
             <button
               onClick={() => setIsJoinModalOpen(true)}
               style={{ marginRight: "1em", display: "inline-block" }}
+              className="myButton"
             >
               Open Join Table Form
             </button>
             <button
               onClick={handleExport}
               style={{ marginRight: "1em", display: "inline-block" }}
+              className="myButton"
             >
               Export CSV
             </button>
-            <button onClick={handleImport} style={{ display: "inline-block" }}>
+            <button
+              onClick={handleImport}
+              className="myButton"
+              style={{ display: "inline-block" }}
+            >
               Export to Database
             </button>
           </div>
@@ -517,11 +525,13 @@ function KPIUploader({
                     <button
                       onClick={() => handleToggleSaveColumn(column)}
                       style={{ marginLeft: "10px" }}
+                      className="myButton"
                     >
                       {savedColumns.includes(column) ? "Unsave" : "Save"}
                     </button>
                     <button
                       onClick={() => handleDeleteColumn(column)}
+                      className="myButton"
                       style={{ marginLeft: "10px" }}
                     >
                       Delete

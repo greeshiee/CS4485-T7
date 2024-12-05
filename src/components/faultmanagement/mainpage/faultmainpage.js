@@ -21,7 +21,7 @@ function FaultMainPage() {
       setLoadingDatabases(true);
       setErrorMessage('');
       try {
-        const response = await apiClient.get('/fault_management/list_databases');
+        const response = await axios.get('http://localhost:8000/list_databases');
         setDatabases(response.data.databases);
       } catch (error) {
         console.error('Error fetching databases:', error);
@@ -41,7 +41,7 @@ function FaultMainPage() {
         setLoadingAlerts(true);
         setErrorMessage('');
         try {
-          const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
+          const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
           setAlerts(response.data.alerts);
         } catch (error) {
           console.error('Error fetching alerts:', error);
@@ -57,13 +57,31 @@ function FaultMainPage() {
     }
   }, [selectedDatabase]);
 
+  // Detect faults whenever alerts change or a database is selected
+useEffect(() => {
+  const detectFaults = async () => {
+    if (selectedDatabase) {
+      try {
+        await axios.post('http://localhost:8000/detect_faults', { database: selectedDatabase });
+        console.log("Fault detection completed successfully.");
+      } catch (error) {
+        console.error("Error detecting faults:", error);
+        setErrorMessage("Error detecting faults. Please try again.");
+      }
+    }
+  };
+
+  detectFaults();
+}, [alerts, selectedDatabase]); // Run whenever alerts or selectedDatabase changes
+
+
   // Use useCallback to memoize refreshAlerts
   const refreshAlerts = useCallback(async () => {
     if (selectedDatabase) {
       setLoadingAlerts(true);
       setErrorMessage('');
       try {
-        const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
+        const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
         setAlerts(response.data.alerts);
       } catch (error) {
         console.error('Error refreshing alerts:', error);
@@ -78,7 +96,7 @@ function FaultMainPage() {
   // Remove an alert
   const removeAlert = async (alertId) => {
     try {
-      await apiClient.post(`/fault_management/remove_alert?database=${selectedDatabase}`, {
+      await axios.post(`http://localhost:8000/remove_alert?database=${selectedDatabase}`, {
         alert_id: alertId,
       });      refreshAlerts(); // Refresh alerts after removal
     } catch (error) {

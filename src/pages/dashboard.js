@@ -10,6 +10,7 @@ import UC3 from '../components/Usecase3/frontend/UC3';
 import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
+import DataPipelining from '../components/datapipelining';
 import Performance from '../components/performanceManagement/Performance';
 import AuthWrapper from '../components/authwrapper';
 
@@ -58,10 +59,7 @@ export default function Dashboard() {
     { label: 'Exploratory Data Analysis', component: <Usecase1 /> },
     { label: 'Data Ingestion', component: <DataIngestion />},
     { label: 'Dashboarding', component: <UC3/>},
-    { 
-      label: 'Data Pipelining', 
-      url: 'http://localhost:6789',
-    },
+    { label: 'Data Pipelining', component: <DataPipelining />},
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Fault Management', component: <FaultMainPage/>},

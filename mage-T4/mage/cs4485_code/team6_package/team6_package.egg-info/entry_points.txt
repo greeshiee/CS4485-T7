@@ -1,0 +1,2 @@
+[console_scripts]
+team6_package = team6_package.core:main

@@ -1,0 +1,5 @@
+Metadata-Version: 2.1
+Name: team6-package
+Version: 0.2.0
+Summary: Generate CSV data from a JSON schema.
+Author: Team 6

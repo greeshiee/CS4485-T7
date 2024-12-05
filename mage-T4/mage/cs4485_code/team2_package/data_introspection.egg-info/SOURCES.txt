@@ -1,0 +1,13 @@
+setup.py
+data_introspection/__init__.py
+data_introspection/factory.py
+data_introspection.egg-info/PKG-INFO
+data_introspection.egg-info/SOURCES.txt
+data_introspection.egg-info/dependency_links.txt
+data_introspection.egg-info/requires.txt
+data_introspection.egg-info/top_level.txt
+data_introspection/introspectors/__init__.py
+data_introspection/introspectors/base.py
+data_introspection/introspectors/csv_introspector.py
+data_introspection/introspectors/postgres_introspector.py
+data_introspection/introspectors/sqlite_introspector.py

@@ -1,0 +1,1 @@
+{"uplink_sent_bytes": "int64", "uplink_received_bytes": "int64", "uplink_sent_packets": "int64", "uplink_received_packets": "int64", "uplink_sent_packets_dropped": "int64", "uplink_received_packets_dropped": "int64"}

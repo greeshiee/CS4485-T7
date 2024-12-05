@@ -1,0 +1,9 @@
+kafka_data:
+  object_type: pipeline
+  object_uuid: stream_data_generator
+  outdated_after:
+    seconds: 15
+  repo_path: /home/src/default_repo
+  settings:
+    prometheus_loader: {}
+    stream_data_generator: {}

@@ -1,0 +1,1 @@
+{"required_bandwidth": "int64", "allocated_bandwidth": "int64", "sent_bytes": "int64", "received_bytes": "int64"}

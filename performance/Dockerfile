@@ -1,9 +1,14 @@
-FROM mageai/mageai:latest
+# Use a Python image
+FROM python:3.9-slim
 
-ARG USER_CODE_PATH=/home/src/${PROJECT_NAME}
+# Set the working directory
+WORKDIR /app
 
-# Note: this overwrites the requirements.txt file in your new project on first run. 
-# You can delete this line for the second run :) 
-COPY requirements.txt ${USER_CODE_PATH}/requirements.txt 
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-RUN pip3 install -r ${USER_CODE_PATH}/requirements.txt
+# Install the required Python packages
+RUN pip install kafka-python
+
+# Run the consumer script
+CMD ["python", "kafka-consumer.py"]

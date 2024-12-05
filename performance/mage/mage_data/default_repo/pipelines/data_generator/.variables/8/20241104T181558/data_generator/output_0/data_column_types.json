@@ -1,0 +1,1 @@
+{"name": "str", "email": "str", "address": "str", "application_type": "str", "signal_strength": "int64", "required_bandwidth": "int64", "allocated_bandwidth": "int64", "ip": "str"}

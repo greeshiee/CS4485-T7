@@ -9,15 +9,24 @@ app = FastAPI()
 
 selected_database = ""
 
-# Allowing cross-origin requests
-origins = ["*"]
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Allow requests from 'http://localhost:3000' only
+origins = [
+    "http://localhost:5000",  # Allow your React app's frontend URL
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # Allows specific origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
 )
+  
 
 # Model for adding a new alert
 class Alert(BaseModel):
@@ -31,7 +40,7 @@ def get_db_path(database: str, file_name: str):
     """
     Helper function to get the full path of the database file.
     """
-    return f'../databases/{database}/{file_name}'
+    return f'Users/jwalinshah/Documents/final/CS4485-T7fault/src/components/faultmanagement/databases/{database}/{file_name}'
 
 @app.get("/list_databases")
 def list_databases():
@@ -84,7 +93,7 @@ def get_columns(database: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching columns: {str(e)}")
 
-@app.get("/alerts")
+@app.get("/get_alerts")
 def get_alerts(database: str):
     """
     Returns a list of alerts for a specific database.
@@ -154,6 +163,7 @@ def remove_alert(alert: dict, database: str):
     """
     alert_id = alert.get("alert_id")
     database_path = get_db_path(database, "alerts.db")
+    print(database_path)
     
     if not os.path.exists(database_path):
         raise HTTPException(status_code=404, detail="Alerts database not found")
@@ -356,7 +366,8 @@ def get_notifications():
     Returns a list of notifications (faults) from the faults.db database.
     """
     global selected_database
-    print(f"Selected Database: {selected_database}")
+    
+    print(f"Selected Database: {'db1'}")
     if not selected_database:
         raise HTTPException(status_code=400, detail="No database selected")
 

@@ -21,8 +21,9 @@ function FaultMainPage() {
       setLoadingDatabases(true);
       setErrorMessage('');
       try {
-        const response = await axios.get('http://localhost:8000/list_databases');
+        const response = await apiClient.get('/fault_management/list_databases');
         setDatabases(response.data.databases);
+        
       } catch (error) {
         console.error('Error fetching databases:', error);
         setErrorMessage('Error fetching databases. Please try again.');
@@ -41,7 +42,7 @@ function FaultMainPage() {
         setLoadingAlerts(true);
         setErrorMessage('');
         try {
-          const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
+          const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
           setAlerts(response.data.alerts);
         } catch (error) {
           console.error('Error fetching alerts:', error);
@@ -62,7 +63,7 @@ useEffect(() => {
   const detectFaults = async () => {
     if (selectedDatabase) {
       try {
-        await axios.post('http://localhost:8000/detect_faults', { database: selectedDatabase });
+        await apiClient.post('/fault_management/detect_faults', { database: selectedDatabase });
         console.log("Fault detection completed successfully.");
       } catch (error) {
         console.error("Error detecting faults:", error);
@@ -81,7 +82,7 @@ useEffect(() => {
       setLoadingAlerts(true);
       setErrorMessage('');
       try {
-        const response = await axios.get(`http://localhost:8000/alerts?database=${selectedDatabase}`);
+        const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
         setAlerts(response.data.alerts);
       } catch (error) {
         console.error('Error refreshing alerts:', error);
@@ -96,7 +97,7 @@ useEffect(() => {
   // Remove an alert
   const removeAlert = async (alertId) => {
     try {
-      await axios.post(`http://localhost:8000/remove_alert?database=${selectedDatabase}`, {
+      await apiClient.post(`/fault_management/remove_alert?database=${selectedDatabase}`, {
         alert_id: alertId,
       });      refreshAlerts(); // Refresh alerts after removal
     } catch (error) {

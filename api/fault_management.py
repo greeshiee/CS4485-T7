@@ -16,7 +16,7 @@ app = FastAPI()
 
 # Allow requests from 'http://localhost:3000' only
 origins = [
-    "http://localhost:5000",  # Allow your React app's frontend URL
+    "http://localhost:3000",  # Allow your React app's frontend URL
 ]
 
 app.add_middleware(

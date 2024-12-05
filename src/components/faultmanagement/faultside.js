@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Container, Form, Spinner, Alert } from 'react-bootstrap';
-import apiClient from '../../../services/api';
+import apiClient from '../../services/api';
 
 
 const FaultSide = () => {

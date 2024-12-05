@@ -25,7 +25,7 @@ app.add_middleware(
 def get_db_connection():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        db_path = os.path.join(script_dir, 'database_sample_data.db')
+        db_path = os.path.join(script_dir, 'Databases/database_sample_data.db')
         conn = sqlite3.connect(db_path, timeout=10)
         conn.execute('PRAGMA journal_mode=WAL')
         conn.row_factory = sqlite3.Row

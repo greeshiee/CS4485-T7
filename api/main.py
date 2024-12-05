@@ -40,8 +40,8 @@ async def jwt_authentication_middleware(request: Request, call_next):
         response = await call_next(request)
         return response
 
-    # Bypass authentication for KPI management endpoints during development
-    if request.url.path.startswith("/kpi_management/api/"):
+    # Pass authentication for KPI
+    if request.url.path.startswith("/kpi_management"):
         response = await call_next(request)
         return response
 

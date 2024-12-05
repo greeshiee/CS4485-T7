@@ -26,6 +26,11 @@ Chart.register(
   ArcElement
 );
 
+const getAccessToken = () => {
+  // Retrieve the access token from local storage or wherever you store it
+  return localStorage.getItem('access_token');
+};
+
 function App() {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -96,10 +101,16 @@ function App() {
 
   // Fetch available tables from the database
   const fetchAvailableTables = async () => {
-    const url = "http://localhost:8000/api/tables";
+    const url = "http://localhost:5000/kpi_management/api/tables";
     console.log(`Fetching tables from: ${url}`);
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
       console.log(`Response status: ${response.status}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -107,10 +118,6 @@ function App() {
       const tables = await response.json();
       console.log("Fetched tables:", tables);
       setAvailableTables(tables);
-      // Remove this line:
-      // if (tables.length > 0) {
-      //     setSelectedTable(tables[0]);
-      // }
     } catch (error) {
       console.error("Error fetching tables:", error);
       alert("Error fetching tables: " + error.message);
@@ -121,8 +128,17 @@ function App() {
   const fetchTableData = async (tableName) => {
     console.log(`Fetching data for table: ${tableName}`);
     try {
+      const token = getAccessToken();
       const response = await fetch(
-        `http://localhost:8000/api/kpis?table=${tableName}`
+        `http://localhost:5000/kpi_management/api/kpis?table=${tableName}`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        }
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -130,7 +146,7 @@ function App() {
       const data = await response.json();
       console.log("Fetched data:", data);
 
-      // Use handleFileUpload to process the data as if it were a CSV
+      // Use handleFileUpload to process the data
       handleFileUpload(tableName, data, Object.keys(data[0]));
 
       setIsDataLoaded(true);

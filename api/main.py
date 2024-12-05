@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from dashboarding import app as dashboarding_app
 # from data_pipelining import app as data_pipelining_app
@@ -9,6 +10,8 @@ from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
 from jose import JWTError, jwt
 import requests
+from kpi import app as kpi_management_app
+
 
 
 DOMAIN = 'dev-ek2dti7hmslc8nga.us.auth0.com'        # e.g., 'your-domain.auth0.com'
@@ -19,6 +22,15 @@ JWKS = requests.get(JWKS_URL).json()
 
 app = FastAPI()
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["*"]
+)
 
 # JWT Authentication Middleware
 @app.middleware("http")
@@ -28,6 +40,10 @@ async def jwt_authentication_middleware(request: Request, call_next):
         response = await call_next(request)
         return response
 
+    # Bypass authentication for KPI management endpoints during development
+    if request.url.path.startswith("/kpi_management/api/"):
+        response = await call_next(request)
+        return response
 
     print('auth started')
 
@@ -104,6 +120,7 @@ app.mount("/dashboarding", dashboarding_app)
 app.mount("/data_generation", data_generation_app)
 app.mount("/eda", eda_app)
 app.mount("/fault_management", fault_management_app)
+app.mount("/kpi_management", kpi_management_app)
 
 if __name__ == "__main__":
     import uvicorn

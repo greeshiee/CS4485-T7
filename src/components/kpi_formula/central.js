@@ -130,7 +130,7 @@ function App() {
     try {
       const token = getAccessToken();
       const response = await fetch(
-        `http://localhost:5000/kpi_management/api/kpis?table=${tableName}`,
+        `http://localhost:5001/kpi_management/api/kpis?table=${tableName}`,
         {
           method: 'GET',
           headers: {

@@ -23,7 +23,7 @@ function Performance() {
             <h2>Hello, {user.name}!</h2>
 
             {/* Redirect to Grafana when clicking the Dashboard button */}
-            <button onClick={() => window.location.href = 'http://localhost:5000'}>Dashboard</button>
+            <button onClick={() => window.location.href = 'http://localhost:5001'}>Dashboard</button>
 
             {/* Logout functionality */}
             <button onClick={() => logout({ returnTo: window.location.origin })}>Logout</button>

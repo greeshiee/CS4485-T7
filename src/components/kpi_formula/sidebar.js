@@ -291,7 +291,7 @@ function KPIUploader({
     console.log("Table name:", tableName);
 
     try {
-      const response = await fetch("http://localhost:5000/kpi_management/api/import_kpis", {
+      const response = await fetch("http://localhost:5001/kpi_management/api/import_kpis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -355,7 +355,7 @@ function KPIUploader({
     console.log(`Fetching data for table: ${tableName}`);
     try {
       const response = await fetch(
-        `http://localhost:5000/kpi_management/api/kpis?table=${tableName}`,
+        `http://localhost:5001/kpi_management/api/kpis?table=${tableName}`,
         {
           headers: {
             'Content-Type': 'application/json'

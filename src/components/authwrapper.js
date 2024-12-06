@@ -2,6 +2,15 @@ import {useAuth0 } from '@auth0/auth0-react';
 import Unauthenticated from '../components/unauthenticated';
 import EmailVerification from './emailverification';
 
+// Single Auth0 configuration
+const auth0Config = {
+  domain: process.env.REACT_APP_AUTH0_DOMAIN,
+  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
+  authorizationParams: {
+    redirect_uri: window.location.origin + "/callback",
+  }
+};
+
 export default function AuthWrapper({ children }) {
   const { isAuthenticated, isLoading } = useAuth0();
 

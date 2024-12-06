@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
+//import './Usecase3/frontend/src/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -16,8 +18,10 @@ root.render(
     }}
   >
     <React.StrictMode>
+    <BrowserRouter>
       <App />
-    </React.StrictMode>
+    </BrowserRouter>
+  </React.StrictMode>
   </Auth0Provider>
 );
 

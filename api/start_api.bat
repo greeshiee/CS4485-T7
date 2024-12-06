@@ -11,8 +11,7 @@ if not exist "venv" (
     REM Install dependencies from requirements.txt
     echo Installing dependencies...
     pip install -r requirements.txt
-)
-else (
+) else (
     REM Activate the virtual environment
     call .\venv\Scripts\activate.bat
 )

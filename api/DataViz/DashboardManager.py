@@ -84,6 +84,7 @@ class DashboardMetadata(BaseModel):
     metadata_graphs: List[DashboardGraphMetadata]
     permission_type: str
     access_level: str
+    created_by: str
 
 class DashboardMapResponse(BaseModel):
     dashboard_metadatas: List[DashboardMetadata]
@@ -164,9 +165,9 @@ class DashboardManager:
         with self.get_sql_db_connection() as conn:
             conn.row_factory = sqlite3.Row
 
-        # First check access level
+            # First check access level
             access_result = conn.execute("""
-                SELECT dashboard_title, access_level
+                SELECT dashboard_title, access_level, created_by
                 FROM dashboard_title_mp
                 WHERE dashboard_id = ?
             """, (dashboard_id,)).fetchone()
@@ -180,23 +181,28 @@ class DashboardManager:
                     detail="This dashboard requires authentication"
                 )
 
-            # If dashboard is public or user is authenticated, proceed
-            if access_result['access_level'] == 'public':
-                permission_type = 'view'
-            else:
-                # Check user permissions if not public
+            # Check user permissions if user_email is provided
+            if user_email:
                 result = conn.execute("""
                     SELECT permission_type
                     FROM dashboard_permissions
                     WHERE dashboard_id = ? AND user_email = ?
                 """, (dashboard_id, user_email)).fetchone()
+                   
 
-                if not result:
+                if result:
+                    permission_type = result['permission_type']
+                else:
+                    permission_type = 'view' if access_result['access_level'] in ['public', 'all_users'] else None
+
+                if not permission_type:
                     raise HTTPException(
                         status_code=403,
                         detail="You don't have permission to access this dashboard"
                     )
-                permission_type = result['permission_type']
+            else:
+                # Default to view if public and no user_email
+                permission_type = 'view'
 
             # Retrieve the graph metadata
             cursor = conn.execute("""
@@ -221,85 +227,87 @@ class DashboardManager:
                 dashboard_title=access_result['dashboard_title'],
                 metadata_graphs=metadata_graphs,
                 permission_type=permission_type,
-                access_level=access_result['access_level']
+                access_level=access_result['access_level'],
+                created_by=access_result['created_by']
             )
 
-    def get_dashboard_id_mp(self) -> DashboardMapResponse:
-        with self.get_sql_db_connection() as conn:
-            # Set row factory to get dictionary-like row objects
-            conn.row_factory = sqlite3.Row
+    # def get_dashboard_id_mp(self) -> DashboardMapResponse:
+    #     with self.get_sql_db_connection() as conn:
+    #         # Set row factory to get dictionary-like row objects
+    #         conn.row_factory = sqlite3.Row
 
-            # Retrieve all dashboards with their metadata
-            dashboards = conn.execute("""
-                SELECT dt.dashboard_id, dt.dashboard_title, 
-                    md.graph_id, md.width, md.height, md.x_coord, md.y_coord
-                FROM dashboard_title_mp AS dt
-                LEFT JOIN master_dashboard AS md ON dt.dashboard_id = md.dashboard_id
-                ORDER BY dt.dashboard_id
-            """).fetchall()
+    #         # Retrieve all dashboards with their metadata
+    #         dashboards = conn.execute("""
+    #             SELECT dt.dashboard_id, dt.dashboard_title, 
+    #                 md.graph_id, md.width, md.height, md.x_coord, md.y_coord
+    #             FROM dashboard_title_mp AS dt
+    #             LEFT JOIN master_dashboard AS md ON dt.dashboard_id = md.dashboard_id
+    #             ORDER BY dt.dashboard_id
+    #         """).fetchall()
 
-            # Group metadata by dashboard_id
-            dashboard_map = {}
-            for row in dashboards:
-                dashboard_id = row['dashboard_id']
-                if dashboard_id not in dashboard_map:
-                    dashboard_map[dashboard_id] = {
-                        "dashboard_id": dashboard_id,
-                        "dashboard_title": row['dashboard_title'],
-                        "metadata_graphs": []
-                    }
+    #         # Group metadata by dashboard_id
+    #         dashboard_map = {}
+    #         for row in dashboards:
+    #             dashboard_id = row['dashboard_id']
+    #             if dashboard_id not in dashboard_map:
+    #                 dashboard_map[dashboard_id] = {
+    #                     "dashboard_id": dashboard_id,
+    #                     "dashboard_title": row['dashboard_title'],
+    #                     "metadata_graphs": []
+    #                 }
                 
-                # Append graph metadata if exists
-                if row['graph_id'] is not None:
-                    dashboard_map[dashboard_id]["metadata_graphs"].append(
-                        DashboardGraphMetadata(
-                            graph_id=row['graph_id'],
-                            width=row['width'],
-                            height=row['height'],
-                            x_coord=row['x_coord'],
-                            y_coord=row['y_coord']
-                        )
-                    )
+    #             # Append graph metadata if exists
+    #             if row['graph_id'] is not None:
+    #                 dashboard_map[dashboard_id]["metadata_graphs"].append(
+    #                     DashboardGraphMetadata(
+    #                         graph_id=row['graph_id'],
+    #                         width=row['width'],
+    #                         height=row['height'],
+    #                         x_coord=row['x_coord'],
+    #                         y_coord=row['y_coord']
+    #                     )
+    #                 )
 
-            # Convert dictionary to list of DashboardMetadata objects
-            dashboard_metadatas = [
-                DashboardMetadata(
-                    dashboard_id=meta["dashboard_id"],
-                    dashboard_title=meta["dashboard_title"],
-                    metadata_graphs=meta["metadata_graphs"]
-                ) for meta in dashboard_map.values()
-            ]
+    #         # Convert dictionary to list of DashboardMetadata objects
+    #         dashboard_metadatas = [
+    #             DashboardMetadata(
+    #                 dashboard_id=meta["dashboard_id"],
+    #                 dashboard_title=meta["dashboard_title"],
+    #                 metadata_graphs=meta["metadata_graphs"], 
 
-            return DashboardMapResponse(dashboard_metadatas=dashboard_metadatas)
+    #             ) for meta in dashboard_map.values()
+    #         ]
 
-    def create_new_dashboard(self, query: DashboardCreateQueryParams) -> int:
-        with self.get_sql_db_connection() as conn:
-            cursor = conn.execute(
-                "INSERT INTO dashboard_title_mp (dashboard_title) VALUES (?)",
-                (query.dashboard_title,)
-            )
-            dashboard_id = cursor.lastrowid
+    #         return DashboardMapResponse(dashboard_metadatas=dashboard_metadatas)
 
-            # Updated data preparation to use paired xy coordinates
-            data_to_insert = [
-                (dashboard_id, graph_id, xy[0], xy[1], width, height)
-                for graph_id, xy, (width, height) in zip(query.graph_ids, query.xy_coords, query.width_height)
-                ]
+    # def create_new_dashboard(self, query: DashboardCreateQueryParams) -> int:
+    #     with self.get_sql_db_connection() as conn:
+    #         cursor = conn.execute(
+    #             "INSERT INTO dashboard_title_mp (dashboard_title) VALUES (?)",
+    #             (query.dashboard_title,)
+    #         )
+    #         dashboard_id = cursor.lastrowid
 
-            # Insert the data into the master_dashboard table
-            conn.executemany(
-                """
-                INSERT INTO master_dashboard (dashboard_id, graph_id, x_coord, y_coord, width, height)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                data_to_insert
-            )
+    #         # Updated data preparation to use paired xy coordinates
+    #         data_to_insert = [
+    #             (dashboard_id, graph_id, xy[0], xy[1], width, height)
+    #             for graph_id, xy, (width, height) in zip(query.graph_ids, query.xy_coords, query.width_height)
+    #             ]
 
-            # Commit the transaction
-            conn.commit()
+    #         # Insert the data into the master_dashboard table
+    #         conn.executemany(
+    #             """
+    #             INSERT INTO master_dashboard (dashboard_id, graph_id, x_coord, y_coord, width, height)
+    #             VALUES (?, ?, ?, ?, ?, ?)
+    #             """,
+    #             data_to_insert
+    #         )
 
-        # Optionally, return the dashboard_id
-        return dashboard_id
+    #         # Commit the transaction
+    #         conn.commit()
+
+    #     # Optionally, return the dashboard_id
+    #     return dashboard_id
 
     def add_to_dashboard(self, query: DashboardPutQueryParams) -> int:
         dashboard_id = query.dashboard_id
@@ -481,14 +489,19 @@ class DashboardManager:
         with self.get_sql_db_connection() as conn:
             conn.row_factory = sqlite3.Row
             
-            # Modified query to include all_users access level
+            # Modified query to handle all permission cases
             dashboards = conn.execute("""
                 SELECT DISTINCT 
                     dt.dashboard_id, 
                     dt.dashboard_title,
                     dt.created_by,
                     dt.access_level,
-                    dp.permission_type,
+                    COALESCE(dp.permission_type, 
+                        CASE 
+                            WHEN dt.access_level IN ('public', 'all_users') THEN 'view'
+                            ELSE NULL 
+                        END
+                    ) as permission_type,
                     md.graph_id, 
                     md.width, 
                     md.height, 
@@ -496,14 +509,16 @@ class DashboardManager:
                     md.y_coord
                 FROM dashboard_title_mp dt
                 LEFT JOIN dashboard_permissions dp 
-                    ON dt.dashboard_id = dp.dashboard_id
+                    ON dt.dashboard_id = dp.dashboard_id 
+                    AND dp.user_email = ?
                 LEFT JOIN master_dashboard md 
                     ON dt.dashboard_id = md.dashboard_id
-                WHERE dp.user_email = ? 
-                    OR dt.access_level = 'public'
-                    OR (dt.access_level = 'all_users' AND ? IS NOT NULL)
+                WHERE 
+                    dp.user_email = ?  -- User has explicit permissions
+                    OR dt.access_level = 'public'  -- Public dashboards
+                    OR (dt.access_level = 'all_users' AND ? IS NOT NULL)  -- All users dashboards if email is valid
                 ORDER BY dt.dashboard_id
-            """, (user_email, user_email))  # Pass user_email twice for the two parameters
+            """, (user_email, user_email, user_email))
 
             # Update the dashboard_map dictionary creation
             dashboard_map = {}
@@ -536,7 +551,8 @@ class DashboardManager:
                     dashboard_title=meta["dashboard_title"],
                     metadata_graphs=meta["metadata_graphs"],
                     permission_type=meta["permission_type"],
-                    access_level=meta["access_level"]
+                    access_level=meta["access_level"],
+                    created_by=meta["created_by"]
                 ) for meta in dashboard_map.values()
             ]
 
@@ -580,11 +596,10 @@ class DashboardManager:
             )
         
         with self.get_sql_db_connection() as conn:
-            # check if the user already has permission, if the user already has permission, update it other wise insert it
-            # Insert new permissions
+            # Use UPSERT (INSERT OR REPLACE) for each permission
             conn.executemany(
                 """
-                INSERT INTO dashboard_permissions 
+                INSERT OR REPLACE INTO dashboard_permissions 
                 (dashboard_id, user_email, permission_type) 
                 VALUES (?, ?, ?)
                 """,

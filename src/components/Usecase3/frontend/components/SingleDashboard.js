@@ -14,8 +14,6 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
   //const { dashboardId } = useParams();
 
   const [tiles, setTiles] = useState([]);
-  const [tileContent, setTileContent] = useState('');
-  const [open, setOpen] = useState(false);
   const [containerWidth, setContainerWidth] = useState(1200);
   const [currentLayout, setCurrentLayout] = useState([]);
   const [dashboard, setDashboard] = useState(null);
@@ -90,9 +88,6 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
       </Box>
     );
   }
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   const addTile = () => {
     onNavigate('addTile', { dashboardId: dashboard.dashboard_id });
@@ -225,117 +220,14 @@ function SingleDashboard({dashboardId, onNavigate, userEmail }) {
               fontWeight: 500,
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
-            onClick={handleOpen}
+            onClick={addTile}
           >
             Add Tile
           </Button>
         </Box>
       </Box>
 
-      <Modal 
-        open={open} 
-        onClose={handleClose}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <Box
-          sx={{
-            backgroundColor: '#ffffff',
-            borderRadius: '12px',
-            padding: '32px',
-            width: '400px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-            border: '1px solid #eaeaea',
-            '& .MuiTextField-root': {
-              marginTop: '24px',
-              marginBottom: '24px',
-            }
-          }}
-        >
-          <Typography 
-            variant="h6" 
-            component="h2" 
-            sx={{ 
-              color: '#1a1a1a',
-              fontWeight: 600,
-              marginBottom: '8px'
-            }}
-          >
-            Add New Tile
-          </Typography>
-          
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              color: '#666666',
-              marginBottom: '16px'
-            }}
-          >
-            Choose your visualization type
-          </Typography>
 
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Enter tile content"
-            value={tileContent}
-            onChange={(e) => setTileContent(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                backgroundColor: '#f8f9fa',
-                '&:hover fieldset': {
-                  borderColor: '#2196f3',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#2196f3',
-                }
-              }
-            }}
-          />
-
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'flex-end', 
-              gap: 2,
-              marginTop: 3
-            }}
-          >
-            <Button 
-              variant="outlined" 
-              onClick={handleClose}
-              sx={{
-                textTransform: 'none',
-                borderColor: '#e0e0e0',
-                color: '#666666',
-                '&:hover': {
-                  backgroundColor: '#f8f9fa',
-                  borderColor: '#e0e0e0'
-                }
-              }}
-            >
-              Cancel
-            </Button>
-            
-            <Button 
-              variant="contained" 
-              onClick={addTile}
-              sx={{
-                textTransform: 'none',
-                backgroundColor: '#2196f3',
-                '&:hover': {
-                  backgroundColor: '#1976d2'
-                }
-              }}
-            >
-              Create Tile
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
 
       <GridLayout
         className="layout"

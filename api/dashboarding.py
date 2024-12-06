@@ -19,10 +19,15 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 # Add these new models
 from DataViz.DashboardManager import DashboardPermission, DashboardMetadata
+
 class DashboardPermission(BaseModel):
     user_email: str
     permission_type: str  # 'view' or 'edit'
 
+class DashboardPermissionsUpdateParams(BaseModel):
+    dashboard_id: int
+    permissions: List[DashboardPermission]
+    requester_email: str
 class DashboardWithPermissions(BaseModel):
     dashboard_title: str
     permissions: List[DashboardPermission] = []
@@ -51,25 +56,34 @@ class DashboardAccessLevelUpdate(BaseModel):
             )
         return data
 
+class DashboardLayoutUpdateParams(BaseModel):
+    dashboard_id: int
+    graph_ids: List[int]
+    xy_coords: List[List[int]]
+    width_height: List[List[int]]
+
 app = FastAPI()
 
-# Add CORS middleware
+# Update CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # Your React frontend URL
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Add all allowed methods
+    allow_headers=["*", "Authorization"],
 )
 
+# Initialize database and tables before any endpoints are called
 db_manager = DataVisualizationFacade()
 
 @app.get("/tables/map")
 def get_table_map() -> TableMapResponse:
+    db_manager = DataVisualizationFacade()
     return db_manager.get_all_tables_mp()
 
 @app.get("/tables")
 async def get_tables(table_id: int) -> TableResponse:
+    db_manager = DataVisualizationFacade()
     return db_manager.get_table(table_id=table_id)
     
 @app.post("/tables")
@@ -77,6 +91,7 @@ async def post_tables(
     table_name: str = Form(...),
     file: UploadFile = File(...)
 ) -> TableResponse:
+    db_manager = DataVisualizationFacade()
     if os.path.splitext(file.filename)[-1] != ".csv":
         raise HTTPException(status_code=404, detail=".csv file was not uploaded!")
     contents = file.file.read()
@@ -90,7 +105,9 @@ async def post_tables(
 
 # app.get("/graphs") 
 @app.post("/graphs")
+
 async def post_graphs(query_params: GraphQueryParam = Depends()):
+    db_manager = DataVisualizationFacade()
     try:
         print("\nAttempting to add graph...")
         result = db_manager.add_graph(query_params)
@@ -105,33 +122,34 @@ async def post_graphs(query_params: GraphQueryParam = Depends()):
 
 @app.get("/graphs")
 async def get_graphs(graph_id: int) -> Graph:
+    db_manager = DataVisualizationFacade()
     return db_manager.get_graph(graph_id=graph_id)
 
 @app.get("/graphs/map") # return map of all graph ids and their corresponding tables, axes, and info (if no parameters)
 async def get_graph_map() -> GraphMapResponse:
+    db_manager = DataVisualizationFacade()
     return db_manager.get_graph_mp()
 
 @app.get("/dashboards/map")
 async def get_dashboard_mp(user_email: str) -> DashboardMapResponse:
+    db_manager = DataVisualizationFacade()
     return db_manager.get_dashboard_id_mp(user_email=user_email)
 
 @app.get("/dashboards")
 async def get_dashboard(dashboard_id: int, user_email: str | None = None) -> Dashboard:
+    db_manager = DataVisualizationFacade()
     return db_manager.render_dashboard(dashboard_id=dashboard_id, user_email=user_email)
 
 @app.post("/dashboards")
 async def post_new_dashboard(query_params: DashboardCreateQueryParams = Depends()) -> Dashboard:
+    db_manager = DataVisualizationFacade()
     return db_manager.create_new_dashboard(query=query_params)
-
-class DashboardPermissionsUpdateParams(BaseModel):
-    dashboard_id: int
-    permissions: List[DashboardPermission]
-    requester_email: str
 
 @app.put("/dashboards/permissions")
 async def update_dashboard_permissions(
     query_params: DashboardPermissionsUpdateParams
 ) -> Dict[str, Any]:
+    db_manager = DataVisualizationFacade()
     try:
         db_manager.update_dashboard_permissions(
             dashboard_id=query_params.dashboard_id,
@@ -154,20 +172,17 @@ async def update_dashboard_permissions(
 
 @app.put("/dashboards")
 async def add_new_graphs_dashboard(query_params: DashboardPutQueryParams = Depends()) -> Dashboard:
+    db_manager = DataVisualizationFacade()
     return db_manager.add_to_dashboard(query=query_params)
 
 @app.delete("/dashboards")
 async def delete_dashboards(query_params: DashboardDeleteQueryParams):
-    db_manager.delete_dashboard(query=query_params)
-
-class DashboardLayoutUpdateParams(BaseModel):
-    dashboard_id: int
-    graph_ids: List[int]
-    xy_coords: List[List[int]]
-    width_height: List[List[int]]
+    db_manager = DataVisualizationFacade()
+    return db_manager.delete_dashboard(query=query_params)
 
 @app.put("/dashboards/layout")
 async def update_dashboard_layout(query_params: DashboardLayoutUpdateParams) -> None:
+    db_manager = DataVisualizationFacade()
     return db_manager.update_dashboard_layout(query=query_params)
 
 @app.get("/dashboards/{dashboard_id}/permissions")
@@ -175,6 +190,7 @@ async def get_dashboard_permissions(
     dashboard_id: int,
     requester_email: str
 ) -> List[DashboardPermissionResponse]:
+    db_manager = DataVisualizationFacade()
     try:
         permissions = db_manager.get_dashboard_permissions(
             dashboard_id=dashboard_id,
@@ -191,6 +207,7 @@ async def get_dashboard_permissions(
 async def delete_dashboard_permission(
     query_params: DeletePermissionParams
 ) -> Dict[str, Any]:
+    db_manager = DataVisualizationFacade()
     try:
         db_manager.delete_dashboard_permission(
             dashboard_id=query_params.dashboard_id,
@@ -214,6 +231,7 @@ async def delete_dashboard_permission(
 async def update_dashboard_access_level(
     query_params: DashboardAccessLevelUpdate
 ) -> Dict[str, Any]:
+    db_manager = DataVisualizationFacade()
     try:
         db_manager.update_access_level(
             dashboard_id=query_params.dashboard_id,
@@ -238,6 +256,7 @@ async def update_dashboard_access_level(
 
 @app.get("/public-dashboards")
 async def get_public_dashboards() -> DashboardMapResponse:
+    db_manager = DataVisualizationFacade()
     try:
         with db_manager.dashb_manager.get_sql_db_connection() as conn:
             conn.row_factory = sqlite3.Row
@@ -259,7 +278,8 @@ async def get_public_dashboards() -> DashboardMapResponse:
                     dashboard_title=dash['dashboard_title'],
                     metadata_graphs=[],  # Can be populated if needed
                     permission_type='view',
-                    access_level='public'
+                    access_level='public', 
+                    created_by=dash['created_by']
                 ) for dash in dashboards
             ]
 

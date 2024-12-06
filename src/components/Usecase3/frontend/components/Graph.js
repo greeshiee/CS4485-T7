@@ -2,6 +2,7 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 import { useEffect } from 'react';
 import './Graph.css';
+import {Typography} from '@mui/material'; 
 
 const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
     // Helper function to convert date strings to consistent format
@@ -209,7 +210,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     config={{
                         responsive: true,
-                        displayModeBar: false
+                        displayModeBar: 'hover'
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -225,7 +226,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     config={{
                         responsive: true,
-                        displayModeBar: false
+                        displayModeBar: 'hover'
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -259,6 +260,69 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
+            )}
+            {chartType === 'Scatter' && (
+                <Plot
+                    data={plotData.map(trace => ({
+                        ...trace,
+                        type: 'scatter',
+                        mode: 'markers',
+                        marker: {
+                            size: 10,
+                            color: pastelColors[0],
+                            opacity: 0.7
+                        }
+                    }))}
+                    layout={{ 
+                        title: {
+                            text: `${headers[x]} vs ${y && y[0] ? headers[y[0]] : ''} Scatter Plot`,
+                            font: { size: 20, color: '#333' }
+                        },
+                        paper_bgcolor: 'transparent',
+                        plot_bgcolor: 'transparent',
+                        showlegend: true,
+                        legend: { 
+                            orientation: 'h',
+                            y: -0.2,
+                            font: { size: 12 }
+                        },
+                        autosize: true
+                    }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: 'hover'
+                    }}
+                    style={{ width: '100%', height: '100%' }}
+                />
+            )}
+            {chartType === 'Scorecard' && (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    padding: '20px',
+                    backgroundColor: 'transparent'
+                }}>
+                    <Typography variant="h6" style={{ color: '#666', marginBottom: '10px' }}>
+                        {headers[x]}
+                    </Typography>
+                    <Typography variant="h3" style={{ 
+                        color: '#333',
+                        fontWeight: 'bold',
+                        textAlign: 'center'
+                    }}>
+                        {/* Calculate average of the selected column */}
+                        {(() => {
+                            const values = filteredData.map(row => parseFloat(row[x]));
+                            const validValues = values.filter(val => !isNaN(val));
+                            if (validValues.length === 0) return 'N/A';
+                            const avg = validValues.reduce((a, b) => a + b, 0)/validValues.length;
+                            return Number.isInteger(avg) ? avg.toLocaleString() : avg.toFixed(2);
+                        })()}
+                    </Typography>
+                </div>
             )}
         </div>
     );

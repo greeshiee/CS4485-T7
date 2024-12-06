@@ -15,4 +15,5 @@ else
 fi
 
 # Run the application
-NOTEBOOK_NAME="./notebook" python3 main.py
+export NOTEBOOK_NAME="./notebook"
+python3 main.py

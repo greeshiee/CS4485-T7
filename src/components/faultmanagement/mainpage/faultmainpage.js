@@ -4,10 +4,13 @@ import './faultmanagement-styles.css';
 import AlertConfig from './AlertConfig';
 import AlertsList from './AlertsList';
 import { Container, Form, Spinner, Alert } from 'react-bootstrap';
-import axios from 'axios';
 import apiClient from '../../../services/api';
+import useAxiosInterceptor from '../../../authInterceptor'; // Import the interceptor hook
 
 function FaultMainPage() {
+  // Initialize the interceptor
+  useAxiosInterceptor();  // Calling the custom hook to activate the interceptor
+  
   const [alerts, setAlerts] = useState([]);
   const [databases, setDatabases] = useState([]);
   const [selectedDatabase, setSelectedDatabase] = useState('');
@@ -36,26 +39,44 @@ function FaultMainPage() {
 
   // Fetch alerts when selectedDatabase changes
   useEffect(() => {
-    if (selectedDatabase) {
-      const fetchAlerts = async () => {
-        setLoadingAlerts(true);
-        setErrorMessage('');
-        try {
-          const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
-          setAlerts(response.data.alerts);
-        } catch (error) {
-          console.error('Error fetching alerts:', error);
-          setErrorMessage('Error fetching alerts. Please try again.');
-        } finally {
-          setLoadingAlerts(false);
-        }
-      };
-
-      fetchAlerts();
-    } else {
+    if (!selectedDatabase) {
       setAlerts([]); // Clear alerts if no database is selected
+      return;
     }
+
+    const fetchAlerts = async () => {
+      setLoadingAlerts(true);
+      setErrorMessage('');
+      try {
+        const response = await apiClient.get(`/fault_management/get_alerts?database=${selectedDatabase}`);
+        setAlerts(response.data.alerts);
+      } catch (error) {
+        console.error('Error fetching alerts:', error);
+        setErrorMessage('Error fetching alerts. Please try again.');
+      } finally {
+        setLoadingAlerts(false);
+      }
+    };
+
+    fetchAlerts();
   }, [selectedDatabase]);
+
+  // Detect faults on alerts change
+  useEffect(() => {
+    const detectFaults = async () => {
+      if (selectedDatabase && alerts.length) {
+        try {
+          await apiClient.post('/fault_management/detect_faults', { database: selectedDatabase });
+          console.log("Fault detection completed successfully.");
+        } catch (error) {
+          console.error("Error detecting faults:", error);
+          setErrorMessage("Error detecting faults. Please try again.");
+        }
+      }
+    };
+
+    detectFaults();
+  }, [alerts, selectedDatabase]);
 
   // Use useCallback to memoize refreshAlerts
   const refreshAlerts = useCallback(async () => {
@@ -74,13 +95,13 @@ function FaultMainPage() {
     }
   }, [selectedDatabase]);
 
-
   // Remove an alert
   const removeAlert = async (alertId) => {
     try {
       await apiClient.post(`/fault_management/remove_alert?database=${selectedDatabase}`, {
         alert_id: alertId,
-      });      refreshAlerts(); // Refresh alerts after removal
+      });
+      refreshAlerts(); // Refresh alerts after removal
     } catch (error) {
       console.error('Error removing alert:', error);
       setErrorMessage('Error removing alert. Please try again.');

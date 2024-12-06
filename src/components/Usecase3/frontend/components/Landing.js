@@ -78,9 +78,13 @@ const Landing = ({ onNavigate, userEmail }) => {
     try {
       const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
       const dashboardMetadatas = mapResponse.data.dashboard_metadatas;
-      setOwnedDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'owner'));
+      console.log(dashboardMetadatas);
+      setOwnedDashboards(dashboardMetadatas.filter(dash => 
+        dash.permission_type === 'owner' && dash.created_by === userEmail
+      ));
+      console.log("owner: ", ownedDashboards);
       setEditableDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'edit'));
-      setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view'));
+      setViewOnlyDashboards(dashboardMetadatas.filter(dash => dash.permission_type === 'view' && dash.access_level === 'private'));
       setPublicDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'public')); 
       setAllUsersDashboards(dashboardMetadatas.filter(dash => dash.access_level === 'all_users'));
     } catch (error) {
@@ -97,8 +101,8 @@ const Landing = ({ onNavigate, userEmail }) => {
         xy_coords: []       // Empty to delete entire dashboard
       };
 
-      const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
-      await apiClient.delete('/dashboards', { data: requestBody });
+      //const mapResponse = await apiClient.get(`/dashboarding/dashboards/map?user_email=${userEmail}`);
+      await apiClient.delete('/dashboarding/dashboards', { data: requestBody });
       // Refresh the dashboard list after successful deletion
       fetchDashboards();
     } catch (error) {
@@ -117,7 +121,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'myDashboards':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               My Dashboards
             </Typography>
             <Box sx={{ 
@@ -142,7 +146,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'shared':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Shared with Me
             </Typography>
             
@@ -234,7 +238,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'public':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Public Dashboards
             </Typography>
             <Box sx={{ 
@@ -264,7 +268,7 @@ const Landing = ({ onNavigate, userEmail }) => {
       case 'allUsers':
         return (
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px' }}>
+            <Typography variant="h5" sx={{ fontWeight: 600, marginBottom: '30px', color: '#1a1a1a' }}>
               Internal Dashboards
             </Typography>
             <Box sx={{ 

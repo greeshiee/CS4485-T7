@@ -1,0 +1,10 @@
+README.md
+setup.py
+team8_package/__init__.py
+team8_package/core.py
+team8_package.egg-info/PKG-INFO
+team8_package.egg-info/SOURCES.txt
+team8_package.egg-info/dependency_links.txt
+team8_package.egg-info/entry_points.txt
+team8_package.egg-info/requires.txt
+team8_package.egg-info/top_level.txt

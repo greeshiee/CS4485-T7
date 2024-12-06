@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
-import apiClient from '../services/api';
 
 const UseCase1 = () => {
     const [codeBlocks, setCodeBlocks] = useState(['']);
     const [output, setOutput] = useState('');
-  
-    const runButtonClick = async (i) => {
-        try {
-          const response = await apiClient.post('/eda/run', { code: codeBlocks[i] });
-          setOutput(response.data.stdout);
-        } catch (error) {
-          console.error('Error:', error);
-        }
-      };
+
+    const runButtonClick = (i) => {
+        fetch('http://localhost:8000/run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code: codeBlocks[i] }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            setOutput(data.stdout);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    };
 
     const addButtonClick = () => {
         setCodeBlocks([...codeBlocks, '']);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Papa from "papaparse";
-import apiClient from "../services/api";
 
 export default function DataGeneration() {
   const [file, setFile] = useState(null);
@@ -46,8 +45,8 @@ export default function DataGeneration() {
     formData.append("custom_filename", customFilename || "output");
 
     try {
-      const response = await apiClient.post(
-        "/data_generation/generate-csv",
+      const response = await axios.post(
+        "http://localhost:8000/generate-csv",
         formData,
         {
           headers: {
@@ -72,8 +71,8 @@ export default function DataGeneration() {
     }
 
     try {
-      const response = await apiClient.get(
-        `/data_generation/download_csv/?filename=${filename}`,
+      const response = await axios.get(
+        `http://localhost:8000/download_csv/?filename=${filename}`,
         {
           responseType: "blob",
         }
@@ -108,35 +107,6 @@ export default function DataGeneration() {
       setMessage("Error downloading file");
       console.error(error);
     }
-  };
-
-  //To downlaod all the CSV content
-  const sendToEda = () => {
-    if (csvContent.length === 0) {
-      setMessage("No CSV content available for download.");
-      return;
-    }
-
-    const csv = Papa.unparse(csvContent); // Convert JSON array back to CSV
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-    // Create a new FormData object
-    const formData = new FormData();
-
-    // Append the Blob as a file to FormData
-    formData.append('file', blob, (customFilename || "all_content") + '.csv'); // 'file' is the key, blobData is the content, fileName is the name
-
-    // Send the FormData (which includes the Blob as a file) using fetch
-    // Using Promises
-      apiClient.post('/data_generation/upload', formData)
-      .then(response => {
-        console.log('Success:', response.data);
-        setMessage('file now available in EDA');
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setMessage('could not send file');
-      });
   };
 
   //To downlaod all the CSV content
@@ -261,13 +231,6 @@ export default function DataGeneration() {
               className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 mb-4"
             >
               Download All CSV Content
-            </button>
-
-            <button
-              onClick={sendToEda}
-              className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 mb-4"
-            >
-              Send to Eda
             </button>
           </div>
 

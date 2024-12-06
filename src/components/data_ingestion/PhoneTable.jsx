@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import apiClient from '../../services/api';
 
 const PhoneTable = () => {
   const [phones, setPhones] = useState([]);
@@ -10,8 +9,11 @@ const PhoneTable = () => {
   useEffect(() => {
     const fetchPhones = async () => {
       try {
-        const response = await apiClient.get('/phones');
-        const data = response.data;
+        const response = await fetch('http://localhost:8000/phones');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
         
         // Transform the data into the format we need
         if (data && data.phones && Array.isArray(data.phones)) {
@@ -31,10 +33,9 @@ const PhoneTable = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPhones();
   }, []);
-  
 
   if (loading) {
     return (

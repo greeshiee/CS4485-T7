@@ -5,37 +5,25 @@ import { NavLink } from 'react-router-dom';
 import { ChevronLast, ChevronFirst } from "lucide-react";
 import Usecase1 from '../components/usecase1';
 import DataGeneration from '../components/datageneration';
-import UC3 from '../components/Usecase3/frontend/UC3';
 
-import FaultMainPage from '../components/faultmanagement/mainpage/faultmainpage';
+import FaultMainPage from '../components/faultmanagement/faultmainpage';
 import FaultSide from '../components/faultmanagement/faultside';
 import DataIngestion from '../components/data_ingestion/DataIngestion';
-import Performance from '../components/performanceManagement/Performance';
 import AuthWrapper from '../components/authwrapper';
-
 
 const SidebarContext = createContext();
 
-export function SidebarItem({ to, label, onClick, url }) {
+export function SidebarItem({ to, label, onClick }) {
   const { expanded } = useContext(SidebarContext);
-
-  const handleClick = () => {
-    if (url) {
-      window.location.href = url; // Redirect to the specified URL
-    } else if (onClick) {
-      onClick(); // Trigger the onClick handler if no URL
-    }
-  };
-
 
   return (
     <li className="relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group hover:bg-gray-500 text-gray-600">
       <NavLink
-        to={to || "#"}
+        to={to}
         className={({ isActive }) =>
           `w-full flex items-center ${isActive ? "text-electricblue font-semibold" : ""}`
         }
-        onClick={handleClick} // Use the updated click handler
+        onClick={onClick} // Call the onClick function when the item is clicked
       >
         <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
           {label}
@@ -44,7 +32,6 @@ export function SidebarItem({ to, label, onClick, url }) {
     </li>
   );
 }
-
 
 export default function Dashboard() {
   const [expanded, setExpanded] = useState(true);
@@ -57,15 +44,12 @@ export default function Dashboard() {
   const sidebarItems = [
     { label: 'Exploratory Data Analysis', component: <Usecase1 /> },
     { label: 'Data Ingestion', component: <DataIngestion />},
-    { label: 'Dashboarding', component: <UC3/>},
-    { 
-      label: 'Data Pipelining', 
-      url: 'http://localhost:6789',
-    },
+    { label: 'Dashboarding' },
+    { label: 'Data Pipelining' },
     { label: 'KPI Formulas' },
     { label: 'Data Generation', component: <DataGeneration /> },
     { label: 'Fault Management', component: <FaultMainPage/>},
-    { label: 'Performance Management', component: <Performance/>},
+    { label: 'Performance Metrics' },
   ];
 
   // Function to handle the click event on sidebar items
@@ -73,6 +57,9 @@ export default function Dashboard() {
     setActiveComponent(component); // Set the active component
   };
 
+  // if (!isAuthenticated) {
+  //   return <Unauthenticated />;
+  // }
 
   let content = (
     <div className="flex flex-col min-h-screen">
@@ -90,8 +77,7 @@ export default function Dashboard() {
                         key={index} 
                         to={item.to} 
                         label={item.label} 
-                        onClick={() => handleSidebarClick(item.component)} 
-                        url={item.url} // Pass the URL property
+                        onClick={() => handleSidebarClick(item.component)} // Pass the component to the click handler
                       />
                     ))}
                   </ul>
@@ -112,11 +98,11 @@ export default function Dashboard() {
             {activeComponent || <Usecase1 />} {/* Render the active component */}
           </div>
         </div>
-        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden">
-          <FaultSide />
-        </div>
+        <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden" >
+          <FaultSide/>
       </div>
     </div>
+  </div>
   );
 
 

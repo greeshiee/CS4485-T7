@@ -1,0 +1,2 @@
+[console_scripts]
+team8_package = team8_package.core:main

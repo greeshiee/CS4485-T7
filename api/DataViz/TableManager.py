@@ -175,15 +175,72 @@ class TableManager:
                     aws_secret_access_key=AWS_SECRET_KEY
             )
 
+            # Get last modified timestamps for existing tables
+            with self.get_sql_db_connection() as conn:
+                cursor = conn.cursor()
+                # Check if last_modified column exists
+                cursor.execute("PRAGMA table_info(master_tables)")
+                columns = [row[1] for row in cursor.fetchall()]
+                if 'last_modified' not in columns:
+                    cursor.execute('''
+                        ALTER TABLE master_tables ADD COLUMN last_modified TIMESTAMP
+                    ''')
+                    conn.commit()
+
             response = s3_client.list_objects_v2(Bucket=AWS_S3_BUCKET_NAME)
             for obj in response['Contents']:
                 file_key = obj['Key']
-                if file_key in tbl_map.table_names: continue
+                last_modified = obj['LastModified']
 
-                file_obj = s3_client.get_object(Bucket=AWS_S3_BUCKET_NAME, Key=file_key)
-                obj = io.StringIO(file_obj['Body'].read().decode('utf-8'))
-                df = pd.read_csv(obj)
-                self.add_table(file_key, df, tbl_response=None)
-        except:
-            print("Environment keys not loaded.")
+                # Check if file exists and if it's been modified
+                with self.get_sql_db_connection() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute('''
+                        SELECT last_modified 
+                        FROM master_tables 
+                        WHERE table_name = ?
+                    ''', (file_key,))
+                    result = cursor.fetchone()
+
+                    should_update = (
+                        file_key not in tbl_map.table_names or  # New file
+                        (result and result[0] and pd.Timestamp(result[0]) < pd.Timestamp(last_modified))  # Modified file
+                    )
+
+                    if should_update:
+                        # Read and update/insert the table
+                        file_obj = s3_client.get_object(Bucket=AWS_S3_BUCKET_NAME, Key=file_key)
+                        obj = io.StringIO(file_obj['Body'].read().decode('utf-8'))
+                        df = pd.read_csv(obj)
+                        
+                        if file_key in tbl_map.table_names:
+                            # Update existing table instead of deleting
+                            idx = tbl_map.table_names.index(file_key)
+                            table_id = tbl_map.table_ids[idx]
+                            db_name = f'tbl_{table_id}'
+                            
+                            # Clear existing data
+                            cursor.execute(f'DELETE FROM {db_name}')
+                            
+                            # Insert new data using existing add_table logic without creating new master entry
+                            escaped_columns = [f"[{col}]" for col in df.columns]
+                            placeholders = ", ".join(["?" for _ in df.columns])
+                            insert_query = f"""
+                            INSERT INTO {db_name} ({', '.join(escaped_columns)})
+                            VALUES ({placeholders})
+                            """
+                            cursor.executemany(insert_query, df.values.tolist())
+                        else:
+                            # Add new table with timestamp
+                            db_name = self.add_table(file_key, df, tbl_response=None)
+                        
+                        cursor.execute('''
+                            UPDATE master_tables 
+                            SET last_modified = ? 
+                            WHERE table_name = ?
+                        ''', (last_modified, file_key))
+                        conn.commit()
+
+        except Exception as e:
+            print(f"Error caching tables: {str(e)}")
 

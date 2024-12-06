@@ -230,11 +230,11 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
               fontWeight: 500
             }}
           >
-            Select Data Table
+            Select Dataset
           </Typography>
 
           <FormControl fullWidth>
-            <InputLabel id="file-select-label">Select File</InputLabel>
+            <InputLabel id="file-select-label">Select Data</InputLabel>
             <Select
               labelId="file-select-label"
               value={selectedFile}
@@ -269,7 +269,7 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
                   color: '#666666'
                 }}
               >
-                Upload New File
+                Upload Here
                 <input
                   type="file"
                   accept=".csv"
@@ -318,108 +318,121 @@ function AddTilePage({ dashboardId, onNavigate, userEmail }) {
 
               {/* Graph Panel */}
               <TabPanel value="2">
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  <FormControl fullWidth>
-                    <InputLabel>Chart Type</InputLabel>
-                    <Select
-                      value={chartType}
-                      label="Chart Type"
-                      onChange={handleChartTypeChange}
-                    >
-                      <MenuItem value="Bar">Bar Chart</MenuItem>
-                      <MenuItem value="Line">Line Chart</MenuItem>
-                      <MenuItem value="Pie">Pie Chart</MenuItem>
-                      <MenuItem value="Scatter">Scatter Plot</MenuItem>
-                      <MenuItem value="Scorecard">Scorecard</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  {['Bar', 'Line', 'Scatter'].includes(chartType) && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, minHeight: '600px' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <FormControl fullWidth>
-                      <InputLabel>X-Axis</InputLabel>
+                      <InputLabel>Chart Type</InputLabel>
                       <Select
-                        value={x}
-                        label="X-Axis"
-                        onChange={(e) => setX(e.target.value)}
+                        value={chartType}
+                        label="Chart Type"
+                        onChange={handleChartTypeChange}
                       >
-                        {headers.map((header, index) => (
-                          <MenuItem key={index} value={index}>{header}</MenuItem>
-                        ))}
+                        <MenuItem value="Bar">Bar Chart</MenuItem>
+                        <MenuItem value="Line">Line Chart</MenuItem>
+                        <MenuItem value="Pie">Pie Chart</MenuItem>
+                        <MenuItem value="Scatter">Scatter Plot</MenuItem>
+                        <MenuItem value="Scorecard">Scorecard</MenuItem>
                       </Select>
                     </FormControl>
+
+                    {['Bar', 'Line', 'Scatter'].includes(chartType) && (
+                      <FormControl fullWidth>
+                        <InputLabel>X-Axis</InputLabel>
+                        <Select
+                          value={x}
+                          label="X-Axis"
+                          onChange={(e) => setX(e.target.value)}
+                        >
+                          {headers.map((header, index) => (
+                            <MenuItem key={index} value={index}>{header}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+
+                    {['Bar', 'Line', 'Scatter'].includes(chartType) && (
+                      <Autocomplete
+                        multiple
+                        options={headers.map((header, index) => ({ label: header, value: index }))}
+                        onChange={handleChange}
+                        getOptionLabel={(option) => option.label}
+                        value={y}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        renderInput={(params) => (
+                          <TextField 
+                            {...params} 
+                            label="Y-Axis" 
+                            placeholder="Select one column"
+                            helperText="Currently limited to one Y-axis selection"
+                          />
+                        )}
+                      />
+                    )}
+
+                    {chartType === 'Pie' && (
+                      <FormControl fullWidth>
+                        <InputLabel>Categories</InputLabel>
+                        <Select
+                          value={x}
+                          label="Categories"
+                          onChange={(e) => {
+                            setX(e.target.value);
+                            // Set a random y value for Pie chart
+                            const randomIndex = Math.floor(Math.random() * headers.length);
+                            setY([{ label: headers[randomIndex], value: randomIndex }]);
+                          }}
+                        >
+                          {headers.map((header, index) => (
+                            <MenuItem key={index} value={index}>{header}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+
+                    {chartType === 'Scorecard' && (
+                      <FormControl fullWidth>
+                        <InputLabel>Value</InputLabel>
+                        <Select
+                          value={singleValue}
+                          label="Value"
+                          onChange={(e) => {
+                            setSingleValue(e.target.value);
+                            // Set a random y value for Scorecard
+                            const randomIndex = Math.floor(Math.random() * headers.length);
+                            setY([{ label: headers[randomIndex], value: randomIndex }]);
+                            setX(e.target.value); // For consistency with backend
+                          }}
+                        >
+                          {headers.map((header, index) => (
+                            <MenuItem key={index} value={index}>{header}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  </Box>
+
+                  { x !== undefined && x !== '' && 
+                    chartType !== '' && 
+                    y && 
+                    y.length > 0 && (
+                    <Box sx={{ height: '400px', flex: 1 }}>
+                      <Graph 
+                        headers={headers} 
+                        data={data} 
+                        chartType={chartType} 
+                        x={x} 
+                        y={y.map(y => y.value)} 
+                      />
+                    </Box>
                   )}
 
-                  {['Bar', 'Line', 'Scatter'].includes(chartType) && (
-                    <Autocomplete
-                      multiple
-                      options={headers.map((header, index) => ({ label: header, value: index }))}
-                      onChange={handleChange}
-                      getOptionLabel={(option) => option.label}
-                      value={y}
-                      isOptionEqualToValue={(option, value) => option.value === value.value}
-                      renderInput={(params) => (
-                        <TextField 
-                          {...params} 
-                          label="Y-Axis" 
-                          placeholder="Select one column"
-                          helperText="Currently limited to one Y-axis selection"
-                        />
-                      )}
-                    />
-                  )}
-
-                  {chartType === 'Pie' && (
-                    <FormControl fullWidth>
-                      <InputLabel>Categories</InputLabel>
-                      <Select
-                        value={x}
-                        label="Categories"
-                        onChange={(e) => {
-                          setX(e.target.value);
-                          // Set a random y value for Pie chart
-                          const randomIndex = Math.floor(Math.random() * headers.length);
-                          setY([{ label: headers[randomIndex], value: randomIndex }]);
-                        }}
-                      >
-                        {headers.map((header, index) => (
-                          <MenuItem key={index} value={index}>{header}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-
-                  {chartType === 'Scorecard' && (
-                    <FormControl fullWidth>
-                      <InputLabel>Value</InputLabel>
-                      <Select
-                        value={singleValue}
-                        label="Value"
-                        onChange={(e) => {
-                          setSingleValue(e.target.value);
-                          // Set a random y value for Scorecard
-                          const randomIndex = Math.floor(Math.random() * headers.length);
-                          setY([{ label: headers[randomIndex], value: randomIndex }]);
-                          setX(e.target.value); // For consistency with backend
-                        }}
-                      >
-                        {headers.map((header, index) => (
-                          <MenuItem key={index} value={index}>{header}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-
-                  { x !== undefined && 
-                  chartType !== '' && 
-                  y && 
-                  y.length > 0 && <Graph 
-                  headers={headers} 
-                  data={data} 
-                  chartType={chartType} 
-                  x={x} 
-                  y={y.map(y => y.value)} 
-                /> }
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-end', 
+                    mt: 'auto', 
+                    pt: 2,
+                    borderTop: '1px solid #eaeaea'
+                  }}>
                     <Button
                       variant="contained"
                       onClick={handleAddTile}

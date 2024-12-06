@@ -210,7 +210,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     config={{
                         responsive: true,
-                        displayModeBar: false
+                        displayModeBar: 'hover'
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -226,7 +226,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     config={{
                         responsive: true,
-                        displayModeBar: false
+                        displayModeBar: 'hover'
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -290,7 +290,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                     }}
                     config={{
                         responsive: true,
-                        displayModeBar: false
+                        displayModeBar: 'hover'
                     }}
                     style={{ width: '100%', height: '100%' }}
                 />
@@ -318,7 +318,7 @@ const Graph = ({ headers, data, chartType, x, y, filters, width, height }) => {
                             const values = filteredData.map(row => parseFloat(row[x]));
                             const validValues = values.filter(val => !isNaN(val));
                             if (validValues.length === 0) return 'N/A';
-                            const avg = validValues.reduce((a, b) => a + b, 0);
+                            const avg = validValues.reduce((a, b) => a + b, 0)/validValues.length;
                             return Number.isInteger(avg) ? avg.toLocaleString() : avg.toFixed(2);
                         })()}
                     </Typography>

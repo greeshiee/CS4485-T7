@@ -128,7 +128,7 @@ export default function DataGeneration() {
 
     // Send the FormData (which includes the Blob as a file) using fetch
     // Using Promises
-      apiClient.post('/data_generation/upload', formData)
+      apiClient.post('/eda/upload', formData)
       .then(response => {
         console.log('Success:', response.data);
         setMessage('file now available in EDA');
@@ -188,7 +188,7 @@ export default function DataGeneration() {
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value)}
-          className="border text-background rounded-lg p-2"
+          className="border text-foreground rounded-lg p-2"
         >
           <option value="batch">Batch</option>
           <option value="stream">Stream</option>
@@ -202,7 +202,7 @@ export default function DataGeneration() {
         <textarea
           value={typedSchema}
           onChange={(e) => setTypedSchema(e.target.value)}
-          className="w-full h-40 border text-background rounded-lg p-2"
+          className="w-full h-40 border text-foreground rounded-lg p-2"
           placeholder="Enter your JSON schema here"
         />
       </div>

@@ -13,13 +13,6 @@ import DataIngestion from '../components/data_ingestion/DataIngestion';
 import DataPipelining from '../components/datapipelining';
 import Performance from '../components/performanceManagement/Performance';
 import AuthWrapper from '../components/authwrapper';
-
-
-import FaultMainPage from "../components/faultmanagement/mainpage/faultmainpage";
-import FaultSide from "../components/faultmanagement/faultside";
-import DataIngestion from "../components/data_ingestion/DataIngestion";
-import Performance from "../components/performanceManagement/Performance";
-import AuthWrapper from "../components/authwrapper";
 import KPIFormula from "../components/kpi_formula";
 
 const SidebarContext = createContext();

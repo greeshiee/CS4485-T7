@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from data_ingestion import app as data_ingestion_app
 from dashboarding import app as dashboarding_app
 # from data_pipelining import app as data_pipelining_app
 from data_generation import app as data_generation_app
@@ -104,6 +105,7 @@ app.mount("/dashboarding", dashboarding_app)
 app.mount("/data_generation", data_generation_app)
 app.mount("/eda", eda_app)
 app.mount("/fault_management", fault_management_app)
+app.mount("/data_ingestion", data_ingestion_app)
 
 if __name__ == "__main__":
     import uvicorn

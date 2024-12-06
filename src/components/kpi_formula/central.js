@@ -101,7 +101,7 @@ function App() {
 
   // Fetch available tables from the database
   const fetchAvailableTables = async () => {
-    const url = "http://localhost:5000/kpi_management/api/tables";
+    const url = "http://localhost:5001/kpi_management/api/tables";
     console.log(`Fetching tables from: ${url}`);
     try {
       const response = await fetch(url, {

@@ -10,3 +10,6 @@ uvicorn
 requests
 pyjwt
 python-jose
+sqlalchemy
+boto3
+python-dotenv

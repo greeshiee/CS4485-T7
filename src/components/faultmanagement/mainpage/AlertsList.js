@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import apiClient from '../../../services/api';
+import useAxiosInterceptor from '../../../authInterceptor'; // Import the interceptor hook
+
+
 function AlertsList({ selectedDatabase, removeAlert }) {
   const [alerts, setAlerts] = useState([]);
-
+useAxiosInterceptor();
   // Fetch alerts
   const fetchAlerts = useCallback(async () => {
     if (!selectedDatabase) return; // Don't fetch if no database is selected
 
     try {
-      const response = await apiClient.get(`/fault_management/alerts?database=${selectedDatabase}`);
+      const response = await apiClient.get(`/fault_management/get_alerts?database=${selectedDatabase}`);
       setAlerts(response.data.alerts); // Update alerts with the fetched data
     } catch (error) {
       console.error('Error fetching alerts:', error);

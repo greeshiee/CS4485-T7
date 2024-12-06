@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: data-introspection
+Version: 0.1.0
+Summary: Data introspection module for CSV, SQLite, and PostgreSQL sources
+Author: Faris Kazi
+Author-email: fak200001@utdallas.edu
+Requires-Python: >=3.7

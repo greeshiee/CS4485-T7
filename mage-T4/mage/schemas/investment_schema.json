@@ -1,0 +1,7 @@
+{
+    "investment_date": "datetime",
+    "evaluation_date": "datetime",
+    "company_address": "address",
+    "initial_investment": "integer",
+    "revenue": "integer"
+}

@@ -30,5 +30,10 @@ yarn-error.log*
 venv/
 __pycache__/
 /api/notebook
+
+# Mage
+/mage-T4/mage/mage_data/default_repo/.cache
+/mage-T4/scripts
+
 /api/.venv
 /api/unified_db.db

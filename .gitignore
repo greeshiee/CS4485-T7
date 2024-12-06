@@ -22,12 +22,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
 .env
 /src/components/Usecase3/backend/.venv
 /src/components/Usecase3/backend/__pycache__
 /src/components/Usecase3/backend/DataViz/__pycache__
-
+/src/components/Usecase3/backend/unified_db.db
 venv/
 __pycache__/
 /api/notebook
+/api/.venv
+/api/unified_db.db

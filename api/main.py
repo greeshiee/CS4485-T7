@@ -36,13 +36,16 @@ app.add_middleware(
 # JWT Authentication Middleware
 @app.middleware("http")
 async def jwt_authentication_middleware(request: Request, call_next):
-
+    # List of paths that should bypass JWT authentication
+    bypass_paths = ["/dashboarding/public-dashboards", "/dashboarding/dashboards", '/kpi_management']
+    
+    # Always allow OPTIONS requests
     if request.method == "OPTIONS":
         response = await call_next(request)
         return response
 
-    # Pass authentication for KPI
-    if request.url.path.startswith("/kpi_management"):
+    # Check if the path should bypass authentication
+    if any(request.url.path.startswith(path) for path in bypass_paths):
         response = await call_next(request)
         return response
 
@@ -126,5 +129,5 @@ app.mount("/data_ingestion", data_ingestion_app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5001)
 

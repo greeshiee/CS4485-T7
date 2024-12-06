@@ -6,7 +6,7 @@ import axios from 'axios';
 const apiClient = axios.create({
   baseURL: 'http://localhost:5001', // Base URL
   headers: {
-    'Content-Type': 'application/json', // Default content type
+    //'Content-Type': 'application/json', // Default content type -> caused errors with file upload
   },
 });
 

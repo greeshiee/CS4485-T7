@@ -1,20 +1,32 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import List
 import sqlite3
 import os
 
 app = FastAPI()
 
-# Allowing cross-origin requests
-origins = ["*"]
+selected_database = "db2"
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Allow requests from 'http://localhost:3000' only
+origins = [
+    "http://localhost:3000",  # Allow your React app's frontend URL
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # Allows specific origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
 )
+  
 
 # Model for adding a new alert
 class Alert(BaseModel):
@@ -28,16 +40,19 @@ def get_db_path(database: str, file_name: str):
     """
     Helper function to get the full path of the database file.
     """
-    return f'/Users/jwalinshah/Documents/securityintegration/CS4485-T7fault/src/components/faultmanagement/databases/{database}/{file_name}'
+    return f'../databases/{database}/{file_name}'
 
 @app.get("/list_databases")
 def list_databases():
     """
     Returns the list of available databases (subdirectories) in the 'databases' directory.
     """
-    database_dir = '/Users/jwalinshah/Documents/securityintegration/CS4485-T7fault/src/components/faultmanagement/databases'
-    
+    database_dir = '../databases'
+    print("testing")
+    print(database_dir)
     try:
+        print(os.path.exists(database_dir))
+
         if not os.path.exists(database_dir):
             raise HTTPException(status_code=500, detail="Databases directory not found")
 
@@ -81,7 +96,7 @@ def get_columns(database: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching columns: {str(e)}")
 
-@app.get("/alerts")
+@app.get("/get_alerts")
 def get_alerts(database: str):
     """
     Returns a list of alerts for a specific database.
@@ -151,6 +166,7 @@ def remove_alert(alert: dict, database: str):
     """
     alert_id = alert.get("alert_id")
     database_path = get_db_path(database, "alerts.db")
+    print(database_path)
     
     if not os.path.exists(database_path):
         raise HTTPException(status_code=404, detail="Alerts database not found")
@@ -224,4 +240,173 @@ def get_columns_from_devices(database: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching columns: {str(e)}")
+    
+class DetectFaultsRequest(BaseModel):
+    database: str
 
+@app.post("/detect_faults")
+def detect_faults(request: DetectFaultsRequest):
+    """
+    Detects faults based on current alerts and adds them to faults.db if found.
+    """
+    database = request.database
+    alerts_database_path = get_db_path(database, "alerts.db")
+    main_database_path = get_db_path(database, f"{database}.db")
+    faults_database_path = get_db_path(database, "faults.db")
+
+    global selected_database
+    selected_database = database
+
+    # Ensure all required databases exist
+    for path in [alerts_database_path, main_database_path]:
+        if not os.path.exists(path):
+            raise HTTPException(status_code=404, detail=f"Database not found: {path}")
+
+    try:
+        # Read alerts from alerts.db
+        conn_alerts = sqlite3.connect(alerts_database_path)
+        cursor_alerts = conn_alerts.cursor()
+        cursor_alerts.execute("SELECT * FROM alerts")
+        alerts = cursor_alerts.fetchall()
+        conn_alerts.close()
+
+        if not alerts:
+            return {"message": "No alerts found to process"}
+
+        # Connect to the main database to scan for faults
+        conn_main = sqlite3.connect(main_database_path)
+        cursor_main = conn_main.cursor()
+
+        print(faults_database_path)
+
+        # Ensure faults.db exists and has the required table
+        if not os.path.exists(faults_database_path):
+            conn_faults = sqlite3.connect(faults_database_path)
+            cursor_faults = conn_faults.cursor()
+            cursor_faults.execute("""
+                CREATE TABLE IF NOT EXISTS faults (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    alert_id INTEGER,
+                    alert_title TEXT,
+                    alert_message TEXT,
+                    field_name TEXT,
+                    fault_value REAL,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            conn_faults.commit()
+            conn_faults.close()
+
+        conn_faults = sqlite3.connect(faults_database_path)
+        cursor_faults = conn_faults.cursor()
+
+        # Loop through alerts and check for faults
+        for alert in alerts:
+            alert_id, alert_title, alert_message, field_name, lower_bound, higher_bound = alert
+
+            # Check if the field exists in the main database
+            try:
+                cursor_main.execute(f"SELECT {field_name} FROM devices")
+                values = cursor_main.fetchall()
+            except sqlite3.OperationalError:
+                continue  # Skip alerts with invalid fields
+
+            # Detect faults
+            for (value,) in values:
+                if value < lower_bound or value > higher_bound:
+                    # Insert the fault into faults.db
+                    cursor_faults.execute("""
+                        INSERT INTO faults (alert_id, alert_title, alert_message, field_name, fault_value)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (alert_id, alert_title, alert_message, field_name, value))
+
+        conn_faults.commit()
+        conn_main.close()
+        conn_faults.close()
+
+        return {"message": "Fault detection completed successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during fault detection: {str(e)}")
+
+class RemoveNotificationRequest(BaseModel):
+    id: int  # ID of the notification to remove
+
+@app.post("/remove_notification")
+def remove_notification(request: RemoveNotificationRequest):
+    """
+    Removes a notification (fault) from the faults.db database.
+    """
+    global selected_database
+
+    faults_database_path = get_db_path(selected_database, "faults.db")
+
+    # Ensure faults.db exists
+    if not os.path.exists(faults_database_path):
+        raise HTTPException(status_code=404, detail="Faults database not found")
+
+    try:
+        conn = sqlite3.connect(faults_database_path)
+        cursor = conn.cursor()
+
+        # Remove the notification by ID
+        cursor.execute("DELETE FROM faults WHERE id = ?", (request.id,))
+        conn.commit()
+
+        # Check if the deletion was successful
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Notification not found")
+
+        conn.close()
+        return {"message": f"Notification with ID {request.id} removed successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error removing notification: {str(e)}")
+
+@app.get("/get_notifications")
+def get_notifications():
+    """
+    Returns a list of notifications (faults) from the faults.db database.
+    """
+    
+    
+    print(f"Selected Database: {selected_database}")
+    if not selected_database:
+        raise HTTPException(status_code=400, detail="No database selected")
+
+    faults_database_path = get_db_path(selected_database, "faults.db")
+
+    print(faults_database_path)
+
+    print(os.path.exists(faults_database_path))
+    # Ensure faults.db exists
+    if not os.path.exists(faults_database_path):
+        raise HTTPException(status_code=404, detail="Faults database was not found")
+
+    try:
+        conn = sqlite3.connect(faults_database_path)
+        cursor = conn.cursor()
+
+        # Fetch all notifications from the faults table
+        cursor.execute("SELECT * FROM faults")
+        faults = cursor.fetchall()
+        conn.close()
+
+        # Map the faults to a list of dictionaries
+        notifications = [
+            {
+                "id": fault[0],
+                "alert_id": fault[1],
+                "alert_title": fault[2],
+                "alert_message": fault[3],
+                "field_name": fault[4],
+                "fault_value": fault[5],
+                "timestamp": fault[6],
+            }
+            for fault in faults
+        ]
+
+        return {"notifications": notifications}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching notifications: {str(e)}")

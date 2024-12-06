@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import apiClient from '../../../services/api';
+import useAxiosInterceptor from '../../../authInterceptor'; // Import the interceptor hook
+
 
 function AlertsList({ selectedDatabase, removeAlert }) {
   const [alerts, setAlerts] = useState([]);
-
+useAxiosInterceptor();
   // Fetch alerts
   const fetchAlerts = useCallback(async () => {
     if (!selectedDatabase) return; // Don't fetch if no database is selected

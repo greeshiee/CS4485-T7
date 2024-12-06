@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-selected_database = ""
+selected_database = "db2"
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,7 +40,7 @@ def get_db_path(database: str, file_name: str):
     """
     Helper function to get the full path of the database file.
     """
-    return f'Users/jwalinshah/Documents/final/CS4485-T7fault/src/components/faultmanagement/databases/{database}/{file_name}'
+    return f'../databases/{database}/{file_name}'
 
 @app.get("/list_databases")
 def list_databases():
@@ -48,8 +48,11 @@ def list_databases():
     Returns the list of available databases (subdirectories) in the 'databases' directory.
     """
     database_dir = '../databases'
-    
+    print("testing")
+    print(database_dir)
     try:
+        print(os.path.exists(database_dir))
+
         if not os.path.exists(database_dir):
             raise HTTPException(status_code=500, detail="Databases directory not found")
 
@@ -365,9 +368,9 @@ def get_notifications():
     """
     Returns a list of notifications (faults) from the faults.db database.
     """
-    global selected_database
     
-    print(f"Selected Database: {'db1'}")
+    
+    print(f"Selected Database: {selected_database}")
     if not selected_database:
         raise HTTPException(status_code=400, detail="No database selected")
 
@@ -375,9 +378,10 @@ def get_notifications():
 
     print(faults_database_path)
 
+    print(os.path.exists(faults_database_path))
     # Ensure faults.db exists
     if not os.path.exists(faults_database_path):
-        raise HTTPException(status_code=404, detail="Faults database not found")
+        raise HTTPException(status_code=404, detail="Faults database was not found")
 
     try:
         conn = sqlite3.connect(faults_database_path)

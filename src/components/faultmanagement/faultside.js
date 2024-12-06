@@ -1,127 +1,85 @@
-// import React, { useState, useEffect, useCallback } from "react";
-// import { Container, Form, Spinner, Alert } from 'react-bootstrap';
-// import axios from 'axios'
-// import apiClient from '../../services/api';
-
-
-// const FaultSide = () => {
-//   const [alerts, setAlerts] = useState([]);
-//   const [notifications, setNotifications] = useState([]);
-//   const [loading, setLoading] = useState(false);
-//   const [hasMore, setHasMore] = useState(true);  // To handle if there are more alerts to load
-//   const [noAlerts, setNoAlerts] = useState(false); // To handle case with no alerts
-//   // Function to fetch notifications.
-//   const fetchNotifications = useCallback(async () => {
-//     setLoading(true);
-//     try {
-//       const response = await apiClient.get("/fault_management/get_notifications");
-//       const data = await response.json();
-//       setNotifications(data.notifications || []);
-//     } catch (error) {
-//       console.error("Error fetching notifications: ", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     fetchNotifications(); // Fetch once when the component mounts
-  
-//     const interval = setInterval(() => {
-//       fetchNotifications(); // Periodically fetch notifications
-//     }, 10000); // Fetch every 10 seconds
-  
-//     return () => clearInterval(interval); // Clean up interval on unmount
-//   }, [fetchNotifications]);
-  
-
-//   // // Fetch alerts when component mounts or when skip changes
-//   // useEffect(() => {
-//   //   fetchAlerts();
-//   // }, [fetchAlerts]);
-
-//   // // Function to handle scroll event and load more alerts
-//   // const handleScroll = useCallback(() => {
-//   //   if (
-//   //     window.innerHeight + document.documentElement.scrollTop ===
-//   //     document.documentElement.scrollHeight
-//   //   ) {
-//   //     setSkip((prevSkip) => prevSkip + 3); // Increase skip by 3 to fetch the next set of alerts
-//   //   }
-//   // }, []);
-
-//   // // Set up the scroll event listener
-//   // useEffect(() => {
-//   //   window.addEventListener("scroll", handleScroll);
-//   //   return () => {
-//   //     window.removeEventListener("scroll", handleScroll);
-//   //   };
-//   // }, [handleScroll]);
-
-//   // // Load more button click handler
-//   // const handleLoadMore = () => {
-//   //   if (hasMore && !loading) {
-//   //     setSkip((prevSkip) => prevSkip + 3);
-//   //   }
-//   // };
-
-//   return (
-//     <div className="faultside-container">
-//       <h2>Notifications</h2>
-
-//       {/* Show a spinner while loading */}
-//       {loading && <Spinner animation="border" />}
-
-//       {/* Show notifications */}
-//       <div className="notifications-list">
-//         {notifications.length > 0 ? (
-//           notifications.map((notification, index) => (
-//             <Alert
-//               key={notification.id} // Use a unique identifier
-//               variant={notification.alert_type || "info"} // Use alert_type from API for Bootstrap variant
-//               dismissible
-//               onClose={() => {
-//                 handleRemoveNotification(notification.id); // Call the backend to remove the notification
-//                 setNotifications((prev) => prev.filter((notif) => notif.id !== notification.id)); // Remove from state
-//               }}
-//             >
-//               <Alert.Heading>{notification.alert_title}</Alert.Heading>
-//               <p>{notification.alert_message}</p>
-//               <small>
-//                 {notification.timestamp &&
-//                   new Date(notification.timestamp).toLocaleString()}
-//               </small>
-//             </Alert>
-//           ))
-//         ) : (
-//           !loading && <p>No notifications available.</p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// const handleRemoveNotification = async (notificationId) => {
-//   try {
-//     await fetch("/fault_management/remove_notification", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ id: notificationId }),
-//     });
-//     console.log(`Notification with ID ${notificationId} removed successfully`);
-//   } catch (error) {
-//     console.error("Error removing notification:", error);
-//   }
-// };
-
-// export default FaultSide;
-
-import React from 'react';
+import React, { useState, useEffect, useCallback } from "react";
+import { Container, Form, Spinner, Alert } from 'react-bootstrap';
+import apiClient from '../../services/api'; // Axios instance
+import useAxiosInterceptor from '../../authInterceptor'; // Import the interceptor hook
 
 const FaultSide = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [noAlerts, setNoAlerts] = useState(false); // State to handle no alerts message
+
+  // Activate the axios interceptor to automatically add the token to requests
+  useAxiosInterceptor();  // Calling the custom hook to activate the interceptor
+
+  // Function to fetch notifications
+  const fetchNotifications = useCallback(async () => {
+    setLoading(true);
+    setNoAlerts(false); // Reset the no alerts flag
+    try {
+      const response = await apiClient.get("/fault_management/get_notifications");
+      if (response.data.notifications && response.data.notifications.length > 0) {
+        setNotifications(response.data.notifications);
+      } else {
+        setNoAlerts(true); // Set the flag if no alerts are found
+      }
+    } catch (error) {
+      console.error("Error fetching notifications: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch notifications initially and set up interval for periodic updates
+  useEffect(() => {
+    fetchNotifications(); // Fetch once when the component mounts
+  
+    const interval = setInterval(() => {
+      fetchNotifications(); // Periodically fetch notifications
+    }, 10000); // Fetch every 10 seconds
+  
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, [fetchNotifications]);
+
+  // Function to remove a notification
+  const handleRemoveNotification = async (notificationId) => {
+    try {
+      await apiClient.post("/fault_management/remove_notification", { id: notificationId });
+      setNotifications((prev) => prev.filter((notif) => notif.id !== notificationId)); // Remove from state
+      console.log(`Notification with ID ${notificationId} removed successfully`);
+    } catch (error) {
+      console.error("Error removing notification:", error);
+    }
+  };
+
   return (
     <div className="faultside-container">
-      <h2>Fault Side Panel Alerts</h2>
+      <h2>Notifications</h2>
+
+      {/* Show a spinner while loading */}
+      {loading && <Spinner animation="border" />}
+
+      {/* Show notifications or a message if no notifications */}
+      <div className="notifications-list">
+        {noAlerts ? (
+          <p>No notifications available.</p>
+        ) : (
+          notifications.map((notification) => (
+            <Alert
+              key={notification.id} // Use a unique identifier
+              variant={notification.alert_type || "info"} // Use alert_type from API for Bootstrap variant
+              dismissible
+              onClose={() => handleRemoveNotification(notification.id)} // Remove notification on close
+            >
+              <Alert.Heading>{notification.alert_title}</Alert.Heading>
+              <p>{notification.alert_message}</p>
+              <small>
+                {notification.timestamp &&
+                  new Date(notification.timestamp).toLocaleString()}
+              </small>
+            </Alert>
+          ))
+        )}
+      </div>
     </div>
   );
 };

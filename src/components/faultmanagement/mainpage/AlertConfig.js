@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import apiClient from '../../../services/api';
+import useAxiosInterceptor from '../../../authInterceptor'; // Import the interceptor hook
 
 
 
@@ -14,14 +15,14 @@ function AlertConfig({ selectedDatabase, refreshAlerts }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [columns, setDeviceColumns] = useState([]); // To store columns of the 'devices' table
-
+ useAxiosInterceptor();
   useEffect(() => {
     // Fetch columns from the selected database
     const fetchColumns = async () => {
       if (!selectedDatabase) return; // Only fetch if a database is selected
 
       try {
-        const response = await apiClient.get(`/fault_management/columns_from_devices_table?database=${selectedDatabase}`);
+        const response = await apiClient.get(`/fault_management/columns_from_db?database=${selectedDatabase}`);
         setDeviceColumns(response.data.columns); // Update deviceColumns with the fetched column names
       } catch (error) {
         console.error('Error fetching device columns:', error);

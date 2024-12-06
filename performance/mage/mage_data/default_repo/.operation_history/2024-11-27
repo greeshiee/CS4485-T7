@@ -1,0 +1,7 @@
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "kafka_to_prometheus"}, "timestamp": 1732666115, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "kafka_to_prometheus"}, "timestamp": 1732666202, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "kafka_to_prometheus"}, "timestamp": 1732666718, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "test"}, "timestamp": 1732670483, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "test"}, "timestamp": 1732670541, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "test"}, "timestamp": 1732672245, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "test"}, "timestamp": 1732673294, "user": null}

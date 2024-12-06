@@ -4,9 +4,11 @@ import React from 'react';
 import Navbar from '../components/header';
 import ParticlesBackground from '../components/threeBackground';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const { loginWithRedirect } = useAuth0();
+  const navigate = useNavigate();
 
   return (
     <div className="relative h-screen" id="home">
@@ -27,6 +29,14 @@ const HomePage = () => {
             >
               <span className="relative text-base font-semibold text-background">
                 Get Started
+              </span>
+            </button>
+            <button
+              onClick={() => navigate('/public-dashboards')}
+              className="relative flex h-11 items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:border before:border-gray-300 before:transition before:duration-300 hover:before:scale-105 active:before:scale-95"
+            >
+              <span className="relative text-base font-semibold text-foreground dark:text-light-gray">
+                View Public Dashboards
               </span>
             </button>
           </div>

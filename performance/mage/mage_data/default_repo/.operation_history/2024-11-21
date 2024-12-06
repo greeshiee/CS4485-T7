@@ -1,0 +1,3 @@
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "wondrous_song"}, "timestamp": 1732158855, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "stream_to_prometheus"}, "timestamp": 1732167396, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "mysterious_aspen"}, "timestamp": 1732167798, "user": null}

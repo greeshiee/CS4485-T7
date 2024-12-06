@@ -1,0 +1,12 @@
+fastapi
+pandas
+faker
+matplotlib
+seaborn
+numpy
+python-multipart
+IPython
+uvicorn
+requests
+pyjwt
+python-jose

@@ -1,0 +1,5 @@
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "batch_data_generation"}, "timestamp": 1731557405, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "stream_data_generation"}, "timestamp": 1731557625, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "stream_data_generation_copy"}, "timestamp": 1731559555, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "stream_data_generator"}, "timestamp": 1731559728, "user": null}
+{"operation": "create", "resource": {"type": "pipeline", "uuid": "stream_of_batches_data_generator"}, "timestamp": 1731564013, "user": null}

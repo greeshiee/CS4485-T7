@@ -1,0 +1,131 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --pastel-primary: #B4D4FF;      /* Light pastel blue */
+  --pastel-secondary: #86B6F6;    /* Soft blue */
+  --pastel-accent: #176B87;       /* Darker blue for contrast */
+  --pastel-background: #7894ba;   /* Very light blue background */
+  --pastel-danger: #FF9B9B;       /* Soft red */
+  --pastel-success: #B4F4B3;      /* Soft green */
+  --pastel-warning: #FFE5B4;      /* Soft orange */
+  --text-primary: #176B87;        /* Dark blue text */
+  --text-secondary: #1e2a3a;      /* Medium blue text */
+}
+
+body {
+  background-color: var(--pastel-background);
+  color: var(--text-primary);
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Dashboard container styles */
+.dashboard-container {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+}
+
+/* Card styles */
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(180,212,255,0.3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(180,212,255,0.1) 0%,
+    rgba(255,255,255,0.1) 100%
+  );
+  z-index: -1;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(180,212,255,0.4);
+}
+
+/* Graph tile styles */
+.graph-tile {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 15px rgba(180,212,255,0.2);
+}
+
+/* Navigation styles */
+.nav-tabs {
+  background: var(--pastel-primary);
+  color: var(--text-primary);
+}
+
+.nav-tabs .MuiTab-root {
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.nav-tabs .Mui-selected {
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+/* Button styles */
+.custom-button {
+  text-transform: none !important;
+  border-radius: 12px !important;
+  padding: 10px 20px !important;
+  transition: all 0.3s ease !important;
+  font-weight: 500 !important;
+}
+
+.custom-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Header styles */
+.dashboard-header {
+  background: var(--pastel-primary);
+  color: var(--text-primary);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+/* Stats card styles */
+.stats-card {
+  background: linear-gradient(135deg, var(--pastel-primary) 0%, var(--pastel-secondary) 100%);
+  color: var(--text-primary);
+  padding: 25px;
+  border-radius: 15px;
+}
+
+/* Modal styles */
+.custom-modal {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+}
+
+/* Filter styles */
+.filter-modal {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(180,212,255,0.3);
+}

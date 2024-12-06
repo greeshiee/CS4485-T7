@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
+import apiClient from '../../services/api';
 
 // Custom Checkbox Dropdown component
 const CheckboxDropdown = ({ options, selected, onChange }) => {
@@ -61,36 +62,53 @@ const DatabaseView = () => {
 
   // Fetch databases from the backend
   useEffect(() => {
-    fetch("http://localhost:8000/databases")
-      .then(response => response.json())
-      .then(data => setDatabases(data))
-      .catch(error => console.error("Error fetching databases:", error));
+    const fetchDatabases = async () => {
+      try {
+        const response = await apiClient.get('/databases'); // Base URL is already set in apiClient
+        setDatabases(response.data);
+      } catch (error) {
+        console.error("Error fetching databases:", error);
+      }
+    };
+  
+    fetchDatabases();
   }, []);
-
   // Fetch tables when a database is selected
   useEffect(() => {
     if (selectedDatabase) {
-      fetch(`http://localhost:8000/tables/${selectedDatabase.id}`)
-        .then(response => response.json())
-        .then(data => setTables(data))
-        .catch(error => console.error("Error fetching tables:", error));
+      const fetchTables = async () => {
+        try {
+          const response = await apiClient.get(`/tables/${selectedDatabase.id}`);
+          setTables(response.data);
+        } catch (error) {
+          console.error("Error fetching tables:", error);
+        }
+      };
+  
+      fetchTables();
     }
   }, [selectedDatabase]);
-
+  
   // Fetch table data when a table is selected
   useEffect(() => {
     if (selectedDatabase && selectedTable) {
-      fetch(`http://localhost:8000/table-data/${selectedDatabase.id}/${selectedTable}`)
-        .then(response => response.json())
-        .then(data => {
+      const fetchTableData = async () => {
+        try {
+          const response = await apiClient.get(`/table-data/${selectedDatabase.id}/${selectedTable}`);
+          const data = response.data;
           setTableData(data);
           if (data.length > 0) {
             setColumns(Object.keys(data[0]));
           }
-        })
-        .catch(error => console.error("Error fetching table data:", error));
+        } catch (error) {
+          console.error("Error fetching table data:", error);
+        }
+      };
+  
+      fetchTableData();
     }
   }, [selectedDatabase, selectedTable]);
+  
 
   // Update chart when axes are selected
   useEffect(() => {

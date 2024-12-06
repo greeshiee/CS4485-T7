@@ -111,7 +111,7 @@ function FaultMainPage() {
   return (
     <Container className="mt-4">
       <header className="text-center mb-4">
-        <h1>Super Fault Management System</h1>
+        <h1>Fault Management System</h1>
       </header>
 
       {/* Loading and Error Messages */}

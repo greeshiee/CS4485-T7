@@ -125,7 +125,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {activeItem !== "KPI Formulas" && (
+        {(
           <div className="bg-blue-300 h-[calc(100vh-4.5rem)] w-[20%] overflow-hidden">
             <FaultSide />
           </div>

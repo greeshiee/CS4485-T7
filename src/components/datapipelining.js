@@ -56,7 +56,6 @@ const DataPipelining = () => {
 
       {/* Display Mage AI Dashboard in an iframe */}
       <div style={{ marginTop: '20px' }}>
-        <h2>Mage AI Dashboard</h2>
         <iframe
           src="http://localhost:6789"
           width="100%"

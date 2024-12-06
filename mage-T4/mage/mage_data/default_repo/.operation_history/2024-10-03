@@ -1,2 +1,0 @@
-{"operation": "create", "resource": {"type": "pipeline", "uuid": "generator_to_kafka"}, "timestamp": 1727972551, "user": null}
-{"operation": "create", "resource": {"type": "pipeline", "uuid": "generator_to_kafka"}, "timestamp": 1727973018, "user": null}

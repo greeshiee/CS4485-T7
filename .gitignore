@@ -23,6 +23,17 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+/src/components/Usecase3/backend/.venv
+/src/components/Usecase3/backend/__pycache__
+/src/components/Usecase3/backend/DataViz/__pycache__
+/src/components/Usecase3/backend/unified_db.db
+venv/
+__pycache__/
+/api/notebook
 
-.next
-next-env.d.ts
+# Mage
+/mage-T4/mage/mage_data/default_repo/.cache
+/mage-T4/scripts
+
+/api/.venv
+/api/unified_db.db

@@ -1,0 +1,71 @@
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    restart: unless-stopped
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29092,CONTROLLER://kafka:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_CFG_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_CFG_NUM_PARTITIONS=1
+      - KAFKA_DELETE_TOPIC_ENABLE=true  # Enable topic deletion
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    container_name: kafka-broker
+    networks:
+      - kafka_network
+
+  topic-creator:
+    image: bitnami/kafka:latest  # Use an image with Kafka CLI tools
+    depends_on:
+      - kafka
+    container_name: kafka-topic-creator
+    networks:
+      - kafka_network
+    entrypoint: >
+      sh -c "
+        echo 'Waiting for Kafka broker to be ready...';
+        while ! /opt/bitnami/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka:9092; do
+          sleep 5;
+        done;
+        echo 'Kafka broker is ready. Deleting existing topic...';
+        /opt/bitnami/kafka/bin/kafka-topics.sh --delete \
+          --topic team6_topic \
+          --bootstrap-server kafka:9092 || true;
+        echo 'Deleted topic if it existed. Creating topic...';
+        /opt/bitnami/kafka/bin/kafka-topics.sh --create \
+          --topic team6_topic \
+          --bootstrap-server kafka:9092 \
+          --replication-factor 1 \
+          --partitions 1 || true;
+        echo 'Topic creation completed.';
+        sleep infinity;
+      "
+
+  mage:
+    image: elestio/mage-ai:latest
+    restart: unless-stopped
+    environment:
+      - USER_CODE_PATH=/home/src/default_repo
+    volumes:
+      - "./mage:/home/src"
+    ports:
+      - '6789:6789'
+    container_name: mage-ai
+    networks:
+      - kafka_network
+
+networks:
+  kafka_network:
+    driver: bridge

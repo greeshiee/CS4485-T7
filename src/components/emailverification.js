@@ -23,10 +23,7 @@ const EmailVerification = () => {
         </div>
       </div>
       <p className="text-center text-gray-600">
-        We have sent a verification code to your email.<br />Please check your inbox and click the link to continue.
-      </p>
-      <p className="text-center text-gray-600 mt-4">
-        Made a mistake?{' '}
+        We have sent a verification code to your email.<br />Please check your inbox and click the link to verify. Click here to continue to{' '}
         <button
           onClick={() => {
             localStorage.clear();
@@ -41,9 +38,29 @@ const EmailVerification = () => {
           }}
           className="text-electricblue underline"
         >
+          log in
+        </button>
+      </p>
+      <p className="text-center text-gray-600 mt-4">
+        Made a mistake?{' '}
+        <button
+          onClick={() => {
+            localStorage.clear();
+            loginWithRedirect({
+              appState: {
+                returnTo: window.location.origin,
+              },
+              authorizationParams: {
+                prompt: 'signup',
+              },
+            });
+          }}
+          className="text-electricblue underline"
+        >
           Restart and try again
         </button>
       </p>
+      
     </div>
   );
 };

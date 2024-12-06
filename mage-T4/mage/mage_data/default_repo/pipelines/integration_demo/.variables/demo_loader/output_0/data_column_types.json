@@ -1,0 +1,1 @@
+{"investment_date": "str", "evaluation_date": "str", "company_address": "str", "initial_investment": "int64", "revenue": "int64"}

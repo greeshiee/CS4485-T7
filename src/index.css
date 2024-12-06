@@ -36,6 +36,9 @@ body {
   color: var(--subtle-accent);
 }
 
+a {
+  text-decoration: none !important;
+}
 
 
 @layer utilities {

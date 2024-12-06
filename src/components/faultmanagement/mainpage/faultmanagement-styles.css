@@ -1,0 +1,30 @@
+.container {
+    text-align: center;
+  }
+  
+  h1, h2, h3, h4 {
+    font-weight: bold;
+  }
+  
+  .alert-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .alert {
+    border: 1px solid black;
+    padding: 5px;
+    margin: 5px;
+  }
+  
+  .table {
+    border: 1px solid black;
+    margin: auto;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid black;
+    font-weight: bold;
+    padding: 5px;
+  }

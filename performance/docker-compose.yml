@@ -98,24 +98,7 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     networks:
       - localprom
-
-  # Frontend service
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile  # Ensure this file exists in ./frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-    environment:
-      - REACT_APP_AUTH0_DOMAIN=dev-qfm00zieya5sfr60.us.auth0.com
-      - REACT_APP_AUTH0_CLIENT_ID=Wl84NkSqwDmLAoVrpXAUHBoAsv3yuvPn
-      - REACT_APP_AUTH0_REDIRECT_URI=http://localhost:3000/callback
-    depends_on:
-      - prometheus  # If your frontend depends on Prometheus being up
-    command: npm start
-
+      
 networks:
   kafka_network:
     driver: bridge
